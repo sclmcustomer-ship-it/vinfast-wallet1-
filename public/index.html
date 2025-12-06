@@ -1,0 +1,1971 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Xe đạp trợ lực ENGWE T14 - Trợ Lực Thông Minh, Vượt Mọi Hành Trình</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <style>
+    :root {
+      --primary: #003366;
+      --primary-soft: #0b3f7f;
+      --accent: #f9b000;
+      --bg: #f5f7fb;
+      --text: #111827;
+      --muted: #6b7280;
+      --card-bg: #ffffff;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --shadow-soft: 0 15px 35px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      overflow-x: hidden;
+      width: 100%;
+      position: relative;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    /* HEADER */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--primary);
+    }
+
+    .logo-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), #ffe9a5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      color: #111827;
+      font-weight: 900;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      font-size: 0.9rem;
+    }
+
+    nav a {
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    nav a:hover {
+      color: var(--primary);
+    }
+
+    .nav-highlight {
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      background: #f9fafb;
+      color: var(--primary-soft);
+      font-size: 0.85rem;
+    }
+
+    .nav-cta {
+      padding: 9px 18px;
+      border-radius: 999px;
+      border: none;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-cta span {
+      font-size: 1.1rem;
+    }
+
+    /* HERO */
+    .hero {
+      background: radial-gradient(circle at top left, #e5f1ff 0, #f5f7fb 45%, #ffffff 100%);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    .hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 20px 36px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.3fr);
+      gap: 30px;
+      align-items: center;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.04);
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .hero-tag-badge {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(249, 176, 0, 0.1);
+      color: #92400e;
+      font-weight: 600;
+      font-size: 0.72rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.9rem, 3vw, 2.4rem);
+      line-height: 1.25;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 10px;
+    }
+
+    .hero h1 span {
+      color: var(--primary);
+    }
+
+    .hero-sub {
+      font-size: 0.96rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin-bottom: 18px;
+    }
+
+    .hero-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin: 12px 0 20px;
+    }
+
+    .metric {
+      min-width: 120px;
+    }
+
+    .metric-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+    }
+
+    .metric-value {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn-primary {
+      padding: 11px 20px;
+      border-radius: 999px;
+      border: none;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-secondary {
+      padding: 11px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: #ffffff;
+      color: #111827;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero-note {
+      margin-top: 8px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .hero-visual {
+      position: relative;
+    }
+
+    .hero-card {
+      background: radial-gradient(circle at top, #003366 0, #02101f 45%, #000 100%);
+      border-radius: 26px;
+      padding: 18px 18px 10px;
+      color: #e5e7eb;
+      box-shadow: 0 30px 60px rgba(15, 23, 42, 0.45);
+      position: relative;
+      overflow: hidden;
+      min-height: 260px;
+    }
+
+    .hero-badge-corner {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(15, 23, 42, 0.8);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+    }
+
+    .hero-badge-corner span {
+      font-size: 0.95rem;
+    }
+
+    .hero-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .hero-card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .hero-card-sub {
+      font-size: 0.82rem;
+      color: #9ca3af;
+    }
+
+    .hero-card-logo {
+      font-size: 0.8rem;
+      text-align: right;
+      color: #9ca3af;
+    }
+
+    .hero-bike {
+      position: relative;
+      margin: 8px 0 16px;
+      padding-top: 10px;
+    }
+
+    .hero-bike-shape {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(56, 189, 248, 0.45), transparent 60%);
+      opacity: 0.45;
+    }
+
+    .hero-bike-placeholder {
+      position: relative;
+      border-radius: 16px;
+      border: 1px solid rgba(156, 163, 175, 0.4);
+      padding: 18px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: #e5e7eb;
+      text-align: center;
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.3), rgba(3, 7, 18, 0.9));
+    }
+
+    .hero-bike-placeholder span {
+      opacity: 0.9;
+    }
+
+    .hero-specs-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      font-size: 0.75rem;
+      margin-bottom: 6px;
+    }
+
+    .hero-spec-label {
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .hero-spec-value {
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .hero-price {
+      margin-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.9rem;
+    }
+
+    .hero-price-main {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fbbf24;
+    }
+
+    .hero-price-note {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      text-align: right;
+    }
+
+    /* FILTER BAR */
+    .filter-bar {
+      max-width: 1200px;
+      margin: 18px auto 6px;
+      padding: 0 20px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .filter-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #6b7280;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter-pill {
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      font-size: 0.83rem;
+      cursor: pointer;
+      background: #ffffff;
+      color: #4b5563;
+    }
+
+    .filter-pill.active {
+      background: #111827;
+      border-color: #111827;
+      color: #f9fafb;
+    }
+
+    /* SECTIONS LAYOUT */
+    main {
+      flex: 1;
+    }
+
+    .section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 20px 24px;
+    }
+
+    .section-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-size: 1.05rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #6b7280;
+      font-weight: 600;
+    }
+
+    .section-sub {
+      font-size: 0.88rem;
+      color: #9ca3af;
+    }
+
+    /* PRODUCT GRID */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    @media (max-width: 1024px) {
+      .hero-inner {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .hero-visual {
+        order: -1;
+      }
+      .product-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    /* Mobile Menu Button */
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 8px;
+      color: #111827;
+    }
+
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 280px;
+      height: 100vh;
+      background: white;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      transition: right 0.3s ease;
+      z-index: 1000;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .mobile-nav.active {
+      right: 0;
+    }
+
+    .mobile-nav-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+    }
+
+    .mobile-nav-overlay.active {
+      display: block;
+    }
+
+    .mobile-nav-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .mobile-nav a {
+      padding: 12px 16px;
+      text-decoration: none;
+      color: #111827;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+
+    .mobile-nav a:hover {
+      background: #f3f4f6;
+    }
+
+    .mobile-nav .nav-cta {
+      text-align: center;
+      color: white !important;
+      background: var(--primary);
+    }
+
+    .mobile-nav .nav-cta:last-child {
+      background: #f9b000;
+      color: #111827 !important;
+    }
+
+    @media (max-width: 768px) {
+      .header-inner {
+        padding: 10px 16px;
+      }
+
+      nav {
+        display: none;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+      }
+
+      .mobile-nav {
+        display: flex;
+      }
+
+      .hero-inner {
+        padding: 18px 16px 22px;
+      }
+
+      .product-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .section {
+        padding: 16px;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .product-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .filter-bar {
+        padding-inline: 16px;
+      }
+    }
+
+    /* Responsive cho phần giới thiệu chi tiết 2 cột */
+    @media (max-width: 768px) {
+      #productDetailSection {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+      }
+      
+      #productDetailSection h2 {
+        font-size: 1.5rem !important;
+      }
+      
+      #productDetailSection .price-large {
+        font-size: 1.75rem !important;
+      }
+      
+      #productDetailSection button {
+        font-size: 1rem !important;
+        padding: 14px 24px !important;
+      }
+    }
+
+    .product-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+    }
+
+    .product-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: #f97316;
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+
+    .product-tag {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(15, 23, 42, 0.85);
+      color: #e5e7eb;
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    .product-image {
+      border-radius: var(--radius-md);
+      aspect-ratio: 4 / 3;
+      background: linear-gradient(135deg, #e5e7eb, #cbd5f5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: #4b5563;
+      overflow: hidden;
+    }
+
+    .product-content {
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .product-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 4px;
+      min-height: 2.4em;
+      display: flex;
+      align-items: center;
+    }
+
+    .product-desc {
+      font-size: 0.8rem;
+      color: #6b7280;
+      line-height: 1.5;
+      margin-bottom: 4px;
+      min-height: 4.5em;
+    }
+
+    .product-meta {
+      font-size: 0.78rem;
+      color: #4b5563;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 8px 0;
+      min-height: 3em;
+    }
+
+    .product-meta strong {
+      font-weight: 600;
+    }
+
+    .product-price-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 0;
+      border-top: 1px solid rgba(226, 232, 240, 0.6);
+    }
+
+    .product-price {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .product-note {
+      font-size: 0.72rem;
+      color: #9ca3af;
+      text-align: right;
+    }
+
+    .product-actions {
+      display: flex;
+      gap: 8px;
+      padding-top: 4px;
+    }
+
+    .btn-buy {
+      flex: 1;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: none;
+      background: #111827;
+      color: #f9fafb;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-outline {
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      background: #fff;
+      color: #4b5563;
+      font-size: 0.8rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* SECTION 2 – CÁ TÍNH */
+    .section-alt {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 18px 18px 20px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(226, 232, 240, 0.9);
+    }
+
+    .product-grid-alt {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 900px) {
+      .product-grid-alt {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 620px) {
+      .product-grid-alt {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    /* FORM – ƯU ĐÃI */
+    .offer-section {
+      margin-top: 10px;
+      margin-bottom: 32px;
+    }
+
+    .offer-inner {
+      background: linear-gradient(135deg, #0b3f7f, #020617);
+      border-radius: 26px;
+      padding: 20px 18px 18px;
+      color: #e5e7eb;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+      gap: 24px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      box-shadow: 0 25px 60px rgba(15, 23, 42, 0.55);
+    }
+
+    @media (max-width: 900px) {
+      .offer-inner {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .offer-left-title {
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #bfdbfe;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .offer-left h3 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .offer-left p {
+      font-size: 0.9rem;
+      color: #cbd5f5;
+      margin-bottom: 10px;
+      max-width: 420px;
+    }
+
+    .offer-bullets {
+      font-size: 0.8rem;
+      color: #e5e7eb;
+      display: grid;
+      gap: 4px;
+      margin-bottom: 6px;
+    }
+
+    .offer-bullets span::before {
+      content: "• ";
+      color: #facc15;
+    }
+
+    .offer-note {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      margin-top: 4px;
+    }
+
+    .offer-form {
+      display: grid;
+      gap: 8px;
+      font-size: 0.82rem;
+    }
+
+    .field-label {
+      font-size: 0.8rem;
+      color: #cbd5f5;
+      margin-bottom: 2px;
+    }
+
+    .field-input,
+    .field-select {
+      width: 100%;
+      padding: 8px 9px;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.8);
+      color: #e5e7eb;
+      font-size: 0.82rem;
+      outline: none;
+    }
+
+    .field-input::placeholder {
+      color: #6b7280;
+    }
+
+    .field-select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: linear-gradient(45deg, transparent 50%, #e5e7eb 50%), 
+                        linear-gradient(135deg, #e5e7eb 50%, transparent 50%);
+      background-position: right 10px top 50%, right 6px top 50%;
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat;
+    }
+
+    .offer-btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .offer-btn {
+      flex: 1;
+      padding: 9px 14px;
+      border-radius: 999px;
+      border: none;
+      background: #facc15;
+      color: #111827;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .offer-secondary {
+      padding: 9px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      background: transparent;
+      color: #e5e7eb;
+      font-size: 0.78rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid rgba(148, 163, 184, 0.35);
+      background: #020617;
+      color: #ffffff;
+      margin-top: auto;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.78rem;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .footer-links a {
+      color: #9ca3af;
+    }
+
+    .footer-links a:hover {
+      color: #e5e7eb;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- HEADER -->
+    <header>
+      <div class="header-inner">
+        <div class="logo" style="display: flex; align-items: center; gap: 12px;">
+          <img src="https://vinfastauto-tphcm.com.vn/wp-content/uploads/Logo-VinFast.png" alt="VinFast Logo" style="height: 40px;" />
+          <div style="font-weight: 700; font-size: 1.1rem;">Xe Đạp điện trợ lực</div>
+        </div>
+        <nav>
+          <a href="#section-best">Sản phẩm bán chạy</a>
+          <a href="#section-style">Xe cá tính</a>
+          <a href="#section-offer" class="nav-highlight">Ưu đãi & trả góp</a>
+          <a href="/wallet?mode=login" class="nav-cta" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">
+            Đăng nhập
+          </a>
+          <a href="/wallet?mode=register" class="nav-cta" style="background: #f9b000; color: #111827; display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">
+            Đăng ký
+          </a>
+        </nav>
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+      </div>
+    </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-nav-overlay" id="mobileOverlay" onclick="toggleMobileMenu()"></div>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobileNav">
+      <div class="mobile-nav-header">
+        <div style="font-weight: 700; font-size: 1.1rem; color: var(--primary);">Menu</div>
+        <button style="background: none; border: none; font-size: 24px; cursor: pointer; padding: 0;" onclick="toggleMobileMenu()">✕</button>
+      </div>
+      <a href="#section-best" onclick="toggleMobileMenu()">Sản phẩm bán chạy</a>
+      <a href="#section-style" onclick="toggleMobileMenu()">Xe cá tính</a>
+      <a href="#section-offer" onclick="toggleMobileMenu()">Ưu đãi & trả góp</a>
+      <a href="/wallet?mode=login" class="nav-cta">🔐 Đăng nhập</a>
+      <a href="/wallet?mode=register" class="nav-cta">📝 Đăng ký</a>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <div class="hero-tag">
+            <span class="hero-tag-badge">HOT 2025</span>
+            <span>Xe đạp trợ lực ENGWE T14 – Trợ Lực Thông Minh, Vượt Mọi Hành Trình</span>
+          </div>
+          <h1><span>Xe đạp trợ lực ENGWE T14</span> - Trợ Lực Thông Minh, Vượt Mọi Hành Trình</h1>
+          <p class="hero-sub">
+            Tích hợp động cơ 350W mạnh mẽ, pin lithium bền bỉ đến 80km, phanh đĩa an toàn. 
+            Thiết kế thể thao hiện đại với 4 màu sắc năng động. Lựa chọn hoàn hảo cho di chuyển đô thị và phượt địa hình.
+          </p>
+
+          <div class="hero-metrics">
+            <div class="metric">
+              <div class="metric-label">Quãng đường / lần sạc*</div>
+              <div class="metric-value">Lên tới 80km</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Chi phí vận hành</div>
+              <div class="metric-value">Tiết kiệm tối đa</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Bảo hành</div>
+                <div class="metric-value">24 tháng</div>
+            </div>
+          </div>
+
+          <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 20px; border-radius: 12px; margin: 24px 0; border: 2px solid #f59e0b; position: relative; overflow: hidden;">
+            <div style="position: absolute; top: -10px; right: -10px; background: #dc2626; color: white; padding: 8px 40px; transform: rotate(45deg); font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+              ⚡ FLASH SALE
+            </div>
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px; flex-wrap: wrap;">
+              <div style="flex: 1; min-width: 200px;">
+                <div style="font-size: 0.95rem; color: #92400e; margin-bottom: 4px; font-weight: 600;">🔥 Giá khuyến mãi hôm nay</div>
+                <div style="font-size: 1.1rem; color: #dc2626; margin-bottom: 4px; font-weight: 600;">Mua hàng trong khung giờ vàng</div>
+                <div style="font-size: 2.5rem; font-weight: bold; color: #dc2626; line-height: 1.2;">999.000đ</div>
+                <div style="font-size: 1rem; color: #6b7280; text-decoration: line-through;">10.990.000đ</div>
+              </div>
+              <div style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: white; padding: 16px 20px; border-radius: 12px; font-weight: bold; text-align: center; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);">
+                <div style="font-size: 0.9rem; margin-bottom: 4px;">💰 Tiết kiệm</div>
+                <div style="font-size: 1.5rem;">9.991.000đ</div>
+                <div style="font-size: 0.8rem; margin-top: 4px; opacity: 0.9;">Giảm 90%!</div>
+              </div>
+            </div>
+            <div style="font-size: 0.9rem; color: #92400e; background: white; padding: 10px; border-radius: 8px; margin-top: 12px;">
+              ⭐ Bảo hành 24 tháng | 🚚 Giao hàng miễn phí | 💳 Trả góp 0%
+            </div>
+          </div>
+
+          <div class="hero-actions">
+            <button class="btn-primary" onclick="window.open('https://www.facebook.com/messages/t/VinFast.HM01', '_blank')" style="font-size: 1.2rem; padding: 16px 36px; background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); animation: pulse 2s infinite; cursor: pointer;">
+              🛒 Đặt mua ngay - CHỈ 999.000đ
+            </button>
+            <button class="btn-secondary" onclick="window.location.href='tel:0944699299'" style="font-size: 1.1rem;">
+              📞 Gọi tư vấn: 0944.699.299
+            </button>
+          </div>
+          <style>
+            @keyframes pulse {
+              0%, 100% { transform: scale(1); }
+              50% { transform: scale(1.05); }
+            }
+            
+            @keyframes rotate {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+            
+            @keyframes shine {
+              0% { opacity: 0.6; transform: translateX(-100%); }
+              50% { opacity: 1; }
+              100% { opacity: 0.6; transform: translateX(100%); }
+            }
+            
+            @keyframes bounce {
+              0%, 100% { transform: translateY(0); }
+              50% { transform: translateY(-10px); }
+            }
+            
+            .warranty-icon {
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              width: 48px;
+              height: 48px;
+              background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+              border-radius: 12px;
+              font-size: 1.8rem;
+              animation: rotate 3s linear infinite, bounce 2s ease-in-out infinite;
+              box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+              position: relative;
+              overflow: hidden;
+            }
+            
+            .warranty-icon::after {
+              content: '';
+              position: absolute;
+              top: -50%;
+              left: -50%;
+              width: 200%;
+              height: 200%;
+              background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+              animation: shine 2s linear infinite;
+            }
+            
+            .commitment-icon {
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              width: 48px;
+              height: 48px;
+              background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+              border-radius: 12px;
+              font-size: 1.8rem;
+              animation: bounce 2s ease-in-out infinite;
+              box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+            }
+            
+            .box-icon {
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              width: 48px;
+              height: 48px;
+              background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+              border-radius: 12px;
+              font-size: 1.8rem;
+              animation: bounce 2s ease-in-out infinite;
+              animation-delay: 0.3s;
+              box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+            }
+          </style>
+
+          <p class="hero-note">
+            *Quãng đường thực tế có thể thay đổi tùy theo điều kiện đường, tải trọng và chế độ sử dụng.
+          </p>
+        </div>
+
+        <div class="hero-visual">
+          <div class="hero-card">
+            <div class="hero-badge-corner">
+              <span>★</span>
+              <span>Bán chạy 2025</span>
+            </div>
+            <div class="hero-card-header">
+              <div>
+                <div class="hero-card-title">ENGWE T14</div>
+                <div class="hero-card-sub">Trợ Lực Thông Minh, Vượt Mọi Hành Trình</div>
+              </div>
+              <div class="hero-card-logo" style="font-size: 0.75rem; line-height: 1.2;">
+                VinFast<br />Việt Nam
+              </div>
+            </div>
+
+            <div class="hero-bike">
+              <div class="hero-bike-shape"></div>
+              <img src="/images/engwe-t14.jpg" alt="Xe đạp trợ lực ENGWE T14 - Trợ Lực Thông Minh, Vượt Mọi Hành Trình" style="width: 100%; height: 100%; object-fit: contain; position: relative; z-index: 2;" />
+            </div>
+
+            <div class="hero-specs-row">
+              <div>
+                <div class="hero-spec-label">Quãng đường</div>
+                <div class="hero-spec-value">Lên đến 80km</div>
+              </div>
+              <div>
+                <div class="hero-spec-label">Vận tốc</div>
+                <div class="hero-spec-value">Tối đa 30km/h</div>
+              </div>
+              <div>
+                <div class="hero-spec-label">Động cơ</div>
+                <div class="hero-spec-value">350W mạnh mẽ</div>
+              </div>
+            </div>
+
+            <div class="hero-price">
+              <div class="hero-price-main">4 màu sắc: Xám Titan / Trắng Ngọc / Cam Năng Động / Xanh Dương Đại Dương</div>
+              <div class="hero-price-note">
+                Khung xe chắc chắn, phanh đĩa an toàn, pin lithium bền bỉ. Thời gian sạc đầy: 6 giờ.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FILTER BAR -->
+      <div class="filter-bar">
+        <div class="filter-title">ENGWE T14 - XE ĐẠP TRỢ LỰC MINI HOT NHẤT 2024</div>
+        <div class="filter-group">
+          <button class="filter-pill active">Đặc điểm nổi bật</button>
+          <button class="filter-pill">Thông số kỹ thuật</button>
+          <button class="filter-pill">4 phiên bản màu</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- GIỚI THIỆU CHI TIẾT SẢN PHẨM -->
+    <section style="background: #ffffff; padding: 40px 16px; border-bottom: 1px solid #e5e7eb;">
+      <div style="max-width: 1200px; margin: 0 auto;">
+        
+        <!-- Container 2 cột: Ảnh bên trái, Thông tin bên phải -->
+        <div id="productDetailSection" style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 40px;">
+          
+          <!-- CỘT TRÁI: SLIDER ẢNH -->
+          <div>
+            <!-- Ảnh chính với slider -->
+            <div style="position: relative; margin-bottom: 20px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+              <div id="productSlider" style="position: relative; width: 100%; aspect-ratio: 1/1;">
+                <img id="mainImage" src="/images/engwe-t14.jpg" alt="Xe đạp trợ lực ENGWE T14" style="width: 100%; height: 100%; object-fit: cover; transition: opacity 0.5s ease;">
+                
+                <!-- Nút điều hướng -->
+                <button onclick="changeSlide(-1)" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center;">❮</button>
+                <button onclick="changeSlide(1)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center;">❯</button>
+              </div>
+            </div>
+
+            <!-- 4 Icon menu bên dưới ảnh -->
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; text-align: center;">
+              <div onclick="scrollToSection('thong-so-ky-thuat')" style="cursor: pointer; padding: 12px; background: #f3f4f6; border-radius: 8px; transition: all 0.3s ease;" onmouseover="this.style.background='#e5e7eb'" onmouseout="this.style.background='#f3f4f6'">
+                <div style="font-size: 1.5rem; margin-bottom: 4px;">📐</div>
+                <div style="font-size: 0.75rem; color: #374151; font-weight: 500;">Thông số kỹ thuật</div>
+              </div>
+              <div onclick="scrollToSection('san-pham-cung-loai')" style="cursor: pointer; padding: 12px; background: #f3f4f6; border-radius: 8px; transition: all 0.3s ease;" onmouseover="this.style.background='#e5e7eb'" onmouseout="this.style.background='#f3f4f6'">
+                <div style="font-size: 1.5rem; margin-bottom: 4px;">📱</div>
+                <div style="font-size: 0.75rem; color: #374151; font-weight: 500;">Sản phẩm cùng loại</div>
+              </div>
+              <div onclick="scrollToSection('mo-ta-chi-tiet')" style="cursor: pointer; padding: 12px; background: #f3f4f6; border-radius: 8px; transition: all 0.3s ease;" onmouseover="this.style.background='#e5e7eb'" onmouseout="this.style.background='#f3f4f6'">
+                <div style="font-size: 1.5rem; margin-bottom: 4px;">🚗</div>
+                <div style="font-size: 0.75rem; color: #374151; font-weight: 500;">Mô tả chi tiết</div>
+              </div>
+              <div onclick="scrollToSection('binh-luan')" style="cursor: pointer; padding: 12px; background: #f3f4f6; border-radius: 8px; transition: all 0.3s ease;" onmouseover="this.style.background='#e5e7eb'" onmouseout="this.style.background='#f3f4f6'">
+                <div style="font-size: 1.5rem; margin-bottom: 4px;">💬</div>
+                <div style="font-size: 0.75rem; color: #374151; font-weight: 500;">Bình luận sản phẩm</div>
+              </div>
+            </div>
+
+            <!-- Script cho slider -->
+            <script>
+              const images = [
+                '/images/engwe-t14.jpg',
+                '/images/logo-banner-gioi-thieu1.jpg',
+                '/images/logo-banner-gioi-thieu2.jpg',
+                '/images/logo-banner-gioi-thieu3.jpg',
+                '/images/logo-banner-gioi-thieu4.jpg'
+              ];
+              let currentIndex = 0;
+
+              function changeSlide(direction) {
+                currentIndex = (currentIndex + direction + images.length) % images.length;
+                document.getElementById('mainImage').style.opacity = '0';
+                setTimeout(() => {
+                  document.getElementById('mainImage').src = images[currentIndex];
+                  document.getElementById('mainImage').style.opacity = '1';
+                }, 250);
+              }
+
+              // Auto slide
+              setInterval(() => changeSlide(1), 4000);
+
+              // Scroll to section
+              function scrollToSection(sectionId) {
+                const element = document.getElementById(sectionId);
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }
+
+              // Touch support for mobile
+              let touchStartX = 0;
+              let touchEndX = 0;
+              const slider = document.getElementById('productSlider');
+              
+              slider.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+              });
+              
+              slider.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                if (touchStartX - touchEndX > 50) changeSlide(1);
+                if (touchEndX - touchStartX > 50) changeSlide(-1);
+              });
+            </script>
+          </div>
+
+          <!-- CỘT PHẢI: THÔNG TIN SẢN PHẨM -->
+          <div>
+            <!-- Tiêu đề và đánh giá -->
+            <div style="margin-bottom: 20px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px; color: #6b7280; font-size: 0.9rem;">
+                <span>Lượt xem: <strong>16899</strong></span>
+                <span>Tình trạng: <strong style="color: #10b981;">CÒN HÀNG</strong></span>
+              </div>
+              <h2 style="font-size: 1.75rem; font-weight: bold; color: #111827; margin-bottom: 12px; line-height: 1.3;">
+                Xe đạp trợ lực ENGWE T14 - Trợ Lực Thông Minh, Vượt Mọi Hành Trình
+              </h2>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="color: #f59e0b; font-size: 1.1rem;">⭐⭐⭐⭐⭐</span>
+                <span style="color: #3b82f6; text-decoration: underline; cursor: pointer;">(100+ đánh giá)</span>
+              </div>
+            </div>
+
+            <!-- Giá -->
+            <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 2px solid #f59e0b; position: relative;">
+              <div style="position: absolute; top: -12px; left: 16px; background: #dc2626; color: white; padding: 4px 16px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">
+                🔥 HOT
+              </div>
+              <div style="margin-top: 8px;">
+                <div style="font-size: 2rem; font-weight: bold; color: #dc2626; margin-bottom: 4px;">
+                  999.000đ
+                </div>
+                <div style="text-decoration: line-through; color: #9ca3af; font-size: 1.1rem;">
+                  10.990.000đ
+                </div>
+              </div>
+            </div>
+
+            <!-- Chế độ bảo hành -->
+            <div style="background: #f9fafb; padding: 16px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #3b82f6;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <span style="font-weight: bold; color: #1e40af;">Chế độ bảo hành:</span>
+                <select style="padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: white;">
+                  <option>Bảo hành 24 tháng</option>
+                </select>
+                <span style="color: #dc2626; cursor: pointer;">🛈</span>
+              </div>
+            </div>
+
+            <!-- Nút mua hàng -->
+            <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+              <button onclick="window.open('https://www.facebook.com/messages/t/VinFast.HM01', '_blank')" style="flex: 1; background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: white; padding: 16px; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);">
+                MUA NGAY
+              </button>
+              <button onclick="window.open('https://www.facebook.com/messages/t/VinFast.HM01', '_blank')" style="flex: 1; background: white; color: #dc2626; padding: 16px; border: 2px solid #dc2626; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer;">
+                MUA TRẢ GÓP
+              </button>
+            </div>
+
+            <!-- Form liên hệ -->
+            <div style="background: #eff6ff; padding: 16px; border-radius: 8px; margin-bottom: 20px;">
+              <p style="color: #1e40af; margin-bottom: 12px; font-weight: 500;">
+                <strong>Để lại thông tin:</strong> Vinfast sẽ gửi tư vấn cho bạn ngay !!!
+              </p>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" placeholder="Họ và Tên" style="flex: 1; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px;">
+                <input type="text" placeholder="Nhập số điện thoại" style="flex: 1; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px;">
+                <button style="padding: 10px 20px; background: #dc2626; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Gửi cho tôi</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PHẦN ĐẶC ĐIỂM NỔI BẬT (Dưới 2 cột) -->
+        <div id="mo-ta-chi-tiet" style="background: white; padding: 24px; border-radius: 12px; border: 1px solid #e5e7eb; margin-bottom: 32px;">
+          <h3 style="font-size: 1.5rem; font-weight: bold; color: #111827; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #3b82f6;">
+            Đặc điểm nổi bật
+          </h3>
+          <div style="color: #374151; line-height: 1.8; font-size: 1rem;">
+            <p style="margin-bottom: 12px;">Dòng xe Engwe T14 là dòng xe minibike được ưa chuộng trên thị trường. Với mức giá hợp lý T14 đang được lựa chọn khá nhiều:</p>
+            <ul style="margin-left: 20px; margin-bottom: 12px;">
+              <li style="margin-bottom: 8px;">+ Động cơ không chổi than 350W</li>
+              <li style="margin-bottom: 8px;">+ Pin Lithium cao cấp 48V 10Ah</li>
+              <li style="margin-bottom: 8px;">+ Quãng đường: 35KM (chế độ đạp điện) / 80KM (chế độ đạp trợ lực)</li>
+              <li style="margin-bottom: 8px;">+ Thích hợp cho: Học sinh, ông bà, người yêu thích minibike</li>
+              <li style="margin-bottom: 8px;">+ Khu vực chuyên dùng: thành thị</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- PHẦN THÔNG SỐ KỸ THUẬT -->
+        <div id="thong-so-ky-thuat" style="margin-bottom: 32px;">
+          <h3 style="font-size: 1.5rem; font-weight: bold; color: #111827; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #3b82f6;">
+            ⚙️ Thông Số Kỹ Thuật
+          </h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+            <img src="/images/logo-thong-soky-thuan1.jpg" alt="Thông số kỹ thuật 1" style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <img src="/images/logo-thong-soky-thuan2.jpg" alt="Thông số kỹ thuật 2" style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <img src="/images/logo-thong-soky-thuan3.jpg" alt="Thông số kỹ thuật 3" style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <img src="/images/logo-thong-soky-thuan4.jpg" alt="Thông số kỹ thuật 4" style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          </div>
+        </div>
+
+        <!-- Kèm Theo Hộp -->
+        <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 24px; border-radius: 16px; border: 2px solid #10b981;">
+          <h3 style="font-size: 1.5rem; font-weight: bold; color: #065f46; margin-bottom: 20px;">
+            📦 KÈM THEO HỘP
+          </h3>
+          <div style="color: #064e3b; line-height: 1.8; font-size: 1rem;">
+            <p style="margin-bottom: 12px;"><strong>Gồm có:</strong></p>
+            <ul style="margin-left: 20px;">
+              <li>Xe đạp</li>
+              <li>Phiếu bảo hành</li>
+              <li>Sạc pin</li>
+              <li>Dè chắn bùn</li>
+              <li>Phụ kiện khách mua kèm nếu có</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 1: GIỚI THIỆU T14 -->
+    <main>
+      <section id="section-best" class="section">
+        <div class="section-header">
+          <div>
+            <div class="section-title">XE ĐẠP TRỢ LỰC T14ENGWE - SẢN PHẨM CHỦ LỰC</div>
+            <div class="section-sub">
+              Một trong những chiếc xe đạp trợ lực mini hot trong năm 2024 không thể không nhắc đến là Engwe T14 - mẫu trợ lực mini đến từ thương hiệu Engwe của Anh. Mặc dù trên thị trường có nhiều mẫu xe trợ lực mini nhưng đây vẫn là mẫu xe được nhiều người tin tưởng và lựa chọn cho cả gia đình di chuyển.
+            </div>
+          </div>
+        </div>
+
+        <div class="product-grid">
+          <!-- Product 1 -->
+          <article class="product-card">
+            <div class="product-badge">HOT 2024</div>
+            <div class="product-image">
+              <img src="/logo1.jpg" alt="Xe đạp trợ lực Engwe T14 - Thiết kế nhỏ gọn" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+            </div>
+            <div class="product-content">
+              <h3 class="product-name">1. Thiết kế nhỏ gọn đầy cá tính</h3>
+              <p class="product-desc">
+                Với dáng xe nhỏ gọn không quá hầm hố và chiều cao đáp ứng chỉ từ 1m4 trở lên, chiếc xe này phù hợp với hầu hết đối tượng sử dụng. Xe có đến 4 phiên bản màu sắc để người đi lựa chọn phù hợp với sở thích, cá tính của bản thân.
+              </p>
+              <div class="product-meta">
+                <span><strong>Chiều cao phù hợp:</strong> Từ 1m4 trở lên</span>
+                <span><strong>Màu sắc:</strong> 4 phiên bản đa dạng</span>
+              </div>
+              <div class="product-price-row">
+                <div class="product-price">Phù hợp mọi lứa tuổi</div>
+                <div class="product-note">Học sinh, ông bà, bố mẹ đều có thể sử dụng</div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Product 2 -->
+          <article class="product-card">
+            <div class="product-badge">ĐỘNG CÔ MẠNH</div>
+            <div class="product-tag">Không chổi than</div>
+            <div class="product-image">
+              <img src="/logo2.jpg" alt="Xe đạp trợ lực Engwe T14 - Động cơ mạnh mẽ" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+            </div>
+            <div class="product-content">
+              <h3 class="product-name">2. Động cơ không chổi than 350W</h3>
+              <p class="product-desc">
+                Thiết kế động cơ không chổi than giúp gia tăng tuổi thọ, hoạt động được êm ái hơn. Công suất 250W có thể peak lên 350W với tốc độ tối đa 30km/h mặc dù đây không phải hiệu suất quá lớn nhưng vẫn đem lại những trải nghiệm tốt cho người dùng.
+              </p>
+              <div class="product-meta">
+                <span><strong>Công suất:</strong> 250W (peak 350W)</span>
+                <span><strong>Tốc độ tối đa:</strong> 30km/h</span>
+              </div>
+              <div class="product-price-row">
+                <div class="product-price">Êm ái & bền bỉ</div>
+                <div class="product-note">Tuổi thọ cao nhờ công nghệ không chổi than</div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Product 3 -->
+          <article class="product-card">
+            <div class="product-badge">PIN LITHIUM</div>
+            <div class="product-image">
+              <img src="/logo3.jpg" alt="Xe đạp trợ lực Engwe T14 - Pin bền bỉ" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+            </div>
+            <div class="product-content">
+              <h3 class="product-name">3. Dung lượng pin 48V 10Ah</h3>
+              <p class="product-desc">
+                Engwe T14 trang bị quả pin lithium 48V 10Ah cho phép bạn có thể di chuyển quãng đường 30km thuần điện và 60km đạp trợ lực nên rất thích hợp để các bạn học sinh cấp 1,2 mang đi đi học hay ông bà, bố mẹ đi chợ, đi loanh quanh gần nhà. Với thiết kế pin tháo rời nên rất tiện và thích hợp cho những ai ở chung cư.
+              </p>
+              <div class="product-meta">
+                <span><strong>Thuần điện:</strong> 30km</span>
+                <span><strong>Đạp trợ lực:</strong> 60km</span>
+              </div>
+              <div class="product-price-row">
+                <div class="product-price">Pin tháo rời tiện lợi</div>
+                <div class="product-note">Phù hợp chung cư, dễ sạc ở nhà</div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Product 4 -->
+          <article class="product-card">
+            <div class="product-badge">GẤP GỌN</div>
+            <div class="product-tag">Di động</div>
+            <div class="product-image">
+              <img src="/logo4.jpg" alt="Xe đạp trợ lực Engwe T14 - Gấp gọn tiện lợi" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+            </div>
+            <div class="product-content">
+              <h3 class="product-name">4. Gấp gọn bỏ cốp xe</h3>
+              <p class="product-desc">
+                Với thiết kế gấp gọn chỉ cần mất vài giây thao tác bạn đã có thể cho vào cốp mang theo dễ dàng mà không chiếm nhiều không gian. Bạn có thể mang theo chiếc xe khi đi chơi, đi du lịch cũng rất thú vị.
+              </p>
+              <div class="product-meta">
+                <span><strong>Thao tác:</strong> Gấp gọn trong vài giây</span>
+                <span><strong>Tiện ích:</strong> Bỏ cốp xe, mang đi du lịch</span>
+              </div>
+              <div class="product-price-row">
+                <div class="product-price">Tiện lợi tối đa</div>
+                <div class="product-note">Không chiếm nhiều không gian</div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- SECTION 2: SẢN PHẨM KHÁC -->
+      <section id="section-style" class="section">
+        <div class="section-alt">
+          <div class="section-header">
+            <div>
+              <div class="section-title">CÁC SẢN PHẨM ENGWE KHÁC</div>
+              <div class="section-sub">
+                Khám phá thêm các dòng xe đạp điện trợ lực cao cấp khác từ ENGWE với nhiều tính năng vượt trội.
+              </div>
+            </div>
+          </div>
+
+          <div class="product-grid-alt">
+            <!-- Sản phẩm 1: ENGWE X26 -->
+            <article class="product-card">
+              <div class="product-badge">SIÊU XE ĐỊA HÌNH</div>
+              <div class="product-tag">Bánh béo 26 inch</div>
+              <div class="product-image">
+                <img src="/logo5.jpg" alt="Xe đạp điện trợ lực ENGWE X26" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+              </div>
+              <div class="product-content">
+                <h3 class="product-name">Xe Đạp Điện Trợ Lực ENGWE X26</h3>
+                <p class="product-desc">
+                  ENGWE X26 là dòng xe đạp điện địa hình cao cấp với bánh xe béo 26 inch, động cơ 1000W mạnh mẽ. Thiết kế khung thép chắc chắn, hệ thống giảm xóc kép trước/sau, phù hợp chinh phục mọi địa hình từ đường phố đến núi rừng.
+                </p>
+                <div class="product-meta">
+                  <span><strong>Động cơ:</strong> 1000W brushless</span>
+                  <span><strong>Pin:</strong> 48V 13Ah (quãng đường 70-100km)</span>
+                  <span><strong>Bánh xe:</strong> 26 inch Fat Tire</span>
+                </div>
+                <div class="product-price-row">
+                  <div class="product-price">Chinh phục địa hình</div>
+                  <div class="product-note">Mạnh mẽ & bền bỉ</div>
+                </div>
+                <div id="detail-x26" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb; display: none;">
+                  <h4 style="font-size: 0.95rem; font-weight: bold; color: #111827; margin-bottom: 12px;">✨ Điểm nổi bật:</h4>
+                  <ul style="font-size: 0.85rem; color: #4b5563; line-height: 1.8; margin-left: 20px;">
+                    <li><strong>Động cơ 1000W:</strong> Sức mạnh vượt trội, leo dốc dễ dàng, tốc độ tối đa 45km/h</li>
+                    <li><strong>Pin 48V 13Ah:</strong> Quãng đường 70-100km, sạc đầy trong 6-8 giờ</li>
+                    <li><strong>Bánh xe béo 26":</strong> Bám đường cực tốt, vượt địa hình đá, cát, bùn</li>
+                    <li><strong>Giảm xóc kép:</strong> Hệ thống giảm xóc trước/sau, êm ái trên mọi địa hình</li>
+                    <li><strong>Phanh đĩa thủy lực:</strong> An toàn, linh hoạt, độ bền cao</li>
+                    <li><strong>Khung nhôm hợp kim:</strong> Chịu tải 150kg, bền bỉ theo thời gian</li>
+                  </ul>
+                </div>
+                <button onclick="toggleDetail('detail-x26', this)" style="margin-top: 12px; width: 100%; padding: 10px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: background 0.3s;" onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='#3b82f6'">
+                  Xem chi tiết ▼
+                </button>
+              </div>
+            </article>
+
+            <!-- Sản phẩm 2: ENGWE EP-2 Pro -->
+            <article class="product-card">
+              <div class="product-badge">CAO CẤP</div>
+              <div class="product-tag">Màn hình LCD</div>
+              <div class="product-image">
+                <img src="/logo6.jpg" alt="Xe đạp điện trợ lực ENGWE EP-2 Pro" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+              </div>
+              <div class="product-content">
+                <h3 class="product-name">Xe đạp điện trợ lực ENGWE EP-2 Pro</h3>
+                <p class="product-desc">
+                  ENGWE EP-2 Pro sở hữu thiết kế hiện đại với màn hình LCD thông minh, động cơ 250W êm ái. Pin lithium 36V 10.4Ah tháo rời tiện lợi, hệ thống phanh đĩa an toàn. Phù hợp cho di chuyển đô thị, đi làm, đi học hàng ngày.
+                </p>
+                <div class="product-meta">
+                  <span><strong>Động cơ:</strong> 250W brushless</span>
+                  <span><strong>Pin:</strong> 36V 10.4Ah (quãng đường 40-60km)</span>
+                  <span><strong>Màn hình:</strong> LCD thông minh</span>
+                </div>
+                <div class="product-price-row">
+                  <div class="product-price">Thành thị tiện lợi</div>
+                  <div class="product-note">Thông minh & hiện đại</div>
+                </div>
+                <div id="detail-ep2" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb; display: none;">
+                  <h4 style="font-size: 0.95rem; font-weight: bold; color: #111827; margin-bottom: 12px;">✨ Điểm nổi bật:</h4>
+                  <ul style="font-size: 0.85rem; color: #4b5563; line-height: 1.8; margin-left: 20px;">
+                    <li><strong>Màn hình LCD:</strong> Hiển thị tốc độ, pin, chế độ lái, đèn nền ban đêm</li>
+                    <li><strong>Động cơ 250W:</strong> Êm ái, tiết kiệm năng lượng, phù hợp di chuyển đô thị</li>
+                    <li><strong>Pin tháo rời:</strong> 36V 10.4Ah, dễ dàng sạc tại nhà hoặc văn phòng</li>
+                    <li><strong>Quãng đường:</strong> 40-60km tùy địa hình, đủ dùng cả tuần</li>
+                    <li><strong>Thiết kế nhỏ gọn:</strong> Phù hợp cả nam và nữ, dễ điều khiển</li>
+                    <li><strong>Phanh đĩa cơ:</strong> An toàn, bảo dưỡng đơn giản</li>
+                  </ul>
+                </div>
+                <button onclick="toggleDetail('detail-ep2', this)" style="margin-top: 12px; width: 100%; padding: 10px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: background 0.3s;" onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='#3b82f6'">
+                  Xem chi tiết ▼
+                </button>
+              </div>
+            </article>
+
+            <!-- Sản phẩm 3: ENGWE C20 PRO -->
+            <article class="product-card">
+              <div class="product-badge">GẤP GỌN PRO</div>
+              <div class="product-tag">Bánh 20 inch</div>
+              <div class="product-image">
+                <img src="/logo7.jpg" alt="Xe đạp điện trợ lực ENGWE C20 PRO" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+              </div>
+              <div class="product-content">
+                <h3 class="product-name">Xe Đạp Điện Trợ Lực ENGWE C20 PRO</h3>
+                <p class="product-desc">
+                  ENGWE C20 PRO là dòng xe gấp gọn cao cấp với bánh 20 inch linh hoạt, động cơ 250W mạnh mẽ. Thiết kế gấp gọn nhanh chóng chỉ trong vài giây, pin 48V 13Ah cho quãng đường xa. Hoàn hảo cho người đi xe buýt, tàu điện ngầm kết hợp.
+                </p>
+                <div class="product-meta">
+                  <span><strong>Động cơ:</strong> 250W (peak 500W)</span>
+                  <span><strong>Pin:</strong> 48V 13Ah (quãng đường 70-90km)</span>
+                  <span><strong>Bánh xe:</strong> 20 inch gấp gọn</span>
+                </div>
+                <div class="product-price-row">
+                  <div class="product-price">Gấp gọn cao cấp</div>
+                  <div class="product-note">Di động & linh hoạt</div>
+                </div>
+                <div id="detail-c20" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb; display: none;">
+                  <h4 style="font-size: 0.95rem; font-weight: bold; color: #111827; margin-bottom: 12px;">✨ Điểm nổi bật:</h4>
+                  <ul style="font-size: 0.85rem; color: #4b5563; line-height: 1.8; margin-left: 20px;">
+                    <li><strong>Gấp gọn nhanh:</strong> Chỉ mất 10 giây, dễ dàng bỏ cốp xe ô tô</li>
+                    <li><strong>Động cơ linh hoạt:</strong> 250W tiêu chuẩn, có thể đạt 500W khi cần</li>
+                    <li><strong>Pin 48V 13Ah:</strong> Quãng đường 70-90km, pin tháo rời tiện lợi</li>
+                    <li><strong>Bánh 20 inch:</strong> Linh hoạt, dễ điều khiển trong thành phố đông đúc</li>
+                    <li><strong>Trọng lượng nhẹ:</strong> Chỉ 25kg, dễ mang lên xe bus, tàu điện</li>
+                    <li><strong>Đa năng:</strong> Kết hợp hoàn hảo với phương tiện công cộng</li>
+                  </ul>
+                </div>
+                <button onclick="toggleDetail('detail-c20', this)" style="margin-top: 12px; width: 100%; padding: 10px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: background 0.3s;" onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='#3b82f6'">
+                  Xem chi tiết ▼
+                </button>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- THÔNG TIN BẢO HÀNH & CAM KẾT -->
+      <section class="info_general" style="background: #ffffff; padding: 32px 16px; border-top: 2px solid #e5e7eb;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            
+            <!-- CHẾ ĐỘ BẢO HÀNH -->
+            <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); padding: 20px; border-radius: 12px; border: 2px solid #3b82f6; box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);">
+              <h3 style="font-size: 1.25rem; font-weight: bold; color: #1e40af; margin-bottom: 16px; display: flex; align-items: center; gap: 12px;">
+                <span class="warranty-icon">🛡️</span> CHẾ ĐỘ BẢO HÀNH
+              </h3>
+              <div style="color: #1e3a8a; line-height: 1.6; font-size: 0.95rem;">
+                <p style="margin-bottom: 10px;"><strong style="color: #dc2626;">⏰ Thời gian:</strong> Bảo hành chính hãng <strong>24 tháng</strong></p>
+                <p style="margin-bottom: 8px;"><strong>✅ Bảo hành:</strong></p>
+                <ul style="margin-left: 18px; margin-bottom: 10px; font-size: 0.9rem;">
+                  <li>Lỗi hư hỏng do lỗi kỹ thuật</li>
+                  <li>Lỗi của nhà sản xuất</li>
+                  <li>Khung sườn, mô tơ, sạc điện, linh kiện</li>
+                </ul>
+                <p style="margin-bottom: 8px;"><strong>❌ Không bảo hành:</strong></p>
+                <ul style="margin-left: 18px; font-size: 0.9rem;">
+                  <li>Quá thời gian bảo hành</li>
+                  <li>Tác động ngoại lực, biến dạng, nứt vỡ</li>
+                  <li>Hoả hoạn, thiên tai, nước vô, rỉ sét</li>
+                  <li>Dấu hiệu bị phá, đục khoét</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- VINFAST CAM KẾT -->
+            <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 20px; border-radius: 12px; border: 2px solid #f59e0b; box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2);">
+              <h3 style="font-size: 1.25rem; font-weight: bold; color: #92400e; margin-bottom: 16px; display: flex; align-items: center; gap: 12px;">
+                <span class="commitment-icon"><img src="https://shop.vinfastauto.com/on/demandware.static/Sites-app_vinfast_vn-Site/-/default/dw82658bf3/images/vfast/logo.svg" alt="VinFast" style="width: 48px; height: 48px; object-fit: contain;" /></span> VINFAST CAM KẾT
+              </h3>
+              <div style="color: #78350f; line-height: 1.6;">
+                <p style="margin-bottom: 10px; display: flex; align-items: flex-start; gap: 8px; font-size: 0.95rem;">
+                  <span style="font-size: 1.3rem; flex-shrink: 0;">✅</span> <strong>Hàng chính hãng 100%</strong>
+                </p>
+                <p style="margin-bottom: 10px; display: flex; align-items: flex-start; gap: 8px; font-size: 0.95rem;">
+                  <span style="font-size: 1.3rem; flex-shrink: 0;">🆕</span> <strong>Mới 100%</strong>
+                </p>
+                <p style="margin-bottom: 10px; display: flex; align-items: flex-start; gap: 8px; font-size: 0.95rem;">
+                  <span style="font-size: 1.3rem; flex-shrink: 0;">📦</span> <strong>Kiểm tra hàng trước thanh toán</strong>
+                </p>
+                <p style="margin-bottom: 10px; display: flex; align-items: flex-start; gap: 8px; font-size: 0.95rem;">
+                  <span style="font-size: 1.3rem; flex-shrink: 0;">🚚</span> <strong>Bao mọi rủi ro vận chuyển</strong>
+                </p>
+                <p style="margin-bottom: 0; display: flex; align-items: flex-start; gap: 8px; font-size: 0.95rem;">
+                  <span style="font-size: 1.3rem; flex-shrink: 0;">😊</span> <strong>Cam kết hài lòng khách hàng</strong>
+                </p>
+              </div>
+            </div>
+
+            <!-- KÈM THEO HỘP & LIÊN HỆ -->
+            <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 20px; border-radius: 12px; border: 2px solid #10b981; box-shadow: 0 4px 16px rgba(16, 185, 129, 0.2);">
+              <h3 style="font-size: 1.25rem; font-weight: bold; color: #065f46; margin-bottom: 16px; display: flex; align-items: center; gap: 12px;">
+                <span class="box-icon">📦</span> KÈM THEO HỘP
+              </h3>
+              <div style="color: #064e3b; line-height: 1.6;">
+                <p style="margin-bottom: 10px; font-weight: 600; font-size: 0.95rem;">Gồm có:</p>
+                <ul style="margin-left: 18px; margin-bottom: 16px; font-size: 0.9rem;">
+                  <li>🚲 Xe đạp điện trợ lực</li>
+                  <li>📄 Phiếu bảo hành chính hãng</li>
+                  <li>🔌 Sạc pin</li>
+                  <li>🛡️ Dè chắn bùn</li>
+                  <li>🎁 Phụ kiện mua kèm (nếu có)</li>
+                </ul>
+                <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #10b981; margin-top: 16px;">
+                  <p style="margin-bottom: 10px; font-size: 1rem;"><strong style="color: #dc2626;">📞 Liên hệ đặt hàng:</strong></p>
+                  <p style="margin-bottom: 8px; font-size: 1rem;">
+                    <strong>Hotline 1:</strong> 
+                    <a href="tel:0944699299" style="color: #dc2626; font-weight: bold; text-decoration: none; font-size: 1.1rem; display: inline-block; margin-left: 4px;">0944.699.299</a>
+                  </p>
+                  <p style="margin-bottom: 12px; font-size: 1rem;">
+                    <strong>Hotline 2:</strong> 
+                    <a href="tel:0822699299" style="color: #dc2626; font-weight: bold; text-decoration: none; font-size: 1.1rem; display: inline-block; margin-left: 4px;">0822.699.299</a>
+                  </p>
+                  <p style="margin: 0; padding-top: 12px; border-top: 1px solid #d1fae5; font-size: 0.95rem; color: #065f46;">
+                    ⏰ <strong>8:30 AM - 21:00 PM</strong> Hàng Ngày
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: LIÊN HỆ MUA XE -->
+      <section id="section-offer" class="section offer-section">
+        <div class="offer-inner">
+          <div class="offer-left">
+            <div class="offer-left-title">LIÊN HỆ MUA HÀNG</div>
+            <h3>Xe đạp trợ lực ENGWE T14 - Trợ Lực Thông Minh, Vượt Mọi Hành Trình - FLASH SALE 🔥</h3>
+            <p>
+              <strong style="color: #e53e3e; font-size: 1.6rem; display: block; margin-bottom: 8px;">🔥 Giá chỉ từ: 999.000đ</strong>
+              <span style="text-decoration: line-through; color: #9ca3af; font-size: 1.1rem;">10.990.000đ</span>
+              <span style="background: #dc2626; color: white; padding: 4px 12px; border-radius: 6px; margin-left: 8px; font-weight: bold;">Tiết kiệm 9.991.000đ</span><br/>
+              <span style="color: #dc2626; font-weight: bold; font-size: 1.05rem;">⚡ Mua hàng trong khung giờ vàng</span><br/>
+              Bảo hành chính hãng 24 tháng - Giao hàng toàn quốc - Hỗ trợ trả góp 0%
+            </p>
+            <div class="offer-bullets">
+              <span>📞 <strong>Hotline 1:</strong> <a href="tel:0944699299" style="color: #dc2626; font-weight: bold;">0944.699.299</a></span>
+              <span>📞 <strong>Hotline 2:</strong> <a href="tel:0822699299" style="color: #dc2626; font-weight: bold;">0822.699.299</a></span>
+              <span>⏰ <strong>Giờ làm việc:</strong> 8:30 AM - 21:00 PM Hàng Ngày</span>
+              <span>🚚 <strong>Giao hàng:</strong> Ship COD toàn quốc - Hỗ trợ thanh toán online</span>
+              <span>💳 <strong>Trả góp:</strong> Lãi suất 0% qua thẻ tín dụng</span>
+              <span>🛠️ <strong>Bảo hành:</strong> Chính hãng 15 tháng - Hỗ trợ trọn đời</span>
+            </div>
+            <p class="offer-note" style="background: #fef3c7; padding: 12px; border-radius: 8px; border-left: 4px solid #f59e0b;">
+              <strong>⭐ Uy tín là vàng!</strong> Cam kết sản phẩm chính hãng 100%. Nhân viên tư vấn nhiệt tình. Giao hàng và lắp đặt trong 30 phút tại nội thành Hà Nội.
+            </p>
+          </div>
+
+          <form class="offer-form">
+            <div>
+              <label class="field-label">Họ và tên</label>
+              <input class="field-input" type="text" placeholder="Nhập họ tên của bạn" required />
+            </div>
+
+            <div>
+              <label class="field-label">Số điện thoại</label>
+              <input class="field-input" type="tel" placeholder="VD: 09xx xxx xxx" required />
+            </div>
+
+            <div>
+              <label class="field-label">Email</label>
+              <input class="field-input" type="email" placeholder="Nhập email (nếu có)" />
+            </div>
+
+            <div>
+              <label class="field-label">Tỉnh/Thành phố</label>
+              <select class="field-select">
+                <option value="">Chọn tỉnh/thành</option>
+                <option>Hà Nội</option>
+                <option>TP. Hồ Chí Minh</option>
+                <option>Đà Nẵng</option>
+                <option>Hải Phòng</option>
+                <option>Cần Thơ</option>
+                <!-- Anh thêm danh sách đầy đủ theo nhu cầu -->
+              </select>
+            </div>
+
+            <div>
+              <label class="field-label">Nhu cầu chính</label>
+              <select class="field-select">
+                <option>Đi làm</option>
+                <option>Đi học</option>
+                <option>Chạy dịch vụ / giao hàng</option>
+                <option>Di chuyển gia đình</option>
+                <option>Khác</option>
+              </select>
+            </div>
+
+            <div class="offer-btn-row">
+              <button type="submit" class="offer-btn">Gửi thông tin tư vấn</button>
+              <button type="button" class="offer-secondary">
+                Gọi hotline
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- LỢI ÍCH MUA HÀNG -->
+      <section style="background: #f9fafb; padding: 60px 20px; border-top: 1px solid #e5e7eb;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+          <h2 style="text-align: center; font-size: 2rem; margin-bottom: 48px; color: #111827;">
+            Lợi ích chỉ có ở <span style="color: #dc2626; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 700;">vinfastbicycle.com</span>
+          </h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 32px;">
+            <div style="text-align: center; padding: 24px;">
+              <div style="font-size: 3rem; margin-bottom: 16px;">🏆</div>
+              <h3 style="font-size: 1.2rem; font-weight: bold; margin-bottom: 8px; color: #111827;">CAM KẾT</h3>
+              <p style="color: #6b7280;">Uy tín là vàng</p>
+            </div>
+            <div style="text-align: center; padding: 24px;">
+              <div style="font-size: 3rem; margin-bottom: 16px;">🚚</div>
+              <h3 style="font-size: 1.2rem; font-weight: bold; margin-bottom: 8px; color: #111827;">VẬN CHUYỂN HOẢ TỐC</h3>
+              <p style="color: #6b7280;">Ship COD toàn quốc</p>
+            </div>
+            <div style="text-align: center; padding: 24px;">
+              <div style="font-size: 3rem; margin-bottom: 16px;">💳</div>
+              <h3 style="font-size: 1.2rem; font-weight: bold; margin-bottom: 8px; color: #111827;">TRẢ GÓP LÃI SUẤT 0%</h3>
+              <p style="color: #6b7280;">Thanh toán Online dễ dàng</p>
+            </div>
+            <div style="text-align: center; padding: 24px;">
+              <div style="font-size: 3rem; margin-bottom: 16px;">🛠️</div>
+              <h3 style="font-size: 1.2rem; font-weight: bold; margin-bottom: 8px; color: #111827;">HỖ TRỢ TRỌN ĐỜI</h3>
+              <p style="color: #6b7280;">Tư vấn miễn phí</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ĐÁNH GIÁ KHÁCH HÀNG -->
+      <section style="background: white; padding: 60px 20px;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+          <h2 style="text-align: center; font-size: 2rem; margin-bottom: 48px; color: #111827;">
+            Khách hàng nói gì về chúng tôi
+          </h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+            <div style="background: #f9fafb; padding: 24px; border-radius: 12px; border-left: 4px solid #3b82f6;">
+              <p style="color: #374151; margin-bottom: 16px; font-style: italic;">
+                "Mình quyết định lựa chọn xe đạp điện Engwe C20 Pro để làm phương tiện đi làm ở nội thành Hà Nội khá đúng đắn, không còn lo tắc đường và cũng không lo ngốn tiền xăng. Đi đâu ai cũng hỏi xe gì đẹp thế?"
+              </p>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 48px; height: 48px; background: #dbeafe; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #1e40af;">AH</div>
+                <div>
+                  <div style="font-weight: bold; color: #111827;">Anh Hoàng</div>
+                  <div style="font-size: 0.875rem; color: #6b7280;">Hà Nội</div>
+                </div>
+              </div>
+            </div>
+            <div style="background: #f9fafb; padding: 24px; border-radius: 12px; border-left: 4px solid #10b981;">
+              <p style="color: #374151; margin-bottom: 16px; font-style: italic;">
+                "Anh Tú Cao là dân IT và đã lựa chọn Xe đạp điện trợ lực Zhengbu M10 làm phương tiện đi Cafe mỗi cuối tuần. Lại hợp lí quá"
+              </p>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 48px; height: 48px; background: #d1fae5; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #065f46;">TC</div>
+                <div>
+                  <div style="font-weight: bold; color: #111827;">Anh Tú Cao</div>
+                  <div style="font-size: 0.875rem; color: #6b7280;">Hà Nội</div>
+                </div>
+              </div>
+            </div>
+            <div style="background: #f9fafb; padding: 24px; border-radius: 12px; border-left: 4px solid #f59e0b;">
+              <p style="color: #374151; margin-bottom: 16px; font-style: italic;">
+                "Nhân viên tư vấn nhiệt tình. Mình có đặt mua ở đây chiếc xe Engwe X26 trong 30 phút đã giao hàng và lắp đặt đầy đủ. Địa chỉ uy tín để anh em lựa chọn mua xe."
+              </p>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 48px; height: 48px; background: #fef3c7; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #92400e;">AH</div>
+                <div>
+                  <div style="font-weight: bold; color: #111827;">Anh Hiệp</div>
+                  <div style="font-size: 0.875rem; color: #6b7280;">TP.Hà Nội</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-inner" style="flex-direction: column; gap: 24px;">
+        <!-- Company Info -->
+        <div style="display: flex; flex-direction: column; gap: 12px; align-items: center; text-align: center;">
+          <div style="font-weight: 600; font-size: 15px; color: #ffffff;">
+            Công ty TNHH Kinh doanh Thương mại và Dịch vụ VinFast
+          </div>
+          <div style="font-size: 13px; color: #ffffff; line-height: 1.6;">
+            <strong style="color: #ffffff;">MST/MSDN:</strong> 0108926276 do Sở KHĐT TP Hà Nội cấp lần đầu ngày 01/10/2019<br>
+            và các lần thay đổi tiếp theo.
+          </div>
+          <div style="font-size: 13px; color: #ffffff; line-height: 1.6;">
+            <strong style="color: #ffffff;">Địa chỉ trụ sở chính:</strong> Số 7, Đường Bằng Lăng 1, Khu đô thị Vinhomes Riverside,<br>
+            Phường Phúc Lợi, Thành phố Hà Nội, Việt Nam.
+          </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; align-items: center;">
+          <a href="#" style="color: #e5e7eb; text-decoration: none; font-size: 14px; transition: color 0.2s;" onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='#e5e7eb'">Hệ sinh thái</a>
+          <a href="#" style="color: #e5e7eb; text-decoration: none; font-size: 14px; transition: color 0.2s;" onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='#e5e7eb'">Vinhomes</a>
+          <a href="#" style="color: #e5e7eb; text-decoration: none; font-size: 14px; transition: color 0.2s;" onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='#e5e7eb'">Vinmec</a>
+          <a href="#" style="color: #e5e7eb; text-decoration: none; font-size: 14px; transition: color 0.2s;" onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='#e5e7eb'">Vinpearl</a>
+        </div>
+
+        <!-- BCT Logo & Contact -->
+        <div style="display: flex; gap: 32px; justify-content: center; align-items: center; flex-wrap: wrap;">
+          <!-- BCT Logo -->
+          <a href="http://online.gov.vn/Home/WebDetails/98656" target="_blank" rel="noopener noreferrer">
+            <img src="https://vinfastauto.com/themes/porto/img/bct.svg" alt="Bộ Công Thương" style="height: 60px; width: auto;" />
+          </a>
+
+          <!-- Contact Info -->
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 13px; color: #ffffff;">
+              <strong style="color: #ffffff;">DỊCH VỤ KHÁCH HÀNG:</strong><br>
+              📞 <a href="tel:0944699299" style="color: #f9b000; text-decoration: none; font-weight: 600;">0944 699 299</a><br>
+              ✉️ <a href="mailto:support.vn@vinfastauto.com" style="color: #4ade80; text-decoration: none;">support.vn@vinfastauto.com</a>
+            </div>
+            <div style="font-size: 13px; color: #ffffff;">
+              <strong style="color: #ffffff;">SPEAK UP HOTLINE:</strong><br>
+              📞 <a href="tel:0822699299" style="color: #f9b000; text-decoration: none; font-weight: 600;">0822 699 299</a><br>
+              ✉️ <a href="mailto:v.speakup@vinfast.vn" style="color: #4ade80; text-decoration: none;">v.speakup@vinfast.vn</a>
+            </div>
+          </div>
+
+          <!-- Social Media -->
+          <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
+            <div style="font-size: 13px; font-weight: 600; color: #ffffff;">Kết nối với VinFast</div>
+            <div style="display: flex; gap: 12px;">
+              <a href="https://facebook.com/VinFast.HM01" target="_blank" rel="noopener noreferrer" style="width: 36px; height: 36px; border-radius: 50%; background: #1877f2; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; text-decoration: none; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                f
+              </a>
+              <a href="https://youtube.com/@VinFastAuto" target="_blank" rel="noopener noreferrer" style="width: 36px; height: 36px; border-radius: 50%; background: #ff0000; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; text-decoration: none; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                ▶
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Copyright -->
+        <div style="font-size: 12px; color: #e5e7eb; text-align: center; padding-top: 16px; border-top: 1px solid rgba(229, 231, 235, 0.2);">
+          VinFast. All rights reserved.<br>
+          © Copyright 2025
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    function toggleDetail(detailId, buttonElement) {
+      const detail = document.getElementById(detailId);
+      if (detail.style.display === 'none') {
+        detail.style.display = 'block';
+        buttonElement.innerHTML = 'Thu gọn ▲';
+      } else {
+        detail.style.display = 'none';
+        buttonElement.innerHTML = 'Xem chi tiết ▼';
+      }
+    }
+
+    function toggleMobileMenu() {
+      const mobileNav = document.getElementById('mobileNav');
+      const overlay = document.getElementById('mobileOverlay');
+      mobileNav.classList.toggle('active');
+      overlay.classList.toggle('active');
+    }
+  </script>
+</body>
+</html>

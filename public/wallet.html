@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>VINFAST ID - Ví VinFast (Demo)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg-main: radial-gradient(circle at top, #0b2a6f 0%, #020617 55%, #000 100%);
+      --card-bg: rgba(15,23,42,0.96);
+      --border-subtle: rgba(148,163,184,0.7);
+      --accent-blue: #1d4ed8;
+      --accent-blue-soft: #38bdf8;
+      --accent-green: #22c55e;
+      --accent-green-soft: #16a34a;
+      --text-main: #e5e7eb;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: var(--bg-main);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .card {
+      border-radius: 24px;
+      padding: 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 18px 45px rgba(15,23,42,0.9);
+    }
+
+    .title-block {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .title-main {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .title-sub {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 14px;
+      padding: 3px;
+      border-radius: 999px;
+      background: rgba(15,23,42,1);
+      border: 1px solid rgba(51,65,85,1);
+    }
+
+    .toggle button {
+      border-radius: 999px;
+      border: none;
+      padding: 6px 0;
+      font-size: 12px;
+      cursor: pointer;
+      background: transparent;
+      color: #e5e7eb;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .toggle button.active-login {
+      background: linear-gradient(135deg,var(--accent-blue),var(--accent-blue-soft));
+      color: #f9fafb;
+    }
+
+    .toggle button.active-register {
+      background: linear-gradient(135deg,var(--accent-green),var(--accent-green-soft));
+      color: #0b1120;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .field {
+      display: grid;
+      gap: 4px;
+    }
+
+    .field label {
+      opacity: 0.85;
+    }
+
+    .field input {
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+      background: rgba(15,23,42,0.9);
+      color: #e5e7eb;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .field input::placeholder {
+      color: #6b7280;
+    }
+
+    .forgot {
+      margin-top: 8px;
+      border: none;
+      background: transparent;
+      color: #38bdf8;
+      font-size: 11px;
+      text-align: right;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .primary-btn {
+      margin-top: 14px;
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      background: linear-gradient(135deg,var(--accent-blue),var(--accent-blue-soft));
+      color: #f9fafb;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+
+    .primary-btn.register {
+      background: linear-gradient(135deg,var(--accent-green),var(--accent-green-soft));
+      color: #f9fafb;
+    }
+
+    .primary-btn:active {
+      transform: translateY(1px);
+      opacity: 0.9;
+    }
+
+    .policy {
+      margin-top: 10px;
+      font-size: 11px;
+      opacity: 0.75;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .back-link {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .back-link a {
+      color: #e5e7eb;
+      text-decoration: underline;
+      text-decoration-style: dotted;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 18px 14px;
+        border-radius: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="title-block">
+        <div class="title-main">VINFAST ID</div>
+        <div class="title-sub">Đăng nhập để sử dụng Ví VinFast & Trung tâm VIP</div>
+      </div>
+
+      <div class="toggle">
+        <button id="btn-login" class="active-login">Đăng nhập</button>
+        <button id="btn-register">Đăng ký</button>
+      </div>
+
+      <form id="auth-form">
+        <div id="full-name-field" class="field" style="display:none;">
+          <label>Họ và tên</label>
+          <input type="text" placeholder="Nhập họ tên đầy đủ" />
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label>Email hoặc số điện thoại</label>
+            <input type="text" placeholder="VD: demo@vinfast.com / 0888 888 888" />
+          </div>
+
+          <div class="field">
+            <label>Mật khẩu</label>
+            <input type="password" placeholder="Nhập mật khẩu" />
+          </div>
+
+          <div id="confirm-field" class="field" style="display:none;">
+            <label>Nhập lại mật khẩu</label>
+            <input type="password" placeholder="Nhập lại mật khẩu" />
+          </div>
+        </div>
+
+        <button type="button" id="forgot-btn" class="forgot">
+          Quên mật khẩu?
+        </button>
+
+        <button type="submit" id="submit-btn" class="primary-btn">
+          Đăng nhập
+        </button>
+      </form>
+
+      <div class="policy">
+        Bằng việc tiếp tục, bạn đồng ý với Quy chế hoạt động &amp; Chính sách bảo mật của VinFast.
+      </div>
+    </div>
+
+    <div class="back-link">
+      <span>← </span>
+      <a href="xe-may-dien-demo.html">Quay lại trang xe máy điện</a>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var mode = "login"; // login | register
+      var btnLogin = document.getElementById("btn-login");
+      var btnRegister = document.getElementById("btn-register");
+      var fullNameField = document.getElementById("full-name-field");
+      var confirmField = document.getElementById("confirm-field");
+      var forgotBtn = document.getElementById("forgot-btn");
+      var submitBtn = document.getElementById("submit-btn");
+      var form = document.getElementById("auth-form");
+
+      function setMode(nextMode) {
+        mode = nextMode;
+
+        var isLogin = mode === "login";
+
+        fullNameField.style.display = isLogin ? "none" : "grid";
+        confirmField.style.display = isLogin ? "none" : "grid";
+        forgotBtn.style.display = isLogin ? "block" : "none";
+
+        if (isLogin) {
+          btnLogin.classList.add("active-login");
+          btnRegister.classList.remove("active-register");
+          submitBtn.textContent = "Đăng nhập";
+          submitBtn.classList.remove("register");
+        } else {
+          btnLogin.classList.remove("active-login");
+          btnRegister.classList.add("active-register");
+          submitBtn.textContent = "Tạo tài khoản mới";
+          submitBtn.classList.add("register");
+        }
+      }
+
+      btnLogin.addEventListener("click", function(e) {
+        e.preventDefault();
+        setMode("login");
+      });
+
+      btnRegister.addEventListener("click", function(e) {
+        e.preventDefault();
+        setMode("register");
+      });
+
+      form.addEventListener("submit", function(e) {
+        e.preventDefault();
+        if (mode === "login") {
+          alert("Giả lập: Đăng nhập thành công. (Anh kết nối API thật sau nhé)");
+        } else {
+          alert("Giả lập: Tạo tài khoản thành công. (Anh kết nối API thật sau nhé)");
+        }
+      });
+
+      forgotBtn.addEventListener("click", function(e) {
+        e.preventDefault();
+        alert("Giả lập: Điều hướng tới màn quên mật khẩu.");
+      });
+
+      // Khởi tạo
+      setMode("login");
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+{
+  "/wallet/page": "app/wallet/page.js",
+  "/banker/page": "app/banker/page.js"
+}

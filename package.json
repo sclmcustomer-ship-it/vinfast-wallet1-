@@ -1,0 +1,27 @@
+{
+  "name": "electric-bike-shop",
+  "version": "1.0.0",
+  "description": "Electric bike showcase with authentication, deposits, withdrawals and banker management",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build && node -e \"require('fs').copyFileSync('public/index.html', 'dist/index.html')\"",
+    "start": "next start",
+    "lint": "next lint",
+    "export": "next export"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.86.2",
+    "next": "^14.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "eslint": "^8.50.0",
+    "eslint-config-next": "^14.0.0",
+    "typescript": "^5.3.3"
+  }
+}
