@@ -43,3 +43,4 @@ Thumbs.db
 *-backup.*
 *-old.*
 *-old-*
+.env*.local
