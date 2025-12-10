@@ -58,6 +58,17 @@ if (typeof document !== 'undefined') {
       0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
       50% { transform: translate(0%, 0%) scale(1.2); opacity: 1; }
     }
+    @keyframes coinSpin {
+      0%, 100% { transform: rotateY(0deg) scale(1); }
+      25% { transform: rotateY(90deg) scale(0.9); }
+      50% { transform: rotateY(180deg) scale(1); }
+      75% { transform: rotateY(270deg) scale(0.9); }
+    }
+    @keyframes hourglassFlip {
+      0%, 45% { transform: rotate(0deg); }
+      50%, 95% { transform: rotate(180deg); }
+      100% { transform: rotate(360deg); }
+    }
   `;
   document.head.appendChild(style);
 }
@@ -2090,68 +2101,235 @@ const PremiumCard: React.FC<{
   );
 };
 
-// Stat Box với Icon
+// Premium Icon Component cho Stats
+const StatIcon: React.FC<{ type: 'balance' | 'deposit' | 'locked' | 'pending' }> = ({ type }) => {
+  const icons = {
+    balance: (
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <defs>
+          <linearGradient id="balanceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#10b981" />
+            <stop offset="100%" stopColor="#059669" />
+          </linearGradient>
+          <filter id="balanceGlow">
+            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        <rect x="4" y="8" width="24" height="16" rx="3" fill="url(#balanceGrad)" filter="url(#balanceGlow)" opacity="0.3"/>
+        <rect x="4" y="8" width="24" height="16" rx="3" stroke="url(#balanceGrad)" strokeWidth="2" fill="none"/>
+        <circle cx="16" cy="16" r="4" fill="url(#balanceGrad)"/>
+        <circle cx="10" cy="16" r="1.5" fill="#10b981" opacity="0.6"/>
+        <circle cx="22" cy="16" r="1.5" fill="#10b981" opacity="0.6"/>
+        <path d="M8 8L8 6C8 4.89543 8.89543 4 10 4L22 4C23.1046 4 24 4.89543 24 6L24 8" stroke="url(#balanceGrad)" strokeWidth="1.5" strokeLinecap="round"/>
+      </svg>
+    ),
+    deposit: (
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <defs>
+          <linearGradient id="depositGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#fbbf24" />
+            <stop offset="50%" stopColor="#f59e0b" />
+            <stop offset="100%" stopColor="#d97706" />
+          </linearGradient>
+          <filter id="depositGlow">
+            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        <circle cx="16" cy="16" r="12" fill="url(#depositGrad)" filter="url(#depositGlow)" opacity="0.2"/>
+        <circle cx="16" cy="16" r="11" stroke="url(#depositGrad)" strokeWidth="2" fill="none"/>
+        <g style={{animation: 'coinSpin 2s ease-in-out infinite'}}>
+          <circle cx="16" cy="16" r="8" fill="url(#depositGrad)"/>
+          <text x="16" y="20" textAnchor="middle" fontSize="12" fontWeight="bold" fill="#fff">¥</text>
+        </g>
+        <path d="M12 8L16 4L20 8" stroke="#fbbf24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.6">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite"/>
+        </path>
+      </svg>
+    ),
+    locked: (
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <defs>
+          <linearGradient id="lockGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#ef4444" />
+            <stop offset="100%" stopColor="#dc2626" />
+          </linearGradient>
+          <filter id="lockGlow">
+            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        <rect x="8" y="14" width="16" height="12" rx="2" fill="url(#lockGrad)" filter="url(#lockGlow)" opacity="0.3"/>
+        <rect x="8" y="14" width="16" height="12" rx="2" stroke="url(#lockGrad)" strokeWidth="2" fill="none"/>
+        <path d="M12 14V10C12 7.79086 13.7909 6 16 6C18.2091 6 20 7.79086 20 10V14" stroke="url(#lockGrad)" strokeWidth="2" strokeLinecap="round"/>
+        <circle cx="16" cy="20" r="2" fill="#fff"/>
+        <rect x="15" y="20" width="2" height="3" rx="1" fill="#fff"/>
+        <g opacity="0.6">
+          <circle cx="12" cy="10" r="1" fill="#ef4444">
+            <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="20" cy="10" r="1" fill="#ef4444">
+            <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+          </circle>
+        </g>
+      </svg>
+    ),
+    pending: (
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <defs>
+          <linearGradient id="pendingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#3b82f6" />
+            <stop offset="50%" stopColor="#2563eb" />
+            <stop offset="100%" stopColor="#1d4ed8" />
+          </linearGradient>
+          <filter id="pendingGlow">
+            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        <g style={{animation: 'hourglassFlip 3s ease-in-out infinite'}}>
+          <path d="M10 4h12M10 28h12M12 4v3c0 2 2 3 4 4 2 1 4 2 4 4v6c0 2-2 3-4 4-2 1-4 2-4 4v3M10 4h12v0c0 0-1 1-2 2l-3 3c-1 1-1 2 0 3l3 3c1 1 2 2 2 2v0H10v0c0 0 1-1 2-2l3-3c1-1 1-2 0-3l-3-3c-1-1-2-2-2-2v0z" 
+                stroke="url(#pendingGrad)" strokeWidth="2" fill="none" strokeLinecap="round"/>
+          <path d="M12 8c0 0 2 2 4 3s4 1 4 1" stroke="url(#pendingGrad)" strokeWidth="2" strokeLinecap="round" opacity="0.5">
+            <animate attributeName="d" 
+              values="M12 8c0 0 2 2 4 3s4 1 4 1;M12 12c0 0 2 1 4 2s4 0 4 0;M12 16c0 0 2 0 4 0s4 0 4 0" 
+              dur="3s" repeatCount="indefinite"/>
+          </path>
+        </g>
+        <circle cx="16" cy="16" r="14" stroke="url(#pendingGrad)" strokeWidth="1" fill="none" opacity="0.3" filter="url(#pendingGlow)"/>
+      </svg>
+    ),
+  };
+  return icons[type];
+};
+
+// Stat Box với Icon và Background đẹp
 const StatBox: React.FC<{ 
   label: string; 
   value: string; 
   color?: string;
-  icon?: React.ReactNode;
-}> = ({ label, value, color, icon }) => (
-  <div
-    style={{
-      padding: 12,
-      borderRadius: 14,
-      background: "rgba(15,23,42,0.6)",
-      border: "1px solid rgba(51,65,85,0.8)",
-      display: "flex",
-      flexDirection: "column",
-      gap: 6,
-      position: "relative",
-      overflow: "hidden",
-      transition: "all 0.3s ease",
-    }}
-    onMouseEnter={(e) => {
-      e.currentTarget.style.transform = "translateY(-2px)";
-      e.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.3)";
-      e.currentTarget.style.borderColor = "rgba(148,163,184,0.6)";
-    }}
-    onMouseLeave={(e) => {
-      e.currentTarget.style.transform = "translateY(0)";
-      e.currentTarget.style.boxShadow = "none";
-      e.currentTarget.style.borderColor = "rgba(51,65,85,0.8)";
-    }}
-  >
-    {/* Shine effect */}
-    <div style={{
-      position: "absolute",
-      top: "-50%",
-      left: "-50%",
-      width: "200%",
-      height: "200%",
-      background: "radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)",
-      animation: "statShine 4s ease-in-out infinite",
-      pointerEvents: "none",
-    }} />
-    
-    <div style={{ 
-      display: "flex", 
-      alignItems: "center", 
-      gap: 6,
-      position: "relative",
-      zIndex: 1,
-    }}>
-      {icon && <span style={{ fontSize: 14, opacity: 0.8 }}>{icon}</span>}
-      <div style={{ fontSize: 11, opacity: 0.7 }}>{label}</div>
-    </div>
-    <div style={{ 
-      fontWeight: 600, 
-      color: color || "#e5e7eb",
-      fontSize: 14,
-      position: "relative",
+  iconType?: 'balance' | 'deposit' | 'locked' | 'pending';
+  gradient?: string;
+}> = ({ label, value, color, iconType, gradient }) => {
+  const backgrounds = {
+    balance: "linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(5,150,105,0.05) 100%)",
+    deposit: "linear-gradient(135deg, rgba(251,191,36,0.1) 0%, rgba(217,119,6,0.05) 100%)",
+    locked: "linear-gradient(135deg, rgba(239,68,68,0.1) 0%, rgba(220,38,38,0.05) 100%)",
+    pending: "linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(29,78,216,0.05) 100%)",
+  };
+
+  return (
+    <div
+      style={{
+        padding: 14,
+        borderRadius: 16,
+        background: iconType ? backgrounds[iconType] : "rgba(15,23,42,0.6)",
+        border: "1px solid rgba(51,65,85,0.8)",
+        display: "flex",
+        flexDirection: "column",
+        gap: 8,
+        position: "relative",
+        overflow: "hidden",
+        transition: "all 0.3s ease",
+        backdropFilter: "blur(10px)",
+        WebkitBackdropFilter: "blur(10px)",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translateY(-3px) scale(1.02)";
+        e.currentTarget.style.boxShadow = "0 12px 30px rgba(0,0,0,0.4)";
+        e.currentTarget.style.borderColor = "rgba(148,163,184,0.8)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "translateY(0) scale(1)";
+        e.currentTarget.style.boxShadow = "none";
+        e.currentTarget.style.borderColor = "rgba(51,65,85,0.8)";
+      }}
+    >
+      {/* Animated background gradient */}
+      <div style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: gradient || (iconType ? backgrounds[iconType] : "none"),
+        opacity: 0.5,
+        animation: "gradientMove 8s ease infinite",
+        backgroundSize: "200% 200%",
+        pointerEvents: "none",
+      }} />
+      
+      {/* Shine effect */}
+      <div style={{
+        position: "absolute",
+        top: "-50%",
+        left: "-50%",
+        width: "200%",
+        height: "200%",
+        background: "radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%)",
+        animation: "statShine 4s ease-in-out infinite",
+        pointerEvents: "none",
+      }} />
+      
+      <div style={{ 
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "space-between",
+        position: "relative",
+        zIndex: 1,
+      }}>
+        <div style={{ fontSize: 11, opacity: 0.8, fontWeight: 500 }}>{label}</div>
+        {iconType && <StatIcon type={iconType} />}
+      </div>
+      <div style={{ 
+        fontWeight: 700, 
+        color: color || "#e5e7eb",
+        fontSize: 16,
+        position: "relative",
       zIndex: 1,
     }}>
       {value}
     </div>
+  </div>
+);
+
+// QuickRow Component
+const QuickRow: React.FC<{ label: string; action: string; onClick?: () => void }> = ({ label, action, onClick }) => (
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+    }}
+  >
+    <span>{label}</span>
+    <button
+      onClick={onClick}
+      style={{
+        padding: "4px 10px",
+        borderRadius: 999,
+        border: "1px solid rgba(148,163,184,0.6)",
+        background: "transparent",
+        color: "#e5e7eb",
+        fontSize: 11,
+        cursor: "pointer",
+      }}
+    >
+      {action}
+    </button>
   </div>
 );
 
@@ -3131,15 +3309,30 @@ const WalletSection: React.FC<WalletSectionProps> = ({
             fontSize: 12,
           }}
         >
-          <StatBox label="Khả dụng" value={`₫${userData.balance.toLocaleString()}`} icon="💵" />
+          <StatBox 
+            label="Khả dụng" 
+            value={`₫${userData.balance.toLocaleString()}`} 
+            iconType="balance"
+            color="#10b981"
+          />
           <StatBox 
             label="Đang chờ xử lý" 
             value={`₫${pendingAmount.toLocaleString()}`}
-            color={pendingAmount > 0 ? "#f59e0b" : undefined}
-            icon="⏳"
+            iconType="pending"
+            color={pendingAmount > 0 ? "#3b82f6" : "#64748b"}
           />
-          <StatBox label="Tạm khóa" value="₫0" icon="🔒" />
-          <StatBox label="Tích lũy nạp" value={`₫${userData.balance.toLocaleString()}`} icon="📈" />
+          <StatBox 
+            label="Tạm khóa" 
+            value="₫0" 
+            iconType="locked"
+            color="#ef4444"
+          />
+          <StatBox 
+            label="Tích lũy nạp" 
+            value={`₫${userData.balance.toLocaleString()}`} 
+            iconType="deposit"
+            color="#fbbf24"
+          />
         </div>
       </div>
       </PremiumCard>
@@ -3539,29 +3732,4 @@ const PrimaryIconButton: React.FC<PrimaryIconButtonProps> = ({
     </button>
   );
 };
-
-const QuickRow: React.FC<{ label: string; action: string; onClick?: () => void }> = ({ label, action, onClick }) => (
-  <div
-    style={{
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-    }}
-  >
-    <span>{label}</span>
-    <button
-      onClick={onClick}
-      style={{
-        padding: "4px 10px",
-        borderRadius: 999,
-        border: "1px solid rgba(148,163,184,0.6)",
-        background: "transparent",
-        color: "#e5e7eb",
-        fontSize: 11,
-        cursor: "pointer",
-      }}
-    >
-      {action}
-    </button>
-  </div>
-);
+}
