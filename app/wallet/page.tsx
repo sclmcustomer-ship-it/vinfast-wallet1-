@@ -8,44 +8,55 @@ if (typeof document !== 'undefined') {
   const style = document.createElement('style');
   style.textContent = `
     @keyframes slideInLeft {
-      from {
-        transform: translateX(-100%);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
+      from { transform: translateX(-100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
     }
     @keyframes slideInRight {
-      from {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
     }
     @keyframes slideOutLeft {
-      from {
-        transform: translateX(0);
-        opacity: 1;
-      }
-      to {
-        transform: translateX(-100%);
-        opacity: 0;
-      }
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(-100%); opacity: 0; }
     }
     @keyframes slideOutRight {
-      from {
-        transform: translateX(0);
-        opacity: 1;
-      }
-      to {
-        transform: translateX(100%);
-        opacity: 0;
-      }
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+    @keyframes ripple {
+      to { width: 100px; height: 100px; opacity: 0; }
+    }
+    @keyframes slideIn {
+      from { width: 0; opacity: 0; }
+      to { width: 60%; opacity: 1; }
+    }
+    @keyframes breathe {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    @keyframes floatParticle {
+      0%, 100% { transform: translateY(0) scale(1); opacity: 0; }
+      50% { transform: translateY(-20px) scale(1.2); opacity: 0.8; }
+    }
+    @keyframes gradientMove {
+      0%, 100% { transform: translate(0, 0); }
+      25% { transform: translate(20%, 10%); }
+      50% { transform: translate(-20%, 5%); }
+      75% { transform: translate(10%, -10%); }
+    }
+    @keyframes shine {
+      0% { left: -100%; }
+      50% { left: 100%; }
+      100% { left: 100%; }
+    }
+    @keyframes gradientBorder {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes statShine {
+      0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+      50% { transform: translate(0%, 0%) scale(1.2); opacity: 1; }
     }
   `;
   document.head.appendChild(style);
@@ -440,15 +451,6 @@ export default function WalletPage() {
                 animation: "gradientMove 8s ease-in-out infinite",
                 pointerEvents: "none",
               }} />
-              
-              <style jsx>{`
-                @keyframes gradientMove {
-                  0%, 100% { transform: translate(0, 0); }
-                  25% { transform: translate(20%, 10%); }
-                  50% { transform: translate(-20%, 5%); }
-                  75% { transform: translate(10%, -10%); }
-                }
-              `}</style>
               <NavButton
                 label="VIP"
                 icon="vip"
@@ -1222,29 +1224,12 @@ const NavButton: React.FC<NavButtonProps> = ({
                 background: "rgba(255,255,255,0.6)",
                 bottom: 10,
                 left: `${25 + i * 25}%`,
-                animation: `float ${2 + i * 0.5}s ease-in-out infinite`,
+                animation: `floatParticle ${2 + i * 0.5}s ease-in-out infinite`,
                 animationDelay: `${i * 0.3}s`,
                 pointerEvents: "none",
               }}
             />
           ))}
-          
-          <style jsx>{`
-            @keyframes breathe {
-              0%, 100% { opacity: 1; }
-              50% { opacity: 0.7; }
-            }
-            @keyframes float {
-              0%, 100% { 
-                transform: translateY(0) scale(1);
-                opacity: 0;
-              }
-              50% { 
-                transform: translateY(-20px) scale(1.2);
-                opacity: 0.8;
-              }
-            }
-          `}</style>
         </>
       )}
       
@@ -1303,26 +1288,6 @@ const NavButton: React.FC<NavButtonProps> = ({
           animation: "slideIn 0.3s ease-out",
         }} />
       )}
-      
-      <style jsx>{`
-        @keyframes ripple {
-          to {
-            width: 100px;
-            height: 100px;
-            opacity: 0;
-          }
-        }
-        @keyframes slideIn {
-          from {
-            width: 0;
-            opacity: 0;
-          }
-          to {
-            width: 60%;
-            opacity: 1;
-          }
-        }
-      `}</style>
     </button>
   );
 };
@@ -2094,6 +2059,101 @@ const VipSection: React.FC<VipSectionProps> = ({ userData }) => {
     </div>
   );
 };
+
+// Premium Card Component with Animated Border
+const PremiumCard: React.FC<{ 
+  children: React.ReactNode; 
+  gradient?: string;
+  borderAnimation?: boolean;
+}> = ({ children, gradient, borderAnimation = false }) => {
+  return (
+    <div style={{
+      position: "relative",
+      borderRadius: 20,
+      padding: 2,
+      background: borderAnimation 
+        ? "linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899, #3b82f6)"
+        : "rgba(51,65,85,0.3)",
+      backgroundSize: borderAnimation ? "400% 400%" : "100% 100%",
+      animation: borderAnimation ? "gradientBorder 3s ease infinite" : "none",
+    }}>
+      <div style={{
+        borderRadius: 18,
+        padding: 16,
+        background: gradient || "linear-gradient(135deg, rgba(15,23,42,0.95) 0%, rgba(30,41,59,0.95) 100%)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+      }}>
+        {children}
+      </div>
+    </div>
+  );
+};
+
+// Stat Box với Icon
+const StatBox: React.FC<{ 
+  label: string; 
+  value: string; 
+  color?: string;
+  icon?: React.ReactNode;
+}> = ({ label, value, color, icon }) => (
+  <div
+    style={{
+      padding: 12,
+      borderRadius: 14,
+      background: "rgba(15,23,42,0.6)",
+      border: "1px solid rgba(51,65,85,0.8)",
+      display: "flex",
+      flexDirection: "column",
+      gap: 6,
+      position: "relative",
+      overflow: "hidden",
+      transition: "all 0.3s ease",
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.transform = "translateY(-2px)";
+      e.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.3)";
+      e.currentTarget.style.borderColor = "rgba(148,163,184,0.6)";
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.transform = "translateY(0)";
+      e.currentTarget.style.boxShadow = "none";
+      e.currentTarget.style.borderColor = "rgba(51,65,85,0.8)";
+    }}
+  >
+    {/* Shine effect */}
+    <div style={{
+      position: "absolute",
+      top: "-50%",
+      left: "-50%",
+      width: "200%",
+      height: "200%",
+      background: "radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)",
+      animation: "statShine 4s ease-in-out infinite",
+      pointerEvents: "none",
+    }} />
+    
+    <div style={{ 
+      display: "flex", 
+      alignItems: "center", 
+      gap: 6,
+      position: "relative",
+      zIndex: 1,
+    }}>
+      {icon && <span style={{ fontSize: 14, opacity: 0.8 }}>{icon}</span>}
+      <div style={{ fontSize: 11, opacity: 0.7 }}>{label}</div>
+    </div>
+    <div style={{ 
+      fontWeight: 600, 
+      color: color || "#e5e7eb",
+      fontSize: 14,
+      position: "relative",
+      zIndex: 1,
+    }}>
+      {value}
+    </div>
+  </div>
+);
 
 /*** TAB 3: Ví (ví điện tử) */
 interface WalletSectionProps {
@@ -2958,15 +3018,13 @@ const WalletSection: React.FC<WalletSectionProps> = ({
         </div>
       )}
 
-      {/* Wallet card */}
+      {/* Wallet card với animated border */}
+      <PremiumCard 
+        gradient="linear-gradient(135deg, #0f172a 0%, #1e3a8a 40%, #1e40af 70%, #3b82f6 100%)"
+        borderAnimation={true}
+      >
       <div
         style={{
-          borderRadius: 20,
-          padding: 16,
-          background:
-            "linear-gradient(135deg, #0f172a 0%, #1d4ed8 40%, #38bdf8 100%)",
-          border: "1px solid rgba(148,163,184,0.7)",
-          boxShadow: "0 18px 45px rgba(15,23,42,0.9)",
           width: "100%",
           boxSizing: "border-box",
         }}
@@ -3073,27 +3131,22 @@ const WalletSection: React.FC<WalletSectionProps> = ({
             fontSize: 12,
           }}
         >
-          <StatBox label="Khả dụng" value={`₫${userData.balance.toLocaleString()}`} />
+          <StatBox label="Khả dụng" value={`₫${userData.balance.toLocaleString()}`} icon="💵" />
           <StatBox 
             label="Đang chờ xử lý" 
             value={`₫${pendingAmount.toLocaleString()}`}
             color={pendingAmount > 0 ? "#f59e0b" : undefined}
+            icon="⏳"
           />
-          <StatBox label="Tạm khóa" value="₫0" />
-          <StatBox label="Tích lũy nạp" value={`₫${userData.balance.toLocaleString()}`} />
+          <StatBox label="Tạm khóa" value="₫0" icon="🔒" />
+          <StatBox label="Tích lũy nạp" value={`₫${userData.balance.toLocaleString()}`} icon="📈" />
         </div>
       </div>
+      </PremiumCard>
 
       {/* Liên kết ngân hàng */}
-      <div
-        style={{
-          borderRadius: 18,
-          padding: 14,
-          background: "rgba(15,23,42,0.95)",
-          border: "1px solid rgba(51,65,85,0.9)",
-          fontSize: 12,
-        }}
-      >
+      <PremiumCard>
+        <div style={{ fontSize: 12 }}>
         <div
           style={{
             display: "flex",
@@ -3129,7 +3182,8 @@ const WalletSection: React.FC<WalletSectionProps> = ({
           Thẻ ngân hàng dùng để rút tiền và hoàn tiền sẽ được ưu tiên theo thẻ
           mặc định.
         </div>
-      </div>
+        </div>
+      </PremiumCard>
 
       {/* Buttons row */}
       <div
@@ -3142,17 +3196,17 @@ const WalletSection: React.FC<WalletSectionProps> = ({
       >
         <PrimaryIconButton
           label="Nạp tiền"
-          icon="➕"
+          icon="deposit"
           onClick={() => setMode("deposit")}
         />
         <PrimaryIconButton
           label="Rút tiền"
-          icon="⬇️"
+          icon="withdraw"
           onClick={() => setMode("withdraw")}
         />
         <PrimaryIconButton
           label="Lịch sử"
-          icon="📜"
+          icon="history"
           onClick={() => setMode("history")}
         />
       </div>
@@ -3283,51 +3337,208 @@ const WalletSection: React.FC<WalletSectionProps> = ({
 };
 
 /*** Sub components dùng lại */
-const StatBox: React.FC<{ label: string; value: string; color?: string }> = ({ label, value, color }) => (
-  <div
-    style={{
-      padding: 10,
-      borderRadius: 12,
-      background: "rgba(15,23,42,0.6)",
-      border: "1px solid rgba(148,163,184,0.6)",
-    }}
-  >
-    <div style={{ opacity: 0.7 }}>{label}</div>
-    <div style={{ fontWeight: 600, color: color || "#e5e7eb" }}>{value}</div>
-  </div>
-);
 
 interface PrimaryIconButtonProps {
   label: string;
-  icon: string;
+  icon: 'deposit' | 'withdraw' | 'history';
   onClick?: () => void;
 }
+
+// Premium Action Icons
+const ActionIcon: React.FC<{ type: 'deposit' | 'withdraw' | 'history' }> = ({ type }) => {
+  const icons = {
+    deposit: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+        <defs>
+          <linearGradient id="depositGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#10b981" />
+            <stop offset="50%" stopColor="#059669" />
+            <stop offset="100%" stopColor="#047857" />
+          </linearGradient>
+          <filter id="depositGlow">
+            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        {/* Money bag/wallet */}
+        <circle cx="12" cy="14" r="7" fill="url(#depositGrad)" opacity="0.2" />
+        <path d="M12 3v18M12 3l-4 4M12 3l4 4" stroke="url(#depositGrad)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" filter="url(#depositGlow)" />
+        {/* Plus sign in circle */}
+        <circle cx="12" cy="18" r="3" stroke="url(#depositGrad)" strokeWidth="1.5" fill="rgba(16,185,129,0.2)" />
+        <path d="M12 16.5v3M10.5 18h3" stroke="#10b981" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    ),
+    withdraw: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+        <defs>
+          <linearGradient id="withdrawGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#f59e0b" />
+            <stop offset="50%" stopColor="#d97706" />
+            <stop offset="100%" stopColor="#b45309" />
+          </linearGradient>
+          <filter id="withdrawGlow">
+            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        {/* Money/ATM card */}
+        <circle cx="12" cy="10" r="7" fill="url(#withdrawGrad)" opacity="0.2" />
+        <path d="M12 3v18M12 21l-4-4M12 21l4-4" stroke="url(#withdrawGrad)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" filter="url(#withdrawGlow)" />
+        {/* Cash symbol */}
+        <circle cx="12" cy="7" r="2.5" stroke="url(#withdrawGrad)" strokeWidth="1.5" fill="rgba(245,158,11,0.2)" />
+        <path d="M14 7h-4" stroke="#f59e0b" strokeWidth="1.2" strokeLinecap="round" />
+      </svg>
+    ),
+    history: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+        <defs>
+          <linearGradient id="historyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#6366f1" />
+            <stop offset="50%" stopColor="#4f46e5" />
+            <stop offset="100%" stopColor="#4338ca" />
+          </linearGradient>
+        </defs>
+        <circle cx="12" cy="12" r="9" stroke="url(#historyGrad)" strokeWidth="2" fill="rgba(99,102,241,0.1)" />
+        <path d="M12 6v6l4 4" stroke="url(#historyGrad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M4 12a8 8 0 0 1 8-8" stroke="#6366f1" strokeWidth="1.5" strokeLinecap="round" opacity="0.5">
+          <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="3s" repeatCount="indefinite" />
+        </path>
+      </svg>
+    ),
+  };
+  
+  return icons[type];
+};
 
 const PrimaryIconButton: React.FC<PrimaryIconButtonProps> = ({
   label,
   icon,
   onClick,
-}) => (
-  <button
-    onClick={onClick}
-    style={{
-      padding: "12px 8px",
-      borderRadius: 16,
-      background: "rgba(15,23,42,0.9)",
-      border: "1px solid rgba(148,163,184,0.6)",
-      color: "#e5e7eb",
-      cursor: "pointer",
-      fontSize: 12,
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      gap: 4,
-    }}
-  >
-    <span style={{ fontSize: 18 }}>{icon}</span>
-    <span>{label}</span>
-  </button>
-);
+}) => {
+  const [isPressed, setIsPressed] = useState(false);
+  const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
+
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = Date.now();
+    
+    setRipples([...ripples, { x, y, id }]);
+    setTimeout(() => {
+      setRipples(prev => prev.filter(r => r.id !== id));
+    }, 600);
+    
+    setIsPressed(true);
+    setTimeout(() => setIsPressed(false), 150);
+    
+    onClick?.();
+  };
+
+  const getGradient = () => {
+    switch(icon) {
+      case 'deposit': return 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+      case 'withdraw': return 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+      case 'history': return 'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)';
+    }
+  };
+
+  const getShadow = () => {
+    switch(icon) {
+      case 'deposit': return '0 4px 12px rgba(16,185,129,0.3), 0 2px 6px rgba(16,185,129,0.2)';
+      case 'withdraw': return '0 4px 12px rgba(245,158,11,0.3), 0 2px 6px rgba(245,158,11,0.2)';
+      case 'history': return '0 4px 12px rgba(99,102,241,0.3), 0 2px 6px rgba(99,102,241,0.2)';
+    }
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      style={{
+        padding: "16px 12px",
+        borderRadius: 20,
+        background: getGradient(),
+        border: "none",
+        color: "#ffffff",
+        cursor: "pointer",
+        fontSize: 13,
+        fontWeight: 600,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 8,
+        position: "relative",
+        overflow: "hidden",
+        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        transform: isPressed ? "scale(0.95)" : "scale(1)",
+        boxShadow: isPressed ? "0 2px 6px rgba(0,0,0,0.2)" : getShadow(),
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translateY(-2px) scale(1.02)";
+        e.currentTarget.style.boxShadow = getShadow() + ", 0 8px 20px rgba(0,0,0,0.15)";
+      }}
+      onMouseLeave={(e) => {
+        if (!isPressed) {
+          e.currentTarget.style.transform = "scale(1)";
+          e.currentTarget.style.boxShadow = getShadow();
+        }
+      }}
+    >
+      {/* Shine overlay */}
+      <div style={{
+        position: "absolute",
+        top: 0,
+        left: "-100%",
+        width: "100%",
+        height: "100%",
+        background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)",
+        animation: "shine 3s ease-in-out infinite",
+        pointerEvents: "none",
+      }} />
+      
+      {/* Ripple effects */}
+      {ripples.map(ripple => (
+        <span
+          key={ripple.id}
+          style={{
+            position: "absolute",
+            left: ripple.x,
+            top: ripple.y,
+            width: 10,
+            height: 10,
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.6)",
+            transform: "translate(-50%, -50%)",
+            animation: "ripple 0.6s ease-out",
+            pointerEvents: "none",
+          }}
+        />
+      ))}
+      
+      {/* Icon with animation */}
+      <div style={{
+        transition: "transform 0.3s ease",
+        transform: isPressed ? "scale(0.85)" : "scale(1)",
+      }}>
+        <ActionIcon type={icon} />
+      </div>
+      
+      {/* Label */}
+      <span style={{
+        textShadow: "0 1px 3px rgba(0,0,0,0.3)",
+        letterSpacing: "0.3px",
+      }}>
+        {label}
+      </span>
+    </button>
+  );
+};
 
 const QuickRow: React.FC<{ label: string; action: string; onClick?: () => void }> = ({ label, action, onClick }) => (
   <div
