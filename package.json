@@ -5,10 +5,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && node -e \"require('fs').copyFileSync('public/index.html', 'dist/index.html')\"",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "export": "next export"
+    "type-check": "tsc --noEmit",
+    "export": "next export",
+    "deploy": "vercel --prod",
+    "deploy:preview": "vercel"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.86.2",
@@ -20,8 +23,11 @@
     "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
+    "autoprefixer": "^10.4.22",
     "eslint": "^8.50.0",
     "eslint-config-next": "^14.0.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.18",
     "typescript": "^5.3.3"
   }
 }

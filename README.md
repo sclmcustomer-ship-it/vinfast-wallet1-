@@ -1,32 +1,106 @@
-# Electric Mobility - Xe máy điện
+# 🏍️ Thương Hiệu YD - Website Xe Điện Thông Minh
 
-Trang web giới thiệu và bán xe máy điện với hệ thống đăng nhập, nạp tiền, rút tiền và quản lý Banker.
+> Modern electric bike e-commerce website với Next.js 14, Supabase, và Tailwind CSS
 
-## 🚀 Hướng dẫn Setup & Chạy
+[![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.0-38bdf8)](https://tailwindcss.com/)
+[![Supabase](https://img.shields.io/badge/Supabase-Latest-green)](https://supabase.com/)
 
-### Yêu cầu
-- Node.js 18+ 
-- npm hoặc yarn
+## ✨ Features
 
-### 1️⃣ Cài đặt dependencies
+- 🎨 **Modern UI/UX**: Gradient animations, glassmorphism effects, smooth transitions
+- 🏍️ **Product Showcase**: Product cards với badges, ratings, hover effects
+- 📱 **Fully Responsive**: Mobile-first design, responsive menu
+- ⚡ **High Performance**: Next.js 14 App Router, optimized builds
+- 🔐 **Authentication**: Supabase auth integration (ready for login/register)
+- 💰 **Wallet System**: Deposit/withdraw functionality
+- 👨‍💼 **Banker Dashboard**: Admin management panel
+- 🚀 **Deploy Ready**: Vercel configuration included
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Database**: Supabase (PostgreSQL)
+- **Authentication**: Supabase Auth
+- **Deployment**: Vercel
+- **Version Control**: Git + GitHub
+
+## 📦 Project Structure
+
+```
+vinfast-wallet1-/
+├── app/
+│   ├── page.tsx           # Homepage (YD design)
+│   ├── layout.tsx         # Root layout with Header/Footer
+│   ├── globals.css        # Global styles + animations
+│   ├── admin/             # Admin panel
+│   ├── banker/            # Banker management
+│   ├── wallet/            # Wallet system
+│   └── api/               # API routes
+│       ├── auth/          # Login/Signup
+│       ├── banker/        # Banker operations
+│       └── transaction/   # Deposit/Withdraw
+├── components/
+│   ├── Header.tsx         # Navigation header
+│   └── Footer.tsx         # Footer with links
+├── lib/
+│   ├── supabase.ts        # Supabase client
+│   └── supabase-helpers.ts
+├── public/                # Static assets
+├── vercel.json            # Vercel config
+├── .env.local.example     # Environment template
+├── DEPLOY.md              # Deployment guide
+└── deploy.bat/.sh         # Quick deploy scripts
+```
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+
+- npm or yarn
+- Git
+- Supabase account
+
+### 1️⃣ Clone Repository
+
+```bash
+git clone https://github.com/sclmcustomer-ship-it/vinfast-wallet1-.git
+cd vinfast-wallet1-
+```
+
+### 2️⃣ Install Dependencies
 
 ```bash
 npm install
-# hoặc
-yarn install
 ```
 
-### 2️⃣ Chạy development server
+### 3️⃣ Environment Setup
+
+Copy `.env.local.example` to `.env.local`:
+
+```bash
+cp .env.local.example .env.local
+```
+
+Edit `.env.local` with your Supabase credentials:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+```
+
+### 4️⃣ Run Development Server
 
 ```bash
 npm run dev
-# hoặc
-yarn dev
 ```
 
-Mở browser và truy cập: **http://localhost:3000**
+Open **http://localhost:3000** 🎉
 
-### 3️⃣ Build cho production
+### 5️⃣ Build for Production
 
 ```bash
 npm run build

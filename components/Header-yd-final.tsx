@@ -8,20 +8,17 @@ export default function Header() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-100">
+    <header className="sticky top-0 z-50 bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center gap-6 py-4 relative">
+        <div className="flex items-center gap-6 py-3 relative">
           {/* Logo */}
-          <Link href="/" className="group flex items-center gap-3 min-w-[170px]">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
-              <div className="relative w-11 h-11 rounded-full bg-gradient-to-br from-green-600 to-emerald-700 flex items-center justify-center text-white font-extrabold text-lg shadow-lg group-hover:scale-110 transition-transform">
-                YD
-              </div>
+          <Link href="/" className="flex items-center gap-2 min-w-[170px]">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-green-600 to-green-800 flex items-center justify-center text-white font-extrabold text-base">
+              YD
             </div>
             <div className="flex flex-col leading-tight">
-              <strong className="text-base font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Thương Hiệu YD</strong>
-              <small className="text-[11px] text-gray-500">⚡ Xe điện thông minh</small>
+              <strong className="text-sm">Thương Hiệu YD</strong>
+              <small className="text-[11px] text-gray-600">Xe điện thông minh</small>
             </div>
           </Link>
 
@@ -103,24 +100,16 @@ export default function Header() {
           {/* Desktop Actions */}
           <div className="hidden lg:flex items-center gap-3">
             <Link 
-              href="/wallet"
-              className="group px-5 py-2.5 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-full font-bold transition-all shadow-md hover:shadow-lg flex items-center gap-2"
-            >
-              <span className="text-lg">💰</span>
-              <span>Ví của tôi</span>
-            </Link>
-            <Link 
               href="#online"
-              className="px-4 py-2 text-sm border-2 border-gray-300 rounded-full hover:border-green-600 hover:text-green-600 transition"
+              className="px-4 py-2 text-sm border border-gray-300 rounded-full hover:border-green-600 hover:text-green-600 transition"
             >
-              🛒 Mua hàng online
+              Mua hàng online
             </Link>
             <a 
               href="tel:0822699299"
-              className="text-sm font-semibold text-green-700 hover:text-green-800 flex items-center gap-1"
+              className="text-sm font-semibold text-green-700 hover:text-green-800"
             >
-              <span>☎</span>
-              <span>0822 699 299</span>
+              ☎ 0822 699 299
             </a>
           </div>
 
@@ -172,18 +161,12 @@ export default function Header() {
             <Link href="#support" className="block px-3 py-2 text-gray-700 hover:text-green-600">Hỗ trợ & bảo hành</Link>
             <Link href="#stores" className="block px-3 py-2 text-gray-700 hover:text-green-600">Cửa hàng</Link>
             
-            <div className="pt-3 border-t space-y-2">
-              <Link 
-                href="/wallet"
-                className="block text-center px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-full font-bold shadow-lg"
-              >
-                💰 Ví của tôi
-              </Link>
+            <div className="pt-3 border-t">
               <Link 
                 href="#online"
-                className="block text-center px-4 py-2 text-sm border-2 border-gray-300 rounded-full hover:border-green-600 hover:text-green-600"
+                className="block text-center px-4 py-2 text-sm border border-gray-300 rounded-full hover:border-green-600 hover:text-green-600 mb-2"
               >
-                🛒 Mua hàng online
+                Mua hàng online
               </Link>
               <a 
                 href="tel:0822699299"
