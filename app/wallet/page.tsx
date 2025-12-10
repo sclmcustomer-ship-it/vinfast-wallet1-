@@ -334,15 +334,17 @@ export default function WalletPage() {
   };
 
   const renderContent = () => {
-    const content = (() => {
-      switch (activeTab) {
-        case "personal":
-          return <PersonalSection userData={userData} />;
-        case "vip":
-          return <VipSection userData={userData} />;
-        case "wallet":
-        default:
-          return <WalletSection 
+    return (
+      <div style={{
+        animation: isTransitioning 
+          ? `slideOut${slideDirection === 'left' ? 'Right' : 'Left'} 0.15s ease-out forwards`
+          : `slideIn${slideDirection === 'left' ? 'Right' : 'Left'} 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards`,
+        opacity: isTransitioning ? 0 : 1,
+      }}>
+        {activeTab === "personal" && <PersonalSection userData={userData} />}
+        {activeTab === "vip" && <VipSection userData={userData} />}
+        {activeTab === "wallet" && (
+          <WalletSection 
             userData={userData} 
             setUserData={setUserData}
             notifications={notifications}
@@ -352,18 +354,8 @@ export default function WalletPage() {
             unreadCount={unreadCount}
             pendingAmount={pendingAmount}
             setIsAuthenticated={setIsAuthenticated}
-          />;
-      }
-    })();
-
-    return (
-      <div style={{
-        animation: isTransitioning 
-          ? `slideOut${slideDirection === 'left' ? 'Right' : 'Left'} 0.15s ease-out forwards`
-          : `slideIn${slideDirection === 'left' ? 'Right' : 'Left'} 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards`,
-        opacity: isTransitioning ? 0 : 1,
-      }}>
-        {content}
+          />
+        )}
       </div>
     );
   };
@@ -1308,7 +1300,7 @@ interface PersonalSectionProps {
   userData: UserData;
 }
 
-const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
+function PersonalSection({ userData }: PersonalSectionProps) {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [isManagingDevices, setIsManagingDevices] = useState(false);
@@ -1851,7 +1843,7 @@ interface VipSectionProps {
   userData: UserData;
 }
 
-const VipSection: React.FC<VipSectionProps> = ({ userData }) => {
+function VipSection({ userData }: VipSectionProps) {
   const currentVipLevel = userData.vipLevel; // Lấy từ userData
   const vipLevels = [
     { level: 0, name: "VIP LVL 0", image: "/images/logo-vip0.jpg", pointsRequired: 0 },
@@ -2346,7 +2338,7 @@ interface WalletSectionProps {
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const WalletSection: React.FC<WalletSectionProps> = ({ 
+function WalletSection({ 
   userData, 
   setUserData, 
   notifications, 
@@ -2356,7 +2348,7 @@ const WalletSection: React.FC<WalletSectionProps> = ({
   unreadCount,
   pendingAmount,
   setIsAuthenticated
-}) => {
+}: WalletSectionProps) {
   const [mode, setMode] = useState<WalletMode>("overview");
   const [depositAmount, setDepositAmount] = useState<string>("");
   const [withdrawAmount, setWithdrawAmount] = useState<string>("");
