@@ -3,6 +3,54 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 
+// Global styles for animations
+if (typeof document !== 'undefined') {
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideInLeft {
+      from {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    @keyframes slideOutLeft {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+    }
+    @keyframes slideOutRight {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+}
+
 type TabKey = "personal" | "vip" | "wallet";
 
 type WalletMode = "overview" | "deposit" | "withdraw" | "history" | "linkBank";
@@ -244,26 +292,58 @@ export default function WalletPage() {
     return () => clearInterval(interval);
   }, [isAuthenticated, userData.id, notifications]);
 
+  const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const handleTabChange = (newTab: TabKey) => {
+    if (newTab === activeTab) return;
+    
+    const tabs: TabKey[] = ['vip', 'wallet', 'personal'];
+    const currentIndex = tabs.indexOf(activeTab);
+    const newIndex = tabs.indexOf(newTab);
+    
+    setSlideDirection(newIndex > currentIndex ? 'right' : 'left');
+    setIsTransitioning(true);
+    
+    setTimeout(() => {
+      setActiveTab(newTab);
+      setTimeout(() => setIsTransitioning(false), 50);
+    }, 150);
+  };
+
   const renderContent = () => {
-    switch (activeTab) {
-      case "personal":
-        return <PersonalSection userData={userData} />;
-      case "vip":
-        return <VipSection userData={userData} />;
-      case "wallet":
-      default:
-        return <WalletSection 
-          userData={userData} 
-          setUserData={setUserData}
-          notifications={notifications}
-          setNotifications={setNotifications}
-          showNotifications={showNotifications}
-          setShowNotifications={setShowNotifications}
-          unreadCount={unreadCount}
-          pendingAmount={pendingAmount}
-          setIsAuthenticated={setIsAuthenticated}
-        />;
-    }
+    const content = (() => {
+      switch (activeTab) {
+        case "personal":
+          return <PersonalSection userData={userData} />;
+        case "vip":
+          return <VipSection userData={userData} />;
+        case "wallet":
+        default:
+          return <WalletSection 
+            userData={userData} 
+            setUserData={setUserData}
+            notifications={notifications}
+            setNotifications={setNotifications}
+            showNotifications={showNotifications}
+            setShowNotifications={setShowNotifications}
+            unreadCount={unreadCount}
+            pendingAmount={pendingAmount}
+            setIsAuthenticated={setIsAuthenticated}
+          />;
+      }
+    })();
+
+    return (
+      <div style={{
+        animation: isTransitioning 
+          ? `slideOut${slideDirection === 'left' ? 'Right' : 'Left'} 0.15s ease-out forwards`
+          : `slideIn${slideDirection === 'left' ? 'Right' : 'Left'} 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards`,
+        opacity: isTransitioning ? 0 : 1,
+      }}>
+        {content}
+      </div>
+    );
   };
 
   const titleByTab: Record<TabKey, string> = {
@@ -327,42 +407,65 @@ export default function WalletPage() {
               {renderContent()}
             </div>
 
-            {/* Thanh điều hướng dưới: 3 phím tắt FIXED - Mobile style */}
+            {/* Thanh điều hướng dưới: 3 phím tắt FIXED - Premium Glassmorphism style */}
             <div
               style={{
                 width: "100%",
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr 1fr",
                 gap: 0,
-                padding: "4px 0",
-                background: "rgba(15,23,42,0.98)",
-                borderTop: "1px solid rgba(148,163,184,0.3)",
+                padding: "8px 0",
+                background: "linear-gradient(180deg, rgba(15,23,42,0.85) 0%, rgba(30,41,59,0.95) 100%)",
+                backdropFilter: "blur(20px) saturate(180%)",
+                WebkitBackdropFilter: "blur(20px) saturate(180%)",
+                borderTop: "1px solid rgba(148,163,184,0.2)",
                 flexShrink: 0,
-                boxShadow: "0 -4px 12px rgba(0,0,0,0.3)",
+                boxShadow: "0 -8px 32px rgba(0,0,0,0.4), 0 -2px 16px rgba(59,130,246,0.1), inset 0 1px 0 rgba(255,255,255,0.05)",
                 position: "absolute",
                 bottom: 0,
                 left: 0,
                 right: 0,
                 zIndex: 100,
+                overflow: "hidden",
               }}
             >
+              {/* Animated gradient background overlay */}
+              <div style={{
+                position: "absolute",
+                top: "-50%",
+                left: "-50%",
+                right: "-50%",
+                bottom: "-50%",
+                background: "radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%)",
+                animation: "gradientMove 8s ease-in-out infinite",
+                pointerEvents: "none",
+              }} />
+              
+              <style jsx>{`
+                @keyframes gradientMove {
+                  0%, 100% { transform: translate(0, 0); }
+                  25% { transform: translate(20%, 10%); }
+                  50% { transform: translate(-20%, 5%); }
+                  75% { transform: translate(10%, -10%); }
+                }
+              `}</style>
               <NavButton
                 label="VIP"
-                icon="💎"
+                icon="vip"
                 active={activeTab === "vip"}
-                onClick={() => setActiveTab("vip")}
+                onClick={() => handleTabChange("vip")}
               />
               <NavButton
                 label="Ví"
-                icon="💰"
+                icon="wallet"
                 active={activeTab === "wallet"}
-                onClick={() => setActiveTab("wallet")}
+                onClick={() => handleTabChange("wallet")}
               />
               <NavButton
                 label="Cá nhân"
-                icon="👤"
+                icon="profile"
                 active={activeTab === "personal"}
-                onClick={() => setActiveTab("personal")}
+                onClick={() => handleTabChange("personal")}
               />
             </div>
           </>
@@ -936,10 +1039,94 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
 /*** COMPONENT: Nút nav 3 mục dưới cùng */
 interface NavButtonProps {
   label: string;
-  icon: string;
+  icon: 'vip' | 'wallet' | 'profile';
   active?: boolean;
   onClick?: () => void;
 }
+
+// Custom SVG Icons Component
+const NavIcon: React.FC<{ type: 'vip' | 'wallet' | 'profile'; active?: boolean }> = ({ type, active }) => {
+  const iconColor = active ? '#ffffff' : '#64748b';
+  const glowColor = active ? 'rgba(255,255,255,0.6)' : 'transparent';
+  
+  const icons = {
+    vip: (
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style={{
+        filter: active ? 'drop-shadow(0 0 8px rgba(255,255,255,0.6))' : 'none',
+        transition: 'all 0.3s ease',
+      }}>
+        <defs>
+          <linearGradient id="vipGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor={active ? "#fbbf24" : iconColor} />
+            <stop offset="50%" stopColor={active ? "#f59e0b" : iconColor} />
+            <stop offset="100%" stopColor={active ? "#dc2626" : iconColor} />
+          </linearGradient>
+        </defs>
+        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" 
+          fill="url(#vipGrad)" 
+          stroke={active ? "#fbbf24" : "none"} 
+          strokeWidth={active ? "0.5" : "0"}
+        />
+        {active && (
+          <circle cx="12" cy="12" r="10" fill="none" stroke="#fbbf24" strokeWidth="0.5" opacity="0.3">
+            <animate attributeName="r" from="8" to="12" dur="1.5s" repeatCount="indefinite" />
+            <animate attributeName="opacity" from="0.6" to="0" dur="1.5s" repeatCount="indefinite" />
+          </circle>
+        )}
+      </svg>
+    ),
+    wallet: (
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style={{
+        filter: active ? 'drop-shadow(0 0 8px rgba(255,255,255,0.6))' : 'none',
+        transition: 'all 0.3s ease',
+      }}>
+        <defs>
+          <linearGradient id="walletGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor={active ? "#10b981" : iconColor} />
+            <stop offset="50%" stopColor={active ? "#059669" : iconColor} />
+            <stop offset="100%" stopColor={active ? "#047857" : iconColor} />
+          </linearGradient>
+        </defs>
+        <rect x="3" y="6" width="18" height="13" rx="2" fill="url(#walletGrad)" stroke={active ? "#10b981" : "none"} strokeWidth={active ? "0.5" : "0"} />
+        <path d="M3 10h18" stroke={active ? "#dcfce7" : "#94a3b8"} strokeWidth="1.5" strokeLinecap="round" />
+        <circle cx="16" cy="14" r="1.5" fill={active ? "#dcfce7" : "#cbd5e1"} />
+        {active && (
+          <>
+            <circle cx="12" cy="12" r="10" fill="none" stroke="#10b981" strokeWidth="0.5" opacity="0.3">
+              <animate attributeName="r" from="8" to="12" dur="1.5s" repeatCount="indefinite" />
+              <animate attributeName="opacity" from="0.6" to="0" dur="1.5s" repeatCount="indefinite" />
+            </circle>
+            <path d="M8 14h2M8 16h3" stroke="#dcfce7" strokeWidth="0.8" strokeLinecap="round" opacity="0.6" />
+          </>
+        )}
+      </svg>
+    ),
+    profile: (
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style={{
+        filter: active ? 'drop-shadow(0 0 8px rgba(255,255,255,0.6))' : 'none',
+        transition: 'all 0.3s ease',
+      }}>
+        <defs>
+          <linearGradient id="profileGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor={active ? "#3b82f6" : iconColor} />
+            <stop offset="50%" stopColor={active ? "#8b5cf6" : iconColor} />
+            <stop offset="100%" stopColor={active ? "#ec4899" : iconColor} />
+          </linearGradient>
+        </defs>
+        <circle cx="12" cy="8" r="4" fill="url(#profileGrad)" stroke={active ? "#3b82f6" : "none"} strokeWidth={active ? "0.5" : "0"} />
+        <path d="M4 20c0-4 3.6-6 8-6s8 2 8 6" fill="url(#profileGrad)" stroke={active ? "#3b82f6" : "none"} strokeWidth={active ? "0.5" : "0"} />
+        {active && (
+          <circle cx="12" cy="12" r="10" fill="none" stroke="#3b82f6" strokeWidth="0.5" opacity="0.3">
+            <animate attributeName="r" from="8" to="12" dur="1.5s" repeatCount="indefinite" />
+            <animate attributeName="opacity" from="0.6" to="0" dur="1.5s" repeatCount="indefinite" />
+          </circle>
+        )}
+      </svg>
+    ),
+  };
+  
+  return icons[type];
+};
 
 const NavButton: React.FC<NavButtonProps> = ({
   label,
@@ -947,44 +1134,195 @@ const NavButton: React.FC<NavButtonProps> = ({
   active,
   onClick,
 }) => {
+  const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
+  const [isPressed, setIsPressed] = useState(false);
+
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = Date.now();
+    
+    setRipples([...ripples, { x, y, id }]);
+    setTimeout(() => {
+      setRipples(prev => prev.filter(r => r.id !== id));
+    }, 600);
+    
+    // Haptic feedback simulation
+    setIsPressed(true);
+    setTimeout(() => setIsPressed(false), 100);
+    
+    onClick?.();
+  };
+
   return (
     <button
-      onClick={onClick}
+      onClick={handleClick}
       style={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        gap: 0,
-        padding: "12px 8px",
+        gap: 6,
+        padding: "8px 12px",
         border: "none",
         cursor: "pointer",
-        fontSize: "11px",
+        fontSize: "10px",
         fontWeight: 600,
         background: active
-          ? "linear-gradient(135deg,#1d4ed8,#38bdf8)"
+          ? "linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%)"
           : "transparent",
-        color: active ? "#ffffff" : "#94a3b8",
-        transition: "all 0.2s ease",
-        minHeight: 56,
+        color: active ? "#ffffff" : "#64748b",
+        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        minHeight: 64,
         position: "relative",
+        overflow: "hidden",
+        borderRadius: active ? "16px 16px 0 0" : "0",
+        transform: active ? "translateY(-4px)" : "translateY(0)",
+        boxShadow: active 
+          ? "0 -4px 20px rgba(59, 130, 246, 0.4), 0 0 30px rgba(139, 92, 246, 0.3)"
+          : "none",
       }}
       onMouseEnter={(e) => {
         if (!active) {
-          e.currentTarget.style.color = "#e2e8f0";
+          e.currentTarget.style.color = "#94a3b8";
+          e.currentTarget.style.transform = "translateY(-2px)";
         }
       }}
       onMouseLeave={(e) => {
         if (!active) {
-          e.currentTarget.style.color = "#94a3b8";
+          e.currentTarget.style.color = "#64748b";
+          e.currentTarget.style.transform = "translateY(0)";
         }
       }}
     >
-      <span style={{ 
-        fontSize: 28, 
+      {/* Glow effect khi active với breathing animation */}
+      {active && (
+        <>
+          <div style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 50%)",
+            pointerEvents: "none",
+            animation: "breathe 3s ease-in-out infinite",
+          }} />
+          
+          {/* Floating particles effect */}
+          {[...Array(3)].map((_, i) => (
+            <div
+              key={i}
+              style={{
+                position: "absolute",
+                width: 4,
+                height: 4,
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.6)",
+                bottom: 10,
+                left: `${25 + i * 25}%`,
+                animation: `float ${2 + i * 0.5}s ease-in-out infinite`,
+                animationDelay: `${i * 0.3}s`,
+                pointerEvents: "none",
+              }}
+            />
+          ))}
+          
+          <style jsx>{`
+            @keyframes breathe {
+              0%, 100% { opacity: 1; }
+              50% { opacity: 0.7; }
+            }
+            @keyframes float {
+              0%, 100% { 
+                transform: translateY(0) scale(1);
+                opacity: 0;
+              }
+              50% { 
+                transform: translateY(-20px) scale(1.2);
+                opacity: 0.8;
+              }
+            }
+          `}</style>
+        </>
+      )}
+      
+      {/* Ripple effects */}
+      {ripples.map(ripple => (
+        <span
+          key={ripple.id}
+          style={{
+            position: "absolute",
+            left: ripple.x,
+            top: ripple.y,
+            width: 10,
+            height: 10,
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.6)",
+            transform: "translate(-50%, -50%)",
+            animation: "ripple 0.6s ease-out",
+            pointerEvents: "none",
+          }}
+        />
+      ))}
+      
+      {/* Custom SVG Icon với scale animation */}
+      <div style={{ 
         lineHeight: 1,
-        display: "block",
-      }}>{icon}</span>
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        transform: active ? "scale(1.15) translateY(-2px)" : isPressed ? "scale(0.9)" : "scale(1)",
+      }}>
+        <NavIcon type={icon} active={active} />
+      </div>
+      
+      {/* Label với fade animation */}
+      <span style={{
+        opacity: active ? 1 : 0.7,
+        transition: "all 0.3s ease",
+        letterSpacing: active ? "0.5px" : "0",
+        textShadow: active ? "0 0 10px rgba(255,255,255,0.3)" : "none",
+      }}>
+        {label}
+      </span>
+      
+      {/* Active indicator line */}
+      {active && (
+        <div style={{
+          position: "absolute",
+          top: 0,
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: "60%",
+          height: 3,
+          background: "linear-gradient(90deg, transparent, #fff, transparent)",
+          borderRadius: "0 0 3px 3px",
+          animation: "slideIn 0.3s ease-out",
+        }} />
+      )}
+      
+      <style jsx>{`
+        @keyframes ripple {
+          to {
+            width: 100px;
+            height: 100px;
+            opacity: 0;
+          }
+        }
+        @keyframes slideIn {
+          from {
+            width: 0;
+            opacity: 0;
+          }
+          to {
+            width: 60%;
+            opacity: 1;
+          }
+        }
+      `}</style>
     </button>
   );
 };
