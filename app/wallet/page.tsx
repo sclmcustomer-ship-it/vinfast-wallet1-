@@ -1349,6 +1349,31 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
   const [dailyLimit, setDailyLimit] = useState(50000000); // 50 triệu VNĐ
   const [isAutoTopupEnabled, setIsAutoTopupEnabled] = useState(false);
   
+  // Lấy dữ liệu thống kê từ localStorage (bắt đầu từ 0)
+  const userStatsKey = `Yadea_stats_${userData.id}`;
+  const getUserStats = () => {
+    const saved = localStorage.getItem(userStatsKey);
+    if (saved) {
+      return JSON.parse(saved);
+    }
+    // Mặc định cho tài khoản mới
+    return {
+      totalDeposit: 0,        // Tổng đã nạp
+      totalWithdraw: 0,       // Tổng đã rút
+      transactionCount: 0,    // Số lần giao dịch
+      linkedCards: [],        // Danh sách thẻ ngân hàng
+      depositHistory: [],     // Lịch sử nạp tiền
+      withdrawHistory: [],    // Lịch sử rút tiền
+      referralCount: 0,       // Số người đã giới thiệu
+      referralEarnings: 0,    // Tiền thưởng giới thiệu
+      todayDeposit: 0,        // Đã nạp hôm nay
+      todayWithdraw: 0,       // Đã rút hôm nay
+      todayTransfer: 0,       // Đã chuyển hôm nay
+    };
+  };
+  
+  const userStats = getUserStats();
+  
   // Lấy chữ cái đầu của tên
   const initials = userData.fullName 
     ? userData.fullName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2)
@@ -1784,19 +1809,19 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
         }}>
           <StatCard 
             label="Tổng nạp"
-            value={`₫${(userData.balance * 2.5).toLocaleString()}`}
+            value={`₫${userStats.totalDeposit.toLocaleString()}`}
             icon="💵"
             color="#22c55e"
           />
           <StatCard 
             label="Tổng rút"
-            value={`₫${(userData.balance * 1.2).toLocaleString()}`}
+            value={`₫${userStats.totalWithdraw.toLocaleString()}`}
             icon="💸"
             color="#f59e0b"
           />
           <StatCard 
             label="Giao dịch"
-            value="47 lần"
+            value={`${userStats.transactionCount} lần`}
             icon="📝"
             color="#3b82f6"
           />
@@ -2200,39 +2225,63 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
               💳 Thẻ ngân hàng đã liên kết
             </h3>
             
-            {/* Example card */}
-            <div
-              style={{
-                padding: 14,
+            {/* Hiển thị danh sách thẻ từ userStats */}
+            {userStats.linkedCards.length === 0 ? (
+              <div style={{
+                padding: 30,
+                textAlign: "center",
                 borderRadius: 12,
-                border: "1px solid rgba(148,163,184,0.3)",
-                background: "linear-gradient(135deg, rgba(59,130,246,0.2), rgba(139,92,246,0.2))",
+                border: "1px dashed rgba(148,163,184,0.3)",
+                background: "rgba(30,41,59,0.2)",
                 marginBottom: 14,
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
-                <span style={{ fontSize: 32 }}>🏦</span>
-                <div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: "#e5e7eb" }}>
-                    Vietcombank
-                  </div>
-                  <div style={{ fontSize: 12, opacity: 0.7 }}>
-                    **** **** **** 4589
-                  </div>
+              }}>
+                <div style={{ fontSize: 48, marginBottom: 12, opacity: 0.4 }}>💳</div>
+                <div style={{ fontSize: 13, color: "#94a3b8", marginBottom: 6 }}>
+                  Chưa có thẻ ngân hàng
+                </div>
+                <div style={{ fontSize: 11, opacity: 0.6 }}>
+                  Liên kết thẻ để nạp/rút tiền nhanh chóng
                 </div>
               </div>
-              <div style={{ 
-                fontSize: 10, 
-                padding: "4px 8px",
-                borderRadius: 999,
-                background: "rgba(34,197,94,0.2)",
-                color: "#4ade80",
-                fontWeight: 600,
-                display: "inline-block",
-              }}>
-                • Thẻ chính
-              </div>
-            </div>
+            ) : (
+              userStats.linkedCards.map((card: any, idx: number) => (
+                <div
+                  key={idx}
+                  style={{
+                    padding: 14,
+                    borderRadius: 12,
+                    border: "1px solid rgba(148,163,184,0.3)",
+                    background: "linear-gradient(135deg, rgba(59,130,246,0.2), rgba(139,92,246,0.2))",
+                    marginBottom: 10,
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+                    <span style={{ fontSize: 32 }}>🏦</span>
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: "#e5e7eb" }}>
+                        {card.bankName}
+                      </div>
+                      <div style={{ fontSize: 12, opacity: 0.7 }}>
+                        **** **** **** {card.lastFourDigits}
+                      </div>
+                    </div>
+                  </div>
+                  {idx === 0 && (
+                    <div style={{ 
+                      fontSize: 10, 
+                      padding: "4px 8px",
+                      borderRadius: 999,
+                      background: "rgba(34,197,94,0.2)",
+                      color: "#4ade80",
+                      fontWeight: 600,
+                      display: "inline-block",
+                    }}>
+                      • Thẻ chính
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
             
             <button
               onClick={() => alert("➕ Tính năng thêm thẻ mới sẽ được cập nhật sớm")}
@@ -2311,23 +2360,23 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
             <div style={{ display: "grid", gap: 12, marginBottom: 16 }}>
               <LimitCard 
                 label="Hạn mức nạp tiền/ngày"
-                current="₫0"
+                current={`₫${userStats.todayDeposit.toLocaleString()}`}
                 max="₫100,000,000"
-                percentage={0}
+                percentage={(userStats.todayDeposit / 100000000) * 100}
                 color="#22c55e"
               />
               <LimitCard 
                 label="Hạn mức rút tiền/ngày"
-                current="₫0"
+                current={`₫${userStats.todayWithdraw.toLocaleString()}`}
                 max="₫50,000,000"
-                percentage={0}
+                percentage={(userStats.todayWithdraw / 50000000) * 100}
                 color="#f59e0b"
               />
               <LimitCard 
                 label="Hạn mức chuyển tiền/ngày"
-                current="₫0"
+                current={`₫${userStats.todayTransfer.toLocaleString()}`}
                 max="₫200,000,000"
-                percentage={0}
+                percentage={(userStats.todayTransfer / 200000000) * 100}
                 color="#3b82f6"
               />
             </div>
@@ -2456,15 +2505,21 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
               marginBottom: 14,
             }}>
               <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 20, fontWeight: 700, color: "#ec4899" }}>0</div>
+                <div style={{ fontSize: 20, fontWeight: 700, color: "#ec4899" }}>
+                  {userStats.referralCount}
+                </div>
                 <div style={{ fontSize: 11, opacity: 0.7 }}>Đã mời</div>
               </div>
               <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 20, fontWeight: 700, color: "#22c55e" }}>₫0</div>
+                <div style={{ fontSize: 20, fontWeight: 700, color: "#22c55e" }}>
+                  ₫{userStats.referralEarnings.toLocaleString()}
+                </div>
                 <div style={{ fontSize: 11, opacity: 0.7 }}>Đã nhận</div>
               </div>
               <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 20, fontWeight: 700, color: "#8b5cf6" }}>0</div>
+                <div style={{ fontSize: 20, fontWeight: 700, color: "#8b5cf6" }}>
+                  {userStats.referralCount * 500}
+                </div>
                 <div style={{ fontSize: 11, opacity: 0.7 }}>Điểm thưởng</div>
               </div>
             </div>
