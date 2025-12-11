@@ -1,91 +1,89 @@
-# 🏍️ Thương Hiệu YD - Website Xe Điện Thông Minh
+# Yadea Wallet - Ứng dụng ví điện tử
 
-> Modern electric bike e-commerce website với Next.js 14, Supabase, và Tailwind CSS
+Hệ thống ví điện tử Yadea với giao diện hiện đại và tính năng quản lý đầy đủ.
 
 [![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.0-38bdf8)](https://tailwindcss.com/)
 [![Supabase](https://img.shields.io/badge/Supabase-Latest-green)](https://supabase.com/)
 
-## ✨ Features
+## 🚀 Tính năng
 
-- 🎨 **Modern UI/UX**: Gradient animations, glassmorphism effects, smooth transitions
-- 🏍️ **Product Showcase**: Product cards với badges, ratings, hover effects
-- 📱 **Fully Responsive**: Mobile-first design, responsive menu
-- ⚡ **High Performance**: Next.js 14 App Router, optimized builds
-- 🔐 **Authentication**: Supabase auth integration (ready for login/register)
-- 💰 **Wallet System**: Deposit/withdraw functionality
-- 👨‍💼 **Banker Dashboard**: Admin management panel
-- 🚀 **Deploy Ready**: Vercel configuration included
+### Wallet (Ví người dùng)
+- ✅ Xem số dư tài khoản (Balance, Deposit, Locked, Pending)
+- ✅ Nạp tiền vào ví với ngân hàng liên kết
+- ✅ Rút tiền từ ví về ngân hàng
+- ✅ Xem lịch sử giao dịch chi tiết
+- ✅ Giao diện hiện đại với hiệu ứng động và icon 3D
 
-## 🛠️ Tech Stack
+### Banker (Quản trị viên)
+- ✅ Quản lý người dùng (thêm, sửa, xóa)
+- ✅ Xử lý yêu cầu nạp/rút tiền
+- ✅ Khóa/Mở khóa tài khoản
+- ✅ Xem thống kê tổng quan hệ thống
+- ✅ **Thay đổi Logo và Tên thương hiệu** từ Settings tab
 
-- **Framework**: Next.js 14 (App Router)
+### Admin
+- ✅ Quản lý toàn hệ thống
+- ✅ Cấu hình và giám sát
+
+## 🛠️ Công nghệ sử dụng
+
+- **Framework**: Next.js 14.2.33 (App Router)
 - **Language**: TypeScript
-- **Styling**: Tailwind CSS
+- **Styling**: Tailwind CSS 3
 - **Database**: Supabase (PostgreSQL)
 - **Authentication**: Supabase Auth
 - **Deployment**: Vercel
 - **Version Control**: Git + GitHub
 
-## 📦 Project Structure
+## 📦 Cấu trúc Project
 
 ```
-vinfast-wallet1-/
+yadea-wallet/
 ├── app/
-│   ├── page.tsx           # Homepage (YD design)
-│   ├── layout.tsx         # Root layout with Header/Footer
+│   ├── page.tsx           # Homepage - redirect to wallet
+│   ├── layout.tsx         # Root layout
 │   ├── globals.css        # Global styles + animations
 │   ├── admin/             # Admin panel
-│   ├── banker/            # Banker management
-│   ├── wallet/            # Wallet system
+│   │   └── page.tsx
+│   ├── banker/            # Banker management dashboard
+│   │   └── page.tsx       # With Settings tab for branding
+│   ├── wallet/            # Main wallet interface
+│   │   └── page.tsx       # User wallet with transactions
 │   └── api/               # API routes
-│       ├── auth/          # Login/Signup
+│       ├── auth/          # Login/Signup endpoints
 │       ├── banker/        # Banker operations
-│       └── transaction/   # Deposit/Withdraw
+│       └── transaction/   # Deposit/Withdraw handlers
 ├── components/
-│   ├── Header.tsx         # Navigation header
-│   └── Footer.tsx         # Footer with links
+│   ├── Header.tsx         # Navigation header (unused in wallet-only)
+│   └── Footer.tsx         # Footer component (unused in wallet-only)
 ├── lib/
-│   ├── supabase.ts        # Supabase client
-│   └── supabase-helpers.ts
-├── public/                # Static assets
-├── vercel.json            # Vercel config
-├── .env.local.example     # Environment template
-├── DEPLOY.md              # Deployment guide
-└── deploy.bat/.sh         # Quick deploy scripts
+│   ├── supabase.ts        # Supabase client configuration
+│   └── supabase-helpers.ts # Helper functions
+├── public/
+│   └── images/            # Static images and assets
+├── _backup/               # Old files and documentation
+└── package.json           # Dependencies and scripts
 ```
 
-## 🚀 Quick Start
+## 🚀 Hướng dẫn sử dụng
 
-### Prerequisites
+### Yêu cầu hệ thống
 - Node.js 18+
-- npm or yarn
+- npm hoặc yarn
 - Git
-- Supabase account
+- Tài khoản Supabase
 
-### 1️⃣ Clone Repository
-
-```bash
-git clone https://github.com/sclmcustomer-ship-it/vinfast-wallet1-.git
-cd vinfast-wallet1-
-```
-
-### 2️⃣ Install Dependencies
+### 1️⃣ Cài đặt Dependencies
 
 ```bash
 npm install
 ```
 
-### 3️⃣ Environment Setup
+### 2️⃣ Cấu hình môi trường
 
-Copy `.env.local.example` to `.env.local`:
-
-```bash
-cp .env.local.example .env.local
-```
-
-Edit `.env.local` with your Supabase credentials:
+Tạo file `.env.local` với thông tin Supabase:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
@@ -99,108 +97,76 @@ npm run dev
 ```
 
 Open **http://localhost:3000** 🎉
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+```
 
-### 5️⃣ Build for Production
+### 3️⃣ Chạy Development Server
+
+```bash
+npm run dev
+```
+
+Truy cập:
+- **Wallet**: http://localhost:3000/wallet
+- **Banker**: http://localhost:3000/banker
+- **Admin**: http://localhost:3000/admin
+
+### 4️⃣ Build Production
 
 ```bash
 npm run build
 npm start
-# hoặc
-yarn build
-yarn start
 ```
 
-## 📁 Cấu trúc Project
+### 5️⃣ Deploy lên Vercel
 
-```
-├── app/
-│   ├── api/                    # API Routes
-│   │   ├── auth/
-│   │   │   ├── login/route.ts     # Đăng nhập API
-│   │   │   └── signup/route.ts    # Đăng ký API
-│   │   ├── transaction/
-│   │   │   ├── deposit/route.ts   # Nạp tiền API
-│   │   │   └── withdraw/route.ts  # Rút tiền API
-│   │   └── banker/route.ts        # Quản lý Banker API
-│   ├── layout.tsx             # Layout chính
-│   ├── page.tsx              # Trang chủ (Component chính)
-│   └── globals.css           # Global styles
-├── package.json              # Dependencies
-├── tsconfig.json            # TypeScript config
-├── next.config.js           # Next.js config
-└── README.md               # File này
-
+```bash
+vercel --prod
 ```
 
-## ✨ Các tính năng
+## 🎨 Thay đổi Logo và Thương hiệu
 
-### 🔐 Xác thực (Authentication)
-- ✅ Đăng nhập với email/SĐT
-- ✅ Đăng ký tài khoản mới
-- ✅ Quên mật khẩu (ready)
+Banker có thể dễ dàng thay đổi logo và tên thương hiệu:
 
-### 💳 Quản lý Tài Chính
-- ✅ **Nạp tiền** - Hỗ trợ multiple payment methods
-  - Chuyển khoản ngân hàng
-  - Ví điện tử (Momo, Zalo Pay)
-  - Thẻ tín dụng
-  - Crypto (USDT)
-  
-- ✅ **Rút tiền** - Rút tiền về tài khoản ngân hàng
-  - Xem số dư hiện tại
-  - Chọn tài khoản rút tiền
-  - Tính toán phí tự động
+1. Truy cập trang Banker: `/banker`
+2. Chọn tab **Settings** (⚙️) ở cuối menu
+3. Nhập thông tin mới:
+   - **Logo URL**: Đường dẫn đến file logo mới
+   - **Brand Name**: Tên thương hiệu (vd: "Yadea", "VinFast")
+   - **App Title**: Tiêu đề ứng dụng (vd: "Ví Yadea")
+4. Xem preview logo trước khi lưu
+5. Nhấn **💾 Lưu thay đổi**
+6. Nhấn **🔄 Đặt lại mặc định** để quay về branding Yadea
 
-### 👔 Quản lý Banker
-- ✅ Xem thông tin Banker hiện tại
-- ✅ Xem danh sách Banker khác
-- ✅ Chuyển đổi Banker
-- ✅ Xem quyền lợi (hoa hồng, hỗ trợ VIP, etc.)
+**Lưu ý**: Thay đổi sẽ áp dụng cho TẤT CẢ người dùng ngay lập tức thông qua localStorage!
 
-### 🛍️ Sản phẩm
-- ✅ Hiển thị sản phẩm xe máy điện
-- ✅ Thông tin chi tiết sản phẩm
-- ✅ Giá cả và quãng đường
+## 📱 Chức năng chính
 
-## 🔌 API Endpoints
+### Wallet (Ví người dùng)
+- Xem số dư: Balance, Deposit, Locked, Pending
+- Nạp tiền qua ngân hàng liên kết
+- Rút tiền về tài khoản ngân hàng
+- Xem lịch sử giao dịch chi tiết
+- Giao diện với icon động và hiệu ứng 3D
 
-### Authentication
-- `POST /api/auth/login` - Đăng nhập
-- `POST /api/auth/signup` - Đăng ký
+### Banker (Quản trị)
+- Quản lý danh sách người dùng
+- Xử lý yêu cầu nạp/rút tiền
+- Khóa/Mở khóa tài khoản người dùng
+- Xem thống kê hệ thống
+- **Settings**: Thay đổi logo và brand name
 
-### Transactions
-- `POST /api/transaction/deposit` - Nạp tiền
-- `POST /api/transaction/withdraw` - Rút tiền
+## � Bảo mật
 
-### Banker
-- `GET /api/banker` - Lấy danh sách Banker
-- `POST /api/banker` - Chọn Banker
+- ✅ Authentication với Supabase
+- ✅ Row Level Security (RLS) trên database
+- ✅ Mã hóa thông tin nhạy cảm
+- ✅ Validation dữ liệu đầu vào
+- ✅ Rate limiting trên API routes
 
-## 📝 Thông tin Form
+## 📝 License
 
-### Login
-- Email hoặc số điện thoại
-- Mật khẩu
-
-### Signup
-- Họ tên
-- Email
-- Số điện thoại
-- Mật khẩu (tối thiểu 8 ký tự)
-- Xác nhận mật khẩu
-
-### Deposit (Nạp tiền)
-- Số tài khoản / Email
-- Số tiền (10.000 - 100.000.000 VNĐ)
-- Phương thức thanh toán
-- Ngân hàng
-
-### Withdraw (Rút tiền)
-- Số tiền (tối thiểu 50.000 VNĐ)
-- Tài khoản rút tiền
-- Phí: 5.000 - 10.000 VNĐ
-
-## 🎨 Styling
+Private project - All rights reserved## 🎨 Styling
 
 - Sử dụng inline styles trong React components
 - Responsive design - tương thích mobile
@@ -231,28 +197,8 @@ vercel
 
 ### Deploy trên Netlify
 ```bash
-npm run build
-netlify deploy
-```
-
-### Deploy trên Docker
-```bash
-docker build -t electric-bike .
-docker run -p 3000:3000 electric-bike
-```
-
-## 📞 Contact & Support
-
-Liên hệ Banker để hỗ trợ:
-- 📱 Phone: 09XX XXX XXX
-- 💬 Zalo: 09XX XXX XXX
-- 📧 Email: support@electricmobility.com
-
-## 📜 License
-
-MIT License - Tự do sử dụng cho mục đích cá nhân và thương mại
 
 ---
 
-**Lần cập nhật cuối:** 4 tháng 12, 2025
-**Version:** 1.0.0
+**Cập nhật gần nhất:** 11 tháng 12, 2025  
+**Version:** 2.0.0 - Wallet System with Brand Configuration
