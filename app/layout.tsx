@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 
 const inter = Inter({
   subsets: ['latin', 'vietnamese'],
@@ -10,9 +8,9 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Thương Hiệu YD - Xe Điện Thông Minh | Xe Máy & Xe Đạp Trợ Lực',
-  description: 'Thương Hiệu YD - Giải pháp di chuyển xanh, an toàn và tiết kiệm. Xe máy điện, xe đạp trợ lực hiện đại với công nghệ tiên tiến.',
-  keywords: 'xe điện, xe máy điện, xe đạp trợ lực, YD, Thương Hiệu YD, xe điện thông minh',
+  title: 'Ví Yadea - Ví Điện Tử Thông Minh',
+  description: 'Ví điện tử Yadea - Quản lý tài chính thông minh, nạp rút tiện lợi, an toàn bảo mật',
+  keywords: 'ví điện tử, Yadea wallet, nạp tiền, rút tiền, ví thông minh',
 }
 
 export default function RootLayout({
@@ -23,13 +21,13 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="theme-color" content="#00a651" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <meta name="theme-color" content="#1a1f3a" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
-      <body className={`${inter.className} antialiased`}>
-        <Header />
+      <body className={`${inter.className} antialiased`} style={{ margin: 0, padding: 0, overflow: 'hidden' }}>
         {children}
-        <Footer />
       </body>
     </html>
   )
