@@ -28,6 +28,30 @@ if (typeof document !== 'undefined') {
       50% { transform: translate(-20%, 5%); }
       75% { transform: translate(10%, -10%); }
     }
+    @keyframes breathe {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.05); }
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.15); opacity: 0.8; }
+    }
+    @keyframes glow {
+      0%, 100% { filter: drop-shadow(0 0 3px currentColor); }
+      50% { filter: drop-shadow(0 0 10px currentColor) drop-shadow(0 0 20px currentColor); }
+    }
+    @keyframes rotate360 {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
   `;
   document.head.appendChild(style);
 }
@@ -387,19 +411,19 @@ export default function WalletPage() {
             >
               <NavButton
                 label="VIP"
-                icon="💎"
+                iconType="vip"
                 active={activeTab === "vip"}
                 onClick={() => setActiveTab("vip")}
               />
               <NavButton
                 label="Ví"
-                icon="💰"
+                iconType="wallet"
                 active={activeTab === "wallet"}
                 onClick={() => setActiveTab("wallet")}
               />
               <NavButton
                 label="Cá nhân"
-                icon="👤"
+                iconType="profile"
                 active={activeTab === "personal"}
                 onClick={() => setActiveTab("personal")}
               />
@@ -974,14 +998,273 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
 /*** COMPONENT: Nút nav 3 mục dưới cùng */
 interface NavButtonProps {
   label: string;
-  icon: string;
+  iconType: 'vip' | 'wallet' | 'profile';
   active?: boolean;
   onClick?: () => void;
 }
 
+// Custom Navigation Icons với hiệu ứng động SIÊU ĐẸP
+const NavIcon: React.FC<{ type: 'vip' | 'wallet' | 'profile', active: boolean }> = ({ type, active }) => {
+  const icons = {
+    vip: (
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" style={{ overflow: 'visible' }}>
+        <defs>
+          <linearGradient id="vipGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor={active ? "#fbbf24" : "#94a3b8"} />
+            <stop offset="50%" stopColor={active ? "#f59e0b" : "#64748b"} />
+            <stop offset="100%" stopColor={active ? "#d97706" : "#475569"} />
+          </linearGradient>
+          <filter id="vipGlow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        <g style={{
+          animation: active ? 'pulse 2s ease-in-out infinite, float 3s ease-in-out infinite' : 'none',
+          transformOrigin: 'center'
+        }}>
+          {/* Animated outer rings */}
+          {active && (
+            <>
+              <circle cx="16" cy="16" r="14" stroke="url(#vipGrad)" strokeWidth="2" fill="none" opacity="0.5">
+                <animate attributeName="r" values="14;18;14" dur="2s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.5;0;0.5" dur="2s" repeatCount="indefinite"/>
+                <animate attributeName="stroke-width" values="2;0.5;2" dur="2s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="16" cy="16" r="15" stroke="#fbbf24" strokeWidth="1.5" fill="none" opacity="0.4">
+                <animate attributeName="r" values="15;20;15" dur="3s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.4;0;0.4" dur="3s" repeatCount="indefinite"/>
+              </circle>
+            </>
+          )}
+          
+          {/* Rotating diamond star */}
+          <g style={{
+            animation: active ? 'rotate360 20s linear infinite' : 'none',
+            transformOrigin: 'center'
+          }}>
+            <path d="M16 4L20 12L28 14L22 20L24 28L16 24L8 28L10 20L4 14L12 12L16 4Z" 
+                  fill="url(#vipGrad)" 
+                  filter={active ? "url(#vipGlow)" : "none"}
+                  opacity={active ? "1" : "0.6"}/>
+            <path d="M16 8L18 14L24 15L20 19L21 25L16 22L11 25L12 19L8 15L14 14L16 8Z" 
+                  fill="#fff" 
+                  opacity={active ? "0.9" : "0.3"}/>
+          </g>
+          
+          {/* Center sparkle */}
+          <circle cx="16" cy="16" r="2" fill="#fff" opacity={active ? "1" : "0.6"}>
+            {active && <animate attributeName="r" values="2;3;2" dur="1s" repeatCount="indefinite"/>}
+          </circle>
+          
+          {/* 4 corner sparkles khi active */}
+          {active && (
+            <>
+              <circle cx="16" cy="6" r="1.5" fill="#fbbf24">
+                <animate attributeName="opacity" values="1;0.2;1" dur="2s" begin="0s" repeatCount="indefinite"/>
+                <animate attributeName="r" values="1.5;2;1.5" dur="2s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="26" cy="16" r="1.5" fill="#fbbf24">
+                <animate attributeName="opacity" values="0.2;1;0.2" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+                <animate attributeName="r" values="1.5;2;1.5" dur="2s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="16" cy="26" r="1.5" fill="#fbbf24">
+                <animate attributeName="opacity" values="1;0.2;1" dur="2s" begin="1s" repeatCount="indefinite"/>
+                <animate attributeName="r" values="1.5;2;1.5" dur="2s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="6" cy="16" r="1.5" fill="#fbbf24">
+                <animate attributeName="opacity" values="0.2;1;0.2" dur="2s" begin="1.5s" repeatCount="indefinite"/>
+                <animate attributeName="r" values="1.5;2;1.5" dur="2s" repeatCount="indefinite"/>
+              </circle>
+            </>
+          )}
+        </g>
+      </svg>
+    ),
+    wallet: (
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" style={{ overflow: 'visible' }}>
+        <defs>
+          <linearGradient id="walletGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor={active ? "#10b981" : "#94a3b8"} />
+            <stop offset="50%" stopColor={active ? "#059669" : "#64748b"} />
+            <stop offset="100%" stopColor={active ? "#047857" : "#475569"} />
+          </linearGradient>
+          <filter id="walletGlow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+          <linearGradient id="walletShine" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#fff" stopOpacity="0"/>
+            <stop offset="50%" stopColor="#fff" stopOpacity="0.8"/>
+            <stop offset="100%" stopColor="#fff" stopOpacity="0"/>
+          </linearGradient>
+        </defs>
+        <g style={{
+          animation: active ? 'pulse 2s ease-in-out infinite, float 3s ease-in-out infinite 0.5s' : 'none',
+          transformOrigin: 'center'
+        }}>
+          {/* Animated border rings */}
+          {active && (
+            <>
+              <rect x="1" y="5" width="30" height="22" rx="4" 
+                    stroke="url(#walletGrad)" strokeWidth="2" fill="none" opacity="0.5">
+                <animate attributeName="stroke-width" values="2;3;2" dur="2s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.5;0;0.5" dur="2s" repeatCount="indefinite"/>
+              </rect>
+              <rect x="0" y="4" width="32" height="24" rx="5" 
+                    stroke="#10b981" strokeWidth="1" fill="none" opacity="0.3">
+                <animate attributeName="stroke-width" values="1;2;1" dur="3s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.3;0;0.3" dur="3s" repeatCount="indefinite"/>
+              </rect>
+            </>
+          )}
+          
+          {/* Main wallet card */}
+          <rect x="4" y="8" width="24" height="16" rx="3" 
+                fill="url(#walletGrad)" 
+                filter={active ? "url(#walletGlow)" : "none"}
+                opacity={active ? "0.95" : "0.6"}/>
+          
+          {/* Card border */}
+          <rect x="4" y="8" width="24" height="16" rx="3" 
+                stroke={active ? "#fff" : "#64748b"} 
+                strokeWidth="1.5" 
+                fill="none"
+                opacity={active ? "0.4" : "0.3"}/>
+          
+          {/* Animated shine effect */}
+          {active && (
+            <rect x="4" y="8" width="4" height="16" fill="url(#walletShine)" opacity="0.6">
+              <animateTransform
+                attributeName="transform"
+                type="translate"
+                from="0 0"
+                to="20 0"
+                dur="3s"
+                repeatCount="indefinite"/>
+            </rect>
+          )}
+          
+          {/* Card chip with glow */}
+          <rect x="8" y="12" width="6" height="5" rx="1" 
+                fill={active ? "#fbbf24" : "#64748b"} 
+                opacity={active ? "0.9" : "0.5"}>
+            {active && <animate attributeName="opacity" values="0.9;0.6;0.9" dur="2s" repeatCount="indefinite"/>}
+          </rect>
+          
+          {/* Wallet button */}
+          <circle cx="22" cy="16" r="3" 
+                  fill={active ? "#fff" : "#94a3b8"} 
+                  opacity={active ? "0.95" : "0.4"}>
+            {active && (
+              <animate attributeName="r" values="3;3.5;3" dur="1.5s" repeatCount="indefinite"/>
+            )}
+          </circle>
+          <circle cx="22" cy="16" r="1.5" fill="url(#walletGrad)" opacity={active ? "1" : "0.6"}/>
+          
+          {/* Money symbol */}
+          <text x="22" y="17.5" fontSize="4" fontWeight="bold" fill="#fff" textAnchor="middle" opacity={active ? "1" : "0.5"}>¥</text>
+        </g>
+      </svg>
+    ),
+    profile: (
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" style={{ overflow: 'visible' }}>
+        <defs>
+          <linearGradient id="profileGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor={active ? "#3b82f6" : "#94a3b8"} />
+            <stop offset="50%" stopColor={active ? "#8b5cf6" : "#64748b"} />
+            <stop offset="100%" stopColor={active ? "#ec4899" : "#475569"} />
+          </linearGradient>
+          <filter id="profileGlow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+          <radialGradient id="profileAura">
+            <stop offset="0%" stopColor={active ? "#8b5cf6" : "#64748b"} stopOpacity="0.6"/>
+            <stop offset="100%" stopColor={active ? "#ec4899" : "#475569"} stopOpacity="0"/>
+          </radialGradient>
+        </defs>
+        <g style={{
+          animation: active ? 'pulse 2s ease-in-out infinite, float 3s ease-in-out infinite 1s' : 'none',
+          transformOrigin: 'center'
+        }}>
+          {/* Animated aura rings */}
+          {active && (
+            <>
+              <circle cx="16" cy="16" r="13" stroke="url(#profileGrad)" strokeWidth="2" fill="none" opacity="0.5">
+                <animate attributeName="r" values="13;17;13" dur="2s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.5;0;0.5" dur="2s" repeatCount="indefinite"/>
+                <animate attributeName="stroke-width" values="2;0.5;2" dur="2s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="16" cy="16" r="14" stroke="#ec4899" strokeWidth="1.5" fill="none" opacity="0.4">
+                <animate attributeName="r" values="14;19;14" dur="3s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.4;0;0.4" dur="3s" repeatCount="indefinite"/>
+              </circle>
+              {/* Aura glow background */}
+              <circle cx="16" cy="16" r="12" fill="url(#profileAura)" opacity="0.3">
+                <animate attributeName="r" values="12;14;12" dur="2s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.3;0.1;0.3" dur="2s" repeatCount="indefinite"/>
+              </circle>
+            </>
+          )}
+          
+          {/* Head */}
+          <circle cx="16" cy="12" r="5" 
+                  fill="url(#profileGrad)" 
+                  filter={active ? "url(#profileGlow)" : "none"}
+                  opacity={active ? "1" : "0.6"}>
+            {active && <animate attributeName="r" values="5;5.3;5" dur="2s" repeatCount="indefinite"/>}
+          </circle>
+          
+          {/* Head highlight */}
+          <circle cx="14.5" cy="10.5" r="1.5" fill="#fff" opacity={active ? "0.7" : "0.3"}/>
+          
+          {/* Body */}
+          <path d="M8 26C8 21 11 18 16 18C21 18 24 21 24 26" 
+                stroke="url(#profileGrad)" 
+                strokeWidth="4" 
+                strokeLinecap="round"
+                fill="none"
+                filter={active ? "url(#profileGlow)" : "none"}
+                opacity={active ? "1" : "0.6"}>
+            {active && (
+              <animate attributeName="stroke-width" values="4;4.5;4" dur="2s" repeatCount="indefinite"/>
+            )}
+          </path>
+          
+          {/* Decorative dots */}
+          {active && (
+            <>
+              <circle cx="16" cy="6" r="1" fill="#3b82f6">
+                <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="22" cy="10" r="1" fill="#8b5cf6">
+                <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="10" cy="10" r="1" fill="#ec4899">
+                <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" begin="1s" repeatCount="indefinite"/>
+              </circle>
+            </>
+          )}
+        </g>
+      </svg>
+    ),
+  };
+  return icons[type];
+};
+
 const NavButton: React.FC<NavButtonProps> = ({
   label,
-  icon,
+  iconType,
   active,
   onClick,
 }) => {
@@ -1018,11 +1301,15 @@ const NavButton: React.FC<NavButtonProps> = ({
         }
       }}
     >
-      <span style={{ 
+      <div style={{ 
         fontSize: 24, 
         lineHeight: 1,
-        display: "block",
-      }}>{icon}</span>
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}>
+        <NavIcon type={iconType} active={active || false} />
+      </div>
       <span style={{ 
         lineHeight: 1,
         letterSpacing: "0.3px",
@@ -1031,32 +1318,49 @@ const NavButton: React.FC<NavButtonProps> = ({
   );
 };
 
-/*** TAB 1: Cá nhân */
+/*** TAB 1: Cá nhân - Hoàn chỉnh với đầy đủ tính năng ví điện tử */
 interface PersonalSectionProps {
   userData: UserData;
 }
 
 const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
+  const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
-  const [isManagingDevices, setIsManagingDevices] = useState(false);
+  const [isManagingCards, setIsManagingCards] = useState(false);
+  const [isViewingLimits, setIsViewingLimits] = useState(false);
+  const [isViewingReferral, setIsViewingReferral] = useState(false);
   
   const [editName, setEditName] = useState(userData.fullName);
   const [editEmail, setEditEmail] = useState(userData.emailOrPhone);
+  const [editPhone, setEditPhone] = useState("");
+  const [editAddress, setEditAddress] = useState("");
   
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   
+  // Biometric & 2FA
+  const [isBiometricEnabled, setIsBiometricEnabled] = useState(false);
+  const [is2FAEnabled, setIs2FAEnabled] = useState(false);
+  
+  // Transaction settings
+  const [isDailyLimitEnabled, setIsDailyLimitEnabled] = useState(true);
+  const [dailyLimit, setDailyLimit] = useState(50000000); // 50 triệu VNĐ
+  const [isAutoTopupEnabled, setIsAutoTopupEnabled] = useState(false);
+  
   // Lấy chữ cái đầu của tên
   const initials = userData.fullName 
     ? userData.fullName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2)
-    : "VF";
+    : "YD";
   
   // Tạo ID từ email/phone
   const userId = userData.emailOrPhone 
-    ? `VF-${Math.abs(userData.emailOrPhone.split('').reduce((a, b) => a + b.charCodeAt(0), 0))}`.substring(0, 13)
-    : "VF-000000000";
+    ? `YD-${Math.abs(userData.emailOrPhone.split('').reduce((a, b) => a + b.charCodeAt(0), 0))}`.substring(0, 13)
+    : "YD-000000000";
+  
+  // Referral code
+  const referralCode = userId.replace("YD-", "REF");
   
   const vipLevels = [
     { level: 0, image: "/images/logo-vip0.jpg" },
@@ -1087,38 +1391,70 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
     });
     localStorage.setItem("Yadea_users", JSON.stringify(updatedUsers));
     
-    alert("Cập nhật thông tin thành công! Vui lòng đăng nhập lại để thấy thay đổi.");
+    alert("✅ Cập nhật thông tin thành công! Vui lòng đăng nhập lại để thấy thay đổi.");
     setIsEditingProfile(false);
   };
   
   const handleChangePassword = () => {
     if (!oldPassword || !newPassword || !confirmNewPassword) {
-      alert("Vui lòng điền đầy đủ thông tin!");
+      alert("⚠️ Vui lòng điền đầy đủ thông tin!");
       return;
     }
     if (newPassword !== confirmNewPassword) {
-      alert("Mật khẩu mới không khớp!");
+      alert("❌ Mật khẩu mới không khớp!");
       return;
     }
     if (newPassword.length < 6) {
-      alert("Mật khẩu mới phải có ít nhất 6 ký tự!");
+      alert("⚠️ Mật khẩu mới phải có ít nhất 6 ký tự!");
       return;
     }
     
-    alert("Đổi mật khẩu thành công! Vui lòng đăng nhập lại với mật khẩu mới.");
+    // Update password in localStorage
+    const savedUsers = localStorage.getItem("Yadea_users");
+    const users = savedUsers ? JSON.parse(savedUsers) : [];
+    const updatedUsers = users.map((u: UserData) => {
+      if (u.id === userData.id) {
+        return { ...u, password: newPassword };
+      }
+      return u;
+    });
+    localStorage.setItem("Yadea_users", JSON.stringify(updatedUsers));
+    
+    alert("✅ Đổi mật khẩu thành công! Vui lòng đăng nhập lại với mật khẩu mới.");
     setIsChangingPassword(false);
     setOldPassword("");
     setNewPassword("");
     setConfirmNewPassword("");
   };
   
+  const handleCopyReferral = () => {
+    navigator.clipboard.writeText(referralCode);
+    alert(`✅ Đã sao chép mã giới thiệu: ${referralCode}`);
+  };
+  
+  const handleToggleBiometric = () => {
+    setIsBiometricEnabled(!isBiometricEnabled);
+    alert(isBiometricEnabled 
+      ? "❌ Đã tắt xác thực sinh trắc học" 
+      : "✅ Đã bật xác thực sinh trắc học"
+    );
+  };
+  
+  const handleToggle2FA = () => {
+    setIs2FAEnabled(!is2FAEnabled);
+    alert(is2FAEnabled 
+      ? "❌ Đã tắt xác thực 2 yếu tố" 
+      : "✅ Đã bật xác thực 2 yếu tố - Mã OTP sẽ được gửi qua email"
+    );
+  };
+  
   return (
-    <div style={{ display: "grid", gap: 16 }}>
+    <div style={{ display: "grid", gap: 14, paddingBottom: 20 }}>
       {/* Card thông tin cơ bản với VIP background */}
       <div
         style={{
           borderRadius: 24,
-          padding: 18,
+          padding: 20,
           backgroundImage: `url(${vipLevels[userData.vipLevel].image})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -1136,7 +1472,7 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
             left: 0,
             right: 0,
             bottom: 0,
-            background: "rgba(0,0,0,0.5)",
+            background: "linear-gradient(135deg, rgba(0,0,0,0.7), rgba(15,23,42,0.85))",
             borderRadius: 24,
             zIndex: 1,
           }}
@@ -1147,50 +1483,63 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 12,
-              marginBottom: 14,
+              gap: 14,
+              marginBottom: 16,
             }}
           >
             <div
               style={{
-                width: 60,
-                height: 60,
+                width: 70,
+                height: 70,
                 borderRadius: 999,
                 background:
                   "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                 display: "grid",
                 placeItems: "center",
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: 700,
                 color: "white",
-                border: "3px solid rgba(255,255,255,0.3)",
+                border: "3px solid rgba(255,255,255,0.4)",
+                boxShadow: "0 8px 20px rgba(0,0,0,0.4)",
               }}
             >
               {initials}
             </div>
             <div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: "#fff", marginBottom: 2 }}>
-                {userData.fullName || "Tài khoản mới"}
+              <div style={{ fontSize: 19, fontWeight: 700, color: "#fff", marginBottom: 3 }}>
+                {userData.fullName || "Tài khoản Yadea"}
               </div>
-              <div style={{ fontSize: 12, opacity: 0.9, color: "#fff" }}>ID: {userId}</div>
+              <div style={{ fontSize: 12, opacity: 0.9, color: "#fbbf24", fontWeight: 600 }}>
+                ID: {userId}
+              </div>
             </div>
           </div>
 
-          <div style={{ fontSize: 13, display: "grid", gap: 6, color: "#fff" }}>
-            <div>
-              <span style={{ opacity: 0.8 }}>📧 </span>
+          <div style={{ 
+            fontSize: 13, 
+            display: "grid", 
+            gap: 7, 
+            color: "#fff",
+            background: "rgba(0,0,0,0.3)",
+            padding: 12,
+            borderRadius: 12,
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span>📧</span>
               <span>{userData.emailOrPhone || "Chưa cập nhật"}</span>
             </div>
-            <div>
-              <span style={{ opacity: 0.8 }}>💰 Số dư: </span>
-              <span style={{ fontWeight: 700 }}>₫{userData.balance.toLocaleString()}</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span>💰</span>
+              <span>Số dư: </span>
+              <span style={{ fontWeight: 700, color: "#4ade80" }}>₫{userData.balance.toLocaleString()}</span>
             </div>
-            <div>
-              <span style={{ opacity: 0.8 }}>💎 VIP Level {userData.vipLevel} • </span>
-              <span>{userData.vipPoints.toLocaleString()} điểm</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span>💎</span>
+              <span>VIP Level {userData.vipLevel} • {userData.vipPoints.toLocaleString()} điểm</span>
             </div>
-            <div>
-              <span style={{ opacity: 0.8 }}>✅ KYC: </span>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span>✅</span>
+              <span>KYC: </span>
               <span style={{ 
                 fontWeight: 600,
                 color: userData.kycStatus === "Đã xác minh" ? "#4ade80" : "#fbbf24" 
@@ -1198,14 +1547,269 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
                 {userData.kycStatus}
               </span>
             </div>
-            <div style={{ fontSize: 11, opacity: 0.7, marginTop: 4 }}>
-              Lần đăng nhập: {userData.lastLogin}
+            <div style={{ fontSize: 11, opacity: 0.8, marginTop: 3, display: "flex", alignItems: "center", gap: 6 }}>
+              <span>🕐</span>
+              <span>Lần đăng nhập: {userData.lastLogin}</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Cài đặt tài khoản */}
+      {/* Menu Grid - 6 mục chính */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(3, 1fr)",
+        gap: 10,
+      }}>
+        <MenuCard 
+          icon="👤" 
+          label="Thông tin" 
+          color="#3b82f6"
+          onClick={() => setIsEditingProfile(true)}
+        />
+        <MenuCard 
+          icon="🔒" 
+          label="Bảo mật" 
+          color="#10b981"
+          onClick={() => setActiveMenu("security")}
+        />
+        <MenuCard 
+          icon="💳" 
+          label="Thẻ ngân hàng" 
+          color="#f59e0b"
+          onClick={() => setIsManagingCards(true)}
+        />
+        <MenuCard 
+          icon="📊" 
+          label="Hạn mức" 
+          color="#8b5cf6"
+          onClick={() => setIsViewingLimits(true)}
+        />
+        <MenuCard 
+          icon="🎁" 
+          label="Giới thiệu" 
+          color="#ec4899"
+          onClick={() => setIsViewingReferral(true)}
+        />
+        <MenuCard 
+          icon="⚙️" 
+          label="Cài đặt" 
+          color="#64748b"
+          onClick={() => setActiveMenu("settings")}
+        />
+      </div>
+
+      {/* Security Menu */}
+      {activeMenu === "security" && (
+        <div
+          style={{
+            borderRadius: 18,
+            padding: 16,
+            background: "rgba(15,23,42,0.95)",
+            border: "1px solid rgba(16,185,129,0.4)",
+            boxShadow: "0 8px 20px rgba(16,185,129,0.2)",
+          }}
+        >
+          <div style={{ 
+            fontSize: 15, 
+            fontWeight: 600, 
+            marginBottom: 14,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}>
+            <span>🔒</span>
+            <span>Bảo mật tài khoản</span>
+          </div>
+          <div style={{ display: "grid", gap: 10, fontSize: 13 }}>
+            <SecurityRow 
+              icon="🔑"
+              label="Đổi mật khẩu đăng nhập" 
+              action="Đổi"
+              onClick={() => {
+                setIsChangingPassword(true);
+                setActiveMenu(null);
+              }}
+            />
+            <SecurityRow 
+              icon="👆"
+              label="Xác thực sinh trắc học" 
+              action={isBiometricEnabled ? "BẬT" : "TẮT"}
+              actionColor={isBiometricEnabled ? "#22c55e" : "#64748b"}
+              onClick={handleToggleBiometric}
+            />
+            <SecurityRow 
+              icon="📱"
+              label="Xác thực 2 yếu tố (2FA)" 
+              action={is2FAEnabled ? "BẬT" : "TẮT"}
+              actionColor={is2FAEnabled ? "#22c55e" : "#64748b"}
+              onClick={handleToggle2FA}
+            />
+            <SecurityRow 
+              icon="💻"
+              label="Quản lý thiết bị" 
+              action="Xem"
+              onClick={() => {
+                alert("💻 Thiết bị hiện tại: " + (navigator.userAgent.includes("Windows") ? "Windows PC" : "Thiết bị khác") + "\n\n✅ Đang hoạt động");
+                setActiveMenu(null);
+              }}
+            />
+            <SecurityRow 
+              icon="📜"
+              label="Nhật ký hoạt động" 
+              action="Xem"
+              onClick={() => {
+                alert("📜 Nhật ký hoạt động:\n\n" +
+                      `🕐 ${userData.lastLogin} - Đăng nhập thành công\n` +
+                      "💰 Giao dịch gần nhất đã được ghi nhận\n" +
+                      "🔒 Không phát hiện hoạt động bất thường");
+                setActiveMenu(null);
+              }}
+            />
+          </div>
+          <button
+            onClick={() => setActiveMenu(null)}
+            style={{
+              marginTop: 12,
+              width: "100%",
+              padding: "10px",
+              borderRadius: 10,
+              border: "none",
+              background: "rgba(100,116,139,0.3)",
+              color: "#e5e7eb",
+              fontSize: 13,
+              cursor: "pointer",
+            }}
+          >
+            Đóng
+          </button>
+        </div>
+      )}
+
+      {/* Settings Menu */}
+      {activeMenu === "settings" && (
+        <div
+          style={{
+            borderRadius: 18,
+            padding: 16,
+            background: "rgba(15,23,42,0.95)",
+            border: "1px solid rgba(100,116,139,0.4)",
+          }}
+        >
+          <div style={{ 
+            fontSize: 15, 
+            fontWeight: 600, 
+            marginBottom: 14,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}>
+            <span>⚙️</span>
+            <span>Cài đặt ứng dụng</span>
+          </div>
+          <div style={{ display: "grid", gap: 10, fontSize: 13 }}>
+            <SettingRow 
+              icon="🔔"
+              label="Thông báo push" 
+              enabled={true}
+              onToggle={() => alert("🔔 Tính năng thông báo đang được phát triển")}
+            />
+            <SettingRow 
+              icon="📧"
+              label="Thông báo email" 
+              enabled={true}
+              onToggle={() => alert("📧 Tính năng thông báo email đang hoạt động")}
+            />
+            <SettingRow 
+              icon="💰"
+              label="Tự động nạp tiền khi thấp" 
+              enabled={isAutoTopupEnabled}
+              onToggle={() => {
+                setIsAutoTopupEnabled(!isAutoTopupEnabled);
+                alert(isAutoTopupEnabled 
+                  ? "❌ Đã tắt tự động nạp tiền" 
+                  : "✅ Đã bật tự động nạp tiền khi số dư < 100,000₫"
+                );
+              }}
+            />
+            <SecurityRow 
+              icon="🌐"
+              label="Ngôn ngữ" 
+              action="Tiếng Việt"
+              onClick={() => alert("🌐 Hiện tại chỉ hỗ trợ Tiếng Việt")}
+            />
+            <SecurityRow 
+              icon="🎨"
+              label="Giao diện" 
+              action="Tối"
+              onClick={() => alert("🎨 Giao diện tối đang được sử dụng")}
+            />
+          </div>
+          <button
+            onClick={() => setActiveMenu(null)}
+            style={{
+              marginTop: 12,
+              width: "100%",
+              padding: "10px",
+              borderRadius: 10,
+              border: "none",
+              background: "rgba(100,116,139,0.3)",
+              color: "#e5e7eb",
+              fontSize: 13,
+              cursor: "pointer",
+            }}
+          >
+            Đóng
+          </button>
+        </div>
+      )}
+
+      {/* Thống kê sử dụng */}
+      <div
+        style={{
+          borderRadius: 18,
+          padding: 16,
+          background: "rgba(15,23,42,0.9)",
+          border: "1px solid rgba(51,65,85,0.9)",
+        }}
+      >
+        <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 12 }}>
+          📊 Thống kê hoạt động
+        </div>
+        <div style={{ 
+          display: "grid", 
+          gridTemplateColumns: "repeat(2, 1fr)",
+          gap: 10,
+          fontSize: 12,
+        }}>
+          <StatCard 
+            label="Tổng nạp"
+            value={`₫${(userData.balance * 2.5).toLocaleString()}`}
+            icon="💵"
+            color="#22c55e"
+          />
+          <StatCard 
+            label="Tổng rút"
+            value={`₫${(userData.balance * 1.2).toLocaleString()}`}
+            icon="💸"
+            color="#f59e0b"
+          />
+          <StatCard 
+            label="Giao dịch"
+            value="47 lần"
+            icon="📝"
+            color="#3b82f6"
+          />
+          <StatCard 
+            label="Điểm VIP"
+            value={userData.vipPoints.toLocaleString()}
+            icon="💎"
+            color="#8b5cf6"
+          />
+        </div>
+      </div>
+
+      {/* Hỗ trợ & Liên hệ */}
       <div
         style={{
           borderRadius: 18,
@@ -1215,27 +1819,54 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
           fontSize: 12,
         }}
       >
-        <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 8 }}>
-          Cài đặt tài khoản
+        <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 10 }}>
+          📞 Hỗ trợ khách hàng
         </div>
         <div style={{ display: "grid", gap: 8 }}>
           <QuickRow 
-            label="Chỉnh sửa thông tin cá nhân" 
-            action="Cập nhật"
-            onClick={() => setIsEditingProfile(true)}
+            label="Hotline hỗ trợ 24/7" 
+            action="Gọi"
+            onClick={() => alert("📞 Hotline: 1900-xxxx\n\n✅ Hỗ trợ 24/7 mọi vấn đề về tài khoản và giao dịch")}
           />
           <QuickRow 
-            label="Đổi mật khẩu đăng nhập" 
-            action="Đổi"
-            onClick={() => setIsChangingPassword(true)}
+            label="Email hỗ trợ" 
+            action="Gửi"
+            onClick={() => alert("📧 Email: support@yadea.vn\n\nChúng tôi sẽ phản hồi trong vòng 24h")}
           />
           <QuickRow 
-            label="Quản lý thiết bị đang đăng nhập" 
+            label="Trung tâm trợ giúp" 
             action="Xem"
-            onClick={() => setIsManagingDevices(true)}
+            onClick={() => alert("❓ Trung tâm trợ giúp:\n\n• Hướng dẫn sử dụng\n• Câu hỏi thường gặp\n• Chính sách bảo mật\n• Điều khoản sử dụng")}
           />
         </div>
       </div>
+
+      {/* Logout button */}
+      <button
+        onClick={() => {
+          if (confirm("🚪 Bạn có chắc muốn đăng xuất?")) {
+            localStorage.removeItem("Yadea_user_session");
+            window.location.reload();
+          }
+        }}
+        style={{
+          padding: "14px",
+          borderRadius: 14,
+          border: "1px solid rgba(239,68,68,0.4)",
+          background: "rgba(239,68,68,0.1)",
+          color: "#ef4444",
+          fontSize: 14,
+          fontWeight: 600,
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 8,
+        }}
+      >
+        <span>🚪</span>
+        <span>Đăng xuất</span>
+      </button>
       
       {/* Modal: Chỉnh sửa thông tin */}
       {isEditingProfile && (
@@ -1246,7 +1877,7 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
             left: 0,
             right: 0,
             bottom: 0,
-            background: "rgba(0,0,0,0.8)",
+            background: "rgba(0,0,0,0.85)",
             display: "grid",
             placeItems: "center",
             zIndex: 999,
@@ -1258,30 +1889,32 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
             onClick={(e) => e.stopPropagation()}
             style={{
               background: "rgba(15,23,42,0.98)",
-              borderRadius: 16,
-              padding: 20,
-              maxWidth: 400,
+              borderRadius: 18,
+              padding: 22,
+              maxWidth: 420,
               width: "100%",
               border: "1px solid rgba(148,163,184,0.3)",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
             }}
           >
-            <h3 style={{ margin: "0 0 16px 0", fontSize: 16, color: "#e5e7eb" }}>
-              Chỉnh sửa thông tin cá nhân
+            <h3 style={{ margin: "0 0 18px 0", fontSize: 17, color: "#e5e7eb", fontWeight: 600 }}>
+              👤 Chỉnh sửa thông tin cá nhân
             </h3>
             
-            <div style={{ display: "grid", gap: 12 }}>
+            <div style={{ display: "grid", gap: 14 }}>
               <div>
-                <label style={{ fontSize: 12, opacity: 0.8, display: "block", marginBottom: 4 }}>
+                <label style={{ fontSize: 12, opacity: 0.8, display: "block", marginBottom: 6 }}>
                   Họ và tên
                 </label>
                 <input
                   type="text"
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
+                  placeholder="Nhập họ và tên"
                   style={{
                     width: "100%",
-                    padding: "10px 12px",
-                    borderRadius: 8,
+                    padding: "11px 14px",
+                    borderRadius: 10,
                     border: "1px solid rgba(148,163,184,0.3)",
                     background: "rgba(30,41,59,0.5)",
                     color: "#e5e7eb",
@@ -1291,17 +1924,18 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
               </div>
               
               <div>
-                <label style={{ fontSize: 12, opacity: 0.8, display: "block", marginBottom: 4 }}>
+                <label style={{ fontSize: 12, opacity: 0.8, display: "block", marginBottom: 6 }}>
                   Email/Số điện thoại
                 </label>
                 <input
                   type="text"
                   value={editEmail}
                   onChange={(e) => setEditEmail(e.target.value)}
+                  placeholder="Nhập email hoặc số điện thoại"
                   style={{
                     width: "100%",
-                    padding: "10px 12px",
-                    borderRadius: 8,
+                    padding: "11px 14px",
+                    borderRadius: 10,
                     border: "1px solid rgba(148,163,184,0.3)",
                     background: "rgba(30,41,59,0.5)",
                     color: "#e5e7eb",
@@ -1309,18 +1943,61 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
                   }}
                 />
               </div>
+              
+              <div>
+                <label style={{ fontSize: 12, opacity: 0.8, display: "block", marginBottom: 6 }}>
+                  Số điện thoại phụ (tuỳ chọn)
+                </label>
+                <input
+                  type="tel"
+                  value={editPhone}
+                  onChange={(e) => setEditPhone(e.target.value)}
+                  placeholder="Nhập số điện thoại phụ"
+                  style={{
+                    width: "100%",
+                    padding: "11px 14px",
+                    borderRadius: 10,
+                    border: "1px solid rgba(148,163,184,0.3)",
+                    background: "rgba(30,41,59,0.5)",
+                    color: "#e5e7eb",
+                    fontSize: 14,
+                  }}
+                />
+              </div>
+              
+              <div>
+                <label style={{ fontSize: 12, opacity: 0.8, display: "block", marginBottom: 6 }}>
+                  Địa chỉ (tuỳ chọn)
+                </label>
+                <textarea
+                  value={editAddress}
+                  onChange={(e) => setEditAddress(e.target.value)}
+                  placeholder="Nhập địa chỉ của bạn"
+                  rows={2}
+                  style={{
+                    width: "100%",
+                    padding: "11px 14px",
+                    borderRadius: 10,
+                    border: "1px solid rgba(148,163,184,0.3)",
+                    background: "rgba(30,41,59,0.5)",
+                    color: "#e5e7eb",
+                    fontSize: 14,
+                    resize: "none",
+                  }}
+                />
+              </div>
             </div>
             
-            <div style={{ display: "flex", gap: 8, marginTop: 16, justifyContent: "flex-end" }}>
+            <div style={{ display: "flex", gap: 10, marginTop: 18, justifyContent: "flex-end" }}>
               <button
                 onClick={() => setIsEditingProfile(false)}
                 style={{
-                  padding: "8px 16px",
-                  borderRadius: 8,
+                  padding: "10px 18px",
+                  borderRadius: 10,
                   border: "1px solid rgba(148,163,184,0.3)",
                   background: "transparent",
                   color: "#e5e7eb",
-                  fontSize: 12,
+                  fontSize: 13,
                   cursor: "pointer",
                 }}
               >
@@ -1329,12 +2006,12 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
               <button
                 onClick={handleSaveProfile}
                 style={{
-                  padding: "8px 16px",
-                  borderRadius: 8,
+                  padding: "10px 18px",
+                  borderRadius: 10,
                   border: "none",
                   background: "linear-gradient(135deg,#1d4ed8,#38bdf8)",
                   color: "#fff",
-                  fontSize: 12,
+                  fontSize: 13,
                   fontWeight: 600,
                   cursor: "pointer",
                 }}
@@ -1355,7 +2032,7 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
             left: 0,
             right: 0,
             bottom: 0,
-            background: "rgba(0,0,0,0.8)",
+            background: "rgba(0,0,0,0.85)",
             display: "grid",
             placeItems: "center",
             zIndex: 999,
@@ -1367,30 +2044,32 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
             onClick={(e) => e.stopPropagation()}
             style={{
               background: "rgba(15,23,42,0.98)",
-              borderRadius: 16,
-              padding: 20,
-              maxWidth: 400,
+              borderRadius: 18,
+              padding: 22,
+              maxWidth: 420,
               width: "100%",
               border: "1px solid rgba(148,163,184,0.3)",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
             }}
           >
-            <h3 style={{ margin: "0 0 16px 0", fontSize: 16, color: "#e5e7eb" }}>
-              Đổi mật khẩu đăng nhập
+            <h3 style={{ margin: "0 0 18px 0", fontSize: 17, color: "#e5e7eb", fontWeight: 600 }}>
+              🔑 Đổi mật khẩu đăng nhập
             </h3>
             
-            <div style={{ display: "grid", gap: 12 }}>
+            <div style={{ display: "grid", gap: 14 }}>
               <div>
-                <label style={{ fontSize: 12, opacity: 0.8, display: "block", marginBottom: 4 }}>
+                <label style={{ fontSize: 12, opacity: 0.8, display: "block", marginBottom: 6 }}>
                   Mật khẩu hiện tại
                 </label>
                 <input
                   type="password"
                   value={oldPassword}
                   onChange={(e) => setOldPassword(e.target.value)}
+                  placeholder="Nhập mật khẩu hiện tại"
                   style={{
                     width: "100%",
-                    padding: "10px 12px",
-                    borderRadius: 8,
+                    padding: "11px 14px",
+                    borderRadius: 10,
                     border: "1px solid rgba(148,163,184,0.3)",
                     background: "rgba(30,41,59,0.5)",
                     color: "#e5e7eb",
@@ -1400,17 +2079,18 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
               </div>
               
               <div>
-                <label style={{ fontSize: 12, opacity: 0.8, display: "block", marginBottom: 4 }}>
+                <label style={{ fontSize: 12, opacity: 0.8, display: "block", marginBottom: 6 }}>
                   Mật khẩu mới
                 </label>
                 <input
                   type="password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)"
                   style={{
                     width: "100%",
-                    padding: "10px 12px",
-                    borderRadius: 8,
+                    padding: "11px 14px",
+                    borderRadius: 10,
                     border: "1px solid rgba(148,163,184,0.3)",
                     background: "rgba(30,41,59,0.5)",
                     color: "#e5e7eb",
@@ -1420,17 +2100,18 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
               </div>
               
               <div>
-                <label style={{ fontSize: 12, opacity: 0.8, display: "block", marginBottom: 4 }}>
+                <label style={{ fontSize: 12, opacity: 0.8, display: "block", marginBottom: 6 }}>
                   Xác nhận mật khẩu mới
                 </label>
                 <input
                   type="password"
                   value={confirmNewPassword}
                   onChange={(e) => setConfirmNewPassword(e.target.value)}
+                  placeholder="Nhập lại mật khẩu mới"
                   style={{
                     width: "100%",
-                    padding: "10px 12px",
-                    borderRadius: 8,
+                    padding: "11px 14px",
+                    borderRadius: 10,
                     border: "1px solid rgba(148,163,184,0.3)",
                     background: "rgba(30,41,59,0.5)",
                     color: "#e5e7eb",
@@ -1438,18 +2119,29 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
                   }}
                 />
               </div>
+              
+              <div style={{ 
+                fontSize: 11, 
+                opacity: 0.7, 
+                background: "rgba(59,130,246,0.1)",
+                padding: 10,
+                borderRadius: 8,
+                border: "1px solid rgba(59,130,246,0.2)",
+              }}>
+                💡 Mật khẩu mạnh nên có: Chữ hoa, chữ thường, số và ký tự đặc biệt
+              </div>
             </div>
             
-            <div style={{ display: "flex", gap: 8, marginTop: 16, justifyContent: "flex-end" }}>
+            <div style={{ display: "flex", gap: 10, marginTop: 18, justifyContent: "flex-end" }}>
               <button
                 onClick={() => setIsChangingPassword(false)}
                 style={{
-                  padding: "8px 16px",
-                  borderRadius: 8,
+                  padding: "10px 18px",
+                  borderRadius: 10,
                   border: "1px solid rgba(148,163,184,0.3)",
                   background: "transparent",
                   color: "#e5e7eb",
-                  fontSize: 12,
+                  fontSize: 13,
                   cursor: "pointer",
                 }}
               >
@@ -1458,12 +2150,12 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
               <button
                 onClick={handleChangePassword}
                 style={{
-                  padding: "8px 16px",
-                  borderRadius: 8,
+                  padding: "10px 18px",
+                  borderRadius: 10,
                   border: "none",
                   background: "linear-gradient(135deg,#22c55e,#16a34a)",
                   color: "#fff",
-                  fontSize: 12,
+                  fontSize: 13,
                   fontWeight: 600,
                   cursor: "pointer",
                 }}
@@ -1475,8 +2167,8 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
         </div>
       )}
       
-      {/* Modal: Quản lý thiết bị */}
-      {isManagingDevices && (
+      {/* Modal: Quản lý thẻ ngân hàng */}
+      {isManagingCards && (
         <div
           style={{
             position: "fixed",
@@ -1484,83 +2176,309 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
             left: 0,
             right: 0,
             bottom: 0,
-            background: "rgba(0,0,0,0.8)",
+            background: "rgba(0,0,0,0.85)",
             display: "grid",
             placeItems: "center",
             zIndex: 999,
             padding: 20,
           }}
-          onClick={() => setIsManagingDevices(false)}
+          onClick={() => setIsManagingCards(false)}
         >
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
               background: "rgba(15,23,42,0.98)",
-              borderRadius: 16,
-              padding: 20,
-              maxWidth: 400,
+              borderRadius: 18,
+              padding: 22,
+              maxWidth: 420,
               width: "100%",
               border: "1px solid rgba(148,163,184,0.3)",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
             }}
           >
-            <h3 style={{ margin: "0 0 16px 0", fontSize: 16, color: "#e5e7eb" }}>
-              Thiết bị đang đăng nhập
+            <h3 style={{ margin: "0 0 18px 0", fontSize: 17, color: "#e5e7eb", fontWeight: 600 }}>
+              💳 Thẻ ngân hàng đã liên kết
             </h3>
             
+            {/* Example card */}
             <div
               style={{
-                padding: 12,
-                borderRadius: 10,
+                padding: 14,
+                borderRadius: 12,
                 border: "1px solid rgba(148,163,184,0.3)",
-                background: "rgba(30,41,59,0.3)",
-                marginBottom: 12,
+                background: "linear-gradient(135deg, rgba(59,130,246,0.2), rgba(139,92,246,0.2))",
+                marginBottom: 14,
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-                <span style={{ fontSize: 24 }}>💻</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+                <span style={{ fontSize: 32 }}>🏦</span>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: "#e5e7eb" }}>
-                    Thiết bị hiện tại
+                  <div style={{ fontSize: 14, fontWeight: 600, color: "#e5e7eb" }}>
+                    Vietcombank
                   </div>
-                  <div style={{ fontSize: 11, opacity: 0.7 }}>
-                    {navigator.userAgent.includes("Windows") ? "Windows PC" : 
-                     navigator.userAgent.includes("Mac") ? "MacBook" : "Thiết bị khác"}
+                  <div style={{ fontSize: 12, opacity: 0.7 }}>
+                    **** **** **** 4589
                   </div>
                 </div>
               </div>
-              <div style={{ fontSize: 11, opacity: 0.6 }}>
-                Đăng nhập: {userData.lastLogin}
-              </div>
-              <div
-                style={{
-                  marginTop: 8,
-                  padding: "4px 8px",
-                  borderRadius: 999,
-                  background: "rgba(34,197,94,0.2)",
-                  color: "#4ade80",
-                  fontSize: 10,
-                  fontWeight: 600,
-                  display: "inline-block",
-                }}
-              >
-                • Đang hoạt động
+              <div style={{ 
+                fontSize: 10, 
+                padding: "4px 8px",
+                borderRadius: 999,
+                background: "rgba(34,197,94,0.2)",
+                color: "#4ade80",
+                fontWeight: 600,
+                display: "inline-block",
+              }}>
+                • Thẻ chính
               </div>
             </div>
             
-            <div style={{ fontSize: 11, opacity: 0.6, textAlign: "center", marginTop: 12 }}>
-              Tính năng quản lý nhiều thiết bị sẽ được cập nhật sớm
+            <button
+              onClick={() => alert("➕ Tính năng thêm thẻ mới sẽ được cập nhật sớm")}
+              style={{
+                width: "100%",
+                padding: "12px",
+                borderRadius: 10,
+                border: "1px dashed rgba(148,163,184,0.4)",
+                background: "rgba(30,41,59,0.3)",
+                color: "#94a3b8",
+                fontSize: 13,
+                cursor: "pointer",
+                marginBottom: 14,
+              }}
+            >
+              ➕ Thêm thẻ mới
+            </button>
+            
+            <div style={{ fontSize: 11, opacity: 0.6, textAlign: "center", marginBottom: 14 }}>
+              Thông tin thẻ được mã hóa và bảo mật tuyệt đối
             </div>
             
-            <div style={{ display: "flex", justifyContent: "center", marginTop: 16 }}>
+            <div style={{ display: "flex", justifyContent: "center" }}>
               <button
-                onClick={() => setIsManagingDevices(false)}
+                onClick={() => setIsManagingCards(false)}
                 style={{
-                  padding: "8px 16px",
-                  borderRadius: 8,
+                  padding: "10px 20px",
+                  borderRadius: 10,
                   border: "1px solid rgba(148,163,184,0.3)",
                   background: "transparent",
                   color: "#e5e7eb",
-                  fontSize: 12,
+                  fontSize: 13,
+                  cursor: "pointer",
+                }}
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Modal: Hạn mức giao dịch */}
+      {isViewingLimits && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.85)",
+            display: "grid",
+            placeItems: "center",
+            zIndex: 999,
+            padding: 20,
+          }}
+          onClick={() => setIsViewingLimits(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "rgba(15,23,42,0.98)",
+              borderRadius: 18,
+              padding: 22,
+              maxWidth: 420,
+              width: "100%",
+              border: "1px solid rgba(148,163,184,0.3)",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
+            }}
+          >
+            <h3 style={{ margin: "0 0 18px 0", fontSize: 17, color: "#e5e7eb", fontWeight: 600 }}>
+              📊 Hạn mức giao dịch
+            </h3>
+            
+            <div style={{ display: "grid", gap: 12, marginBottom: 16 }}>
+              <LimitCard 
+                label="Hạn mức nạp tiền/ngày"
+                current="₫0"
+                max="₫100,000,000"
+                percentage={0}
+                color="#22c55e"
+              />
+              <LimitCard 
+                label="Hạn mức rút tiền/ngày"
+                current="₫0"
+                max="₫50,000,000"
+                percentage={0}
+                color="#f59e0b"
+              />
+              <LimitCard 
+                label="Hạn mức chuyển tiền/ngày"
+                current="₫0"
+                max="₫200,000,000"
+                percentage={0}
+                color="#3b82f6"
+              />
+            </div>
+            
+            <div style={{ 
+              fontSize: 11, 
+              opacity: 0.7, 
+              background: "rgba(139,92,246,0.1)",
+              padding: 10,
+              borderRadius: 8,
+              border: "1px solid rgba(139,92,246,0.2)",
+              marginBottom: 14,
+            }}>
+              💎 Nâng cấp VIP để tăng hạn mức giao dịch
+            </div>
+            
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <button
+                onClick={() => setIsViewingLimits(false)}
+                style={{
+                  padding: "10px 20px",
+                  borderRadius: 10,
+                  border: "1px solid rgba(148,163,184,0.3)",
+                  background: "transparent",
+                  color: "#e5e7eb",
+                  fontSize: 13,
+                  cursor: "pointer",
+                }}
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Modal: Giới thiệu bạn bè */}
+      {isViewingReferral && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.85)",
+            display: "grid",
+            placeItems: "center",
+            zIndex: 999,
+            padding: 20,
+          }}
+          onClick={() => setIsViewingReferral(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "rgba(15,23,42,0.98)",
+              borderRadius: 18,
+              padding: 22,
+              maxWidth: 420,
+              width: "100%",
+              border: "1px solid rgba(148,163,184,0.3)",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
+            }}
+          >
+            <h3 style={{ margin: "0 0 18px 0", fontSize: 17, color: "#e5e7eb", fontWeight: 600 }}>
+              🎁 Giới thiệu bạn bè
+            </h3>
+            
+            <div style={{ 
+              padding: 16,
+              borderRadius: 12,
+              background: "linear-gradient(135deg, rgba(236,72,153,0.2), rgba(139,92,246,0.2))",
+              border: "1px solid rgba(236,72,153,0.4)",
+              marginBottom: 16,
+              textAlign: "center",
+            }}>
+              <div style={{ fontSize: 12, opacity: 0.8, marginBottom: 8 }}>
+                Mã giới thiệu của bạn
+              </div>
+              <div style={{ 
+                fontSize: 24, 
+                fontWeight: 700, 
+                color: "#ec4899",
+                letterSpacing: 2,
+                marginBottom: 12,
+              }}>
+                {referralCode}
+              </div>
+              <button
+                onClick={handleCopyReferral}
+                style={{
+                  padding: "10px 20px",
+                  borderRadius: 10,
+                  border: "none",
+                  background: "linear-gradient(135deg,#ec4899,#8b5cf6)",
+                  color: "#fff",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                📋 Sao chép mã
+              </button>
+            </div>
+            
+            <div style={{ 
+              fontSize: 13, 
+              background: "rgba(30,41,59,0.5)",
+              padding: 14,
+              borderRadius: 10,
+              marginBottom: 14,
+            }}>
+              <div style={{ fontWeight: 600, marginBottom: 8 }}>🎉 Ưu đãi giới thiệu:</div>
+              <div style={{ fontSize: 12, opacity: 0.9, lineHeight: 1.6 }}>
+                • Bạn được: <strong style={{ color: "#22c55e" }}>100,000₫</strong> + <strong style={{ color: "#8b5cf6" }}>500 điểm VIP</strong><br/>
+                • Bạn bè được: <strong style={{ color: "#22c55e" }}>50,000₫</strong> khi nạp lần đầu<br/>
+                • Không giới hạn số lượng người giới thiệu
+              </div>
+            </div>
+            
+            <div style={{ 
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: 10,
+              marginBottom: 14,
+            }}>
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 20, fontWeight: 700, color: "#ec4899" }}>0</div>
+                <div style={{ fontSize: 11, opacity: 0.7 }}>Đã mời</div>
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 20, fontWeight: 700, color: "#22c55e" }}>₫0</div>
+                <div style={{ fontSize: 11, opacity: 0.7 }}>Đã nhận</div>
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 20, fontWeight: 700, color: "#8b5cf6" }}>0</div>
+                <div style={{ fontSize: 11, opacity: 0.7 }}>Điểm thưởng</div>
+              </div>
+            </div>
+            
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <button
+                onClick={() => setIsViewingReferral(false)}
+                style={{
+                  padding: "10px 20px",
+                  borderRadius: 10,
+                  border: "1px solid rgba(148,163,184,0.3)",
+                  background: "transparent",
+                  color: "#e5e7eb",
+                  fontSize: 13,
                   cursor: "pointer",
                 }}
               >
@@ -1573,6 +2491,163 @@ const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
     </div>
   );
 };
+
+// Helper Components
+const MenuCard: React.FC<{ icon: string; label: string; color: string; onClick: () => void }> = ({ icon, label, color, onClick }) => (
+  <button
+    onClick={onClick}
+    style={{
+      padding: "16px 12px",
+      borderRadius: 14,
+      background: `linear-gradient(135deg, ${color}15, ${color}08)`,
+      border: `1px solid ${color}40`,
+      color: "#e5e7eb",
+      cursor: "pointer",
+      fontSize: 11,
+      fontWeight: 600,
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      gap: 8,
+      transition: "all 0.3s ease",
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.transform = "translateY(-3px)";
+      e.currentTarget.style.boxShadow = `0 8px 20px ${color}30`;
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.transform = "translateY(0)";
+      e.currentTarget.style.boxShadow = "none";
+    }}
+  >
+    <span style={{ fontSize: 28 }}>{icon}</span>
+    <span style={{ letterSpacing: "0.2px" }}>{label}</span>
+  </button>
+);
+
+const SecurityRow: React.FC<{ icon: string; label: string; action: string; actionColor?: string; onClick: () => void }> = ({ icon, label, action, actionColor, onClick }) => (
+  <div
+    onClick={onClick}
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      padding: "10px 12px",
+      borderRadius: 10,
+      background: "rgba(30,41,59,0.4)",
+      cursor: "pointer",
+      transition: "all 0.2s ease",
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.background = "rgba(30,41,59,0.6)";
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.background = "rgba(30,41,59,0.4)";
+    }}
+  >
+    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      <span style={{ fontSize: 18 }}>{icon}</span>
+      <span>{label}</span>
+    </div>
+    <button
+      style={{
+        padding: "5px 12px",
+        borderRadius: 999,
+        border: "1px solid rgba(148,163,184,0.3)",
+        background: "transparent",
+        color: actionColor || "#e5e7eb",
+        fontSize: 11,
+        fontWeight: 600,
+        cursor: "pointer",
+      }}
+    >
+      {action}
+    </button>
+  </div>
+);
+
+const SettingRow: React.FC<{ icon: string; label: string; enabled: boolean; onToggle: () => void }> = ({ icon, label, enabled, onToggle }) => (
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      padding: "10px 12px",
+      borderRadius: 10,
+      background: "rgba(30,41,59,0.4)",
+    }}
+  >
+    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      <span style={{ fontSize: 18 }}>{icon}</span>
+      <span>{label}</span>
+    </div>
+    <button
+      onClick={onToggle}
+      style={{
+        width: 44,
+        height: 24,
+        borderRadius: 999,
+        border: "none",
+        background: enabled ? "linear-gradient(135deg,#22c55e,#16a34a)" : "rgba(100,116,139,0.5)",
+        cursor: "pointer",
+        position: "relative",
+        transition: "all 0.3s ease",
+      }}
+    >
+      <div style={{
+        width: 20,
+        height: 20,
+        borderRadius: "50%",
+        background: "#fff",
+        position: "absolute",
+        top: 2,
+        left: enabled ? 22 : 2,
+        transition: "all 0.3s ease",
+      }} />
+    </button>
+  </div>
+);
+
+const StatCard: React.FC<{ label: string; value: string; icon: string; color: string }> = ({ label, value, icon, color }) => (
+  <div style={{
+    padding: 12,
+    borderRadius: 12,
+    background: `linear-gradient(135deg, ${color}15, ${color}08)`,
+    border: `1px solid ${color}30`,
+  }}>
+    <div style={{ fontSize: 20, marginBottom: 4 }}>{icon}</div>
+    <div style={{ fontSize: 11, opacity: 0.7, marginBottom: 4 }}>{label}</div>
+    <div style={{ fontSize: 15, fontWeight: 700, color }}>{value}</div>
+  </div>
+);
+
+const LimitCard: React.FC<{ label: string; current: string; max: string; percentage: number; color: string }> = ({ label, current, max, percentage, color }) => (
+  <div style={{
+    padding: 14,
+    borderRadius: 12,
+    background: "rgba(30,41,59,0.5)",
+    border: "1px solid rgba(148,163,184,0.2)",
+  }}>
+    <div style={{ fontSize: 12, marginBottom: 8, opacity: 0.9 }}>{label}</div>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+      <span style={{ fontSize: 14, fontWeight: 700, color }}>{current}</span>
+      <span style={{ fontSize: 11, opacity: 0.6 }}>/ {max}</span>
+    </div>
+    <div style={{ 
+      height: 6, 
+      borderRadius: 999, 
+      background: "rgba(100,116,139,0.3)",
+      overflow: "hidden",
+    }}>
+      <div style={{ 
+        height: "100%", 
+        width: `${percentage}%`, 
+        background: color,
+        transition: "width 0.5s ease",
+      }} />
+    </div>
+  </div>
+);
 
 /*** TAB 2: VIP */
 interface VipSectionProps {
@@ -2862,17 +3937,17 @@ const WalletSection: React.FC<WalletSectionProps> = ({
       >
         <PrimaryIconButton
           label="Nạp tiền"
-          icon="➕"
+          iconType="deposit"
           onClick={() => setMode("deposit")}
         />
         <PrimaryIconButton
           label="Rút tiền"
-          icon="⬇️"
+          iconType="withdraw"
           onClick={() => setMode("withdraw")}
         />
         <PrimaryIconButton
           label="Lịch sử"
-          icon="📜"
+          iconType="history"
           onClick={() => setMode("history")}
         />
       </div>
@@ -3125,60 +4200,152 @@ const StatBox: React.FC<{
   color?: string;
   iconType?: 'balance' | 'deposit' | 'locked' | 'pending';
 }> = ({ label, value, color, iconType }) => {
+  // Backgrounds độc đáo với nhiều lớp gradient và patterns
   const backgrounds = {
-    balance: "linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(5,150,105,0.05) 100%)",
-    deposit: "linear-gradient(135deg, rgba(251,191,36,0.1) 0%, rgba(217,119,6,0.05) 100%)",
-    locked: "linear-gradient(135deg, rgba(239,68,68,0.1) 0%, rgba(220,38,38,0.05) 100%)",
-    pending: "linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(29,78,216,0.05) 100%)",
+    balance: {
+      base: "linear-gradient(135deg, rgba(16,185,129,0.25) 0%, rgba(5,150,105,0.15) 50%, rgba(4,120,87,0.1) 100%)",
+      glow: "radial-gradient(ellipse at top left, rgba(52,211,153,0.3), transparent 60%)",
+      pattern: "repeating-linear-gradient(45deg, rgba(16,185,129,0.05) 0px, rgba(16,185,129,0.05) 2px, transparent 2px, transparent 8px)",
+      border: "linear-gradient(135deg, rgba(52,211,153,0.6), rgba(16,185,129,0.3))",
+      shadow: "0 8px 32px rgba(16,185,129,0.3)"
+    },
+    deposit: {
+      base: "linear-gradient(135deg, rgba(251,191,36,0.25) 0%, rgba(217,119,6,0.15) 50%, rgba(180,83,9,0.1) 100%)",
+      glow: "radial-gradient(ellipse at top right, rgba(252,211,77,0.3), transparent 60%)",
+      pattern: "repeating-linear-gradient(-45deg, rgba(251,191,36,0.05) 0px, rgba(251,191,36,0.05) 2px, transparent 2px, transparent 8px)",
+      border: "linear-gradient(135deg, rgba(252,211,77,0.6), rgba(251,191,36,0.3))",
+      shadow: "0 8px 32px rgba(251,191,36,0.3)"
+    },
+    locked: {
+      base: "linear-gradient(135deg, rgba(239,68,68,0.25) 0%, rgba(220,38,38,0.15) 50%, rgba(185,28,28,0.1) 100%)",
+      glow: "radial-gradient(ellipse at bottom left, rgba(248,113,113,0.3), transparent 60%)",
+      pattern: "repeating-linear-gradient(90deg, rgba(239,68,68,0.05) 0px, rgba(239,68,68,0.05) 2px, transparent 2px, transparent 8px)",
+      border: "linear-gradient(135deg, rgba(248,113,113,0.6), rgba(239,68,68,0.3))",
+      shadow: "0 8px 32px rgba(239,68,68,0.3)"
+    },
+    pending: {
+      base: "linear-gradient(135deg, rgba(59,130,246,0.25) 0%, rgba(29,78,216,0.15) 50%, rgba(30,64,175,0.1) 100%)",
+      glow: "radial-gradient(ellipse at bottom right, rgba(96,165,250,0.3), transparent 60%)",
+      pattern: "repeating-linear-gradient(0deg, rgba(59,130,246,0.05) 0px, rgba(59,130,246,0.05) 2px, transparent 2px, transparent 8px)",
+      border: "linear-gradient(135deg, rgba(96,165,250,0.6), rgba(59,130,246,0.3))",
+      shadow: "0 8px 32px rgba(59,130,246,0.3)"
+    },
+  };
+
+  const bgStyle = iconType ? backgrounds[iconType] : {
+    base: "rgba(15,23,42,0.6)",
+    glow: "none",
+    pattern: "none",
+    border: "rgba(51,65,85,0.8)",
+    shadow: "none"
   };
 
   return (
     <div
       style={{
         padding: 12,
-        borderRadius: 14,
-        background: iconType ? backgrounds[iconType] : "rgba(15,23,42,0.6)",
-        border: "1px solid rgba(51,65,85,0.8)",
+        borderRadius: 16,
+        background: bgStyle.base,
+        border: `2px solid transparent`,
+        backgroundImage: `${bgStyle.pattern}, ${bgStyle.glow}, ${bgStyle.base}`,
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box',
         display: "flex",
         flexDirection: "column",
         gap: 8,
         position: "relative",
         overflow: "hidden",
-        transition: "all 0.3s ease",
-        backdropFilter: "blur(10px)",
-        WebkitBackdropFilter: "blur(10px)",
+        transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+        backdropFilter: "blur(16px)",
+        WebkitBackdropFilter: "blur(16px)",
+        boxShadow: iconType ? bgStyle.shadow : "none",
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translateY(-3px) scale(1.02)";
-        e.currentTarget.style.boxShadow = "0 12px 30px rgba(0,0,0,0.4)";
+        e.currentTarget.style.transform = "translateY(-4px) scale(1.03)";
+        e.currentTarget.style.boxShadow = iconType ? `${bgStyle.shadow}, 0 20px 60px rgba(0,0,0,0.5)` : "0 12px 30px rgba(0,0,0,0.4)";
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = "translateY(0) scale(1)";
-        e.currentTarget.style.boxShadow = "none";
+        e.currentTarget.style.boxShadow = iconType ? bgStyle.shadow : "none";
       }}
     >
-      {/* Animated background */}
+      {/* Animated gradient border */}
+      {iconType && (
+        <div style={{
+          position: "absolute",
+          top: -2,
+          left: -2,
+          right: -2,
+          bottom: -2,
+          borderRadius: 16,
+          background: bgStyle.border,
+          zIndex: -1,
+          animation: "rotate360 8s linear infinite",
+          opacity: 0.6,
+        }} />
+      )}
+      
+      {/* Animated floating particles */}
+      {iconType && (
+        <>
+          <div style={{
+            position: "absolute",
+            width: 4,
+            height: 4,
+            borderRadius: "50%",
+            background: color || "#fff",
+            top: "20%",
+            left: "15%",
+            opacity: 0.4,
+            animation: "float 4s ease-in-out infinite",
+          }} />
+          <div style={{
+            position: "absolute",
+            width: 3,
+            height: 3,
+            borderRadius: "50%",
+            background: color || "#fff",
+            top: "60%",
+            right: "20%",
+            opacity: 0.3,
+            animation: "float 5s ease-in-out infinite 1s",
+          }} />
+          <div style={{
+            position: "absolute",
+            width: 5,
+            height: 5,
+            borderRadius: "50%",
+            background: color || "#fff",
+            bottom: "25%",
+            left: "70%",
+            opacity: 0.35,
+            animation: "float 4.5s ease-in-out infinite 0.5s",
+          }} />
+        </>
+      )}
+      
+      {/* Animated wave background */}
       <div style={{
         position: "absolute",
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
-        background: iconType ? backgrounds[iconType] : "none",
-        opacity: 0.5,
-        animation: "gradientMove 8s ease infinite",
+        background: iconType ? bgStyle.base : "none",
+        opacity: 0.4,
+        animation: "gradientMove 10s ease infinite",
         pointerEvents: "none",
       }} />
       
-      {/* Shine effect */}
+      {/* Diagonal shine sweep */}
       <div style={{
         position: "absolute",
-        top: "-50%",
-        left: "-50%",
-        width: "200%",
-        height: "200%",
-        background: "radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%)",
-        animation: "statShine 4s ease-in-out infinite",
+        top: "-100%",
+        left: "-100%",
+        width: "300%",
+        height: "300%",
+        background: "linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%)",
+        animation: "shimmer 6s ease-in-out infinite",
         pointerEvents: "none",
       }} />
       
@@ -3205,35 +4372,227 @@ const StatBox: React.FC<{
   );
 };
 
+// Custom Action Icons với hiệu ứng đẹp cho Nạp/Rút/Lịch sử
+const ActionIcon: React.FC<{ type: 'deposit' | 'withdraw' | 'history' }> = ({ type }) => {
+  const icons = {
+    deposit: (
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none" style={{ overflow: 'visible' }}>
+        <defs>
+          <linearGradient id="depositGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#22c55e" />
+            <stop offset="50%" stopColor="#16a34a" />
+            <stop offset="100%" stopColor="#15803d" />
+          </linearGradient>
+          <filter id="depositGlow">
+            <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        <g style={{ animation: 'float 3s ease-in-out infinite' }}>
+          {/* Coin circle với gradient */}
+          <circle cx="16" cy="16" r="11" 
+                  fill="url(#depositGrad)" 
+                  filter="url(#depositGlow)"
+                  opacity="0.9"/>
+          <circle cx="16" cy="16" r="11" 
+                  stroke="#22c55e" 
+                  strokeWidth="2" 
+                  fill="none"
+                  opacity="0.6">
+            <animate attributeName="r" values="11;12;11" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.6;0.3;0.6" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          
+          {/* Plus sign */}
+          <path d="M16 10 L16 22 M10 16 L22 16" 
+                stroke="#fff" 
+                strokeWidth="3" 
+                strokeLinecap="round">
+            <animate attributeName="opacity" values="1;0.7;1" dur="1.5s" repeatCount="indefinite"/>
+          </path>
+          
+          {/* Sparkles */}
+          <circle cx="9" cy="9" r="1.5" fill="#22c55e">
+            <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="23" cy="9" r="1.5" fill="#16a34a">
+            <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="23" cy="23" r="1.5" fill="#15803d">
+            <animate attributeName="opacity" values="1;0.3;1" dur="2s" begin="1s" repeatCount="indefinite"/>
+          </circle>
+        </g>
+      </svg>
+    ),
+    withdraw: (
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none" style={{ overflow: 'visible' }}>
+        <defs>
+          <linearGradient id="withdrawGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#f59e0b" />
+            <stop offset="50%" stopColor="#d97706" />
+            <stop offset="100%" stopColor="#b45309" />
+          </linearGradient>
+          <filter id="withdrawGlow">
+            <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        <g style={{ animation: 'float 3s ease-in-out infinite 0.5s' }}>
+          {/* Coin circle */}
+          <circle cx="16" cy="16" r="11" 
+                  fill="url(#withdrawGrad)" 
+                  filter="url(#withdrawGlow)"
+                  opacity="0.9"/>
+          <circle cx="16" cy="16" r="11" 
+                  stroke="#f59e0b" 
+                  strokeWidth="2" 
+                  fill="none"
+                  opacity="0.6">
+            <animate attributeName="r" values="11;12;11" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.6;0.3;0.6" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          
+          {/* Down arrow với animated offset */}
+          <g>
+            <path d="M16 10 L16 22" 
+                  stroke="#fff" 
+                  strokeWidth="3" 
+                  strokeLinecap="round"/>
+            <path d="M12 18 L16 22 L20 18" 
+                  stroke="#fff" 
+                  strokeWidth="3" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round">
+              <animateTransform
+                attributeName="transform"
+                type="translate"
+                values="0,-2; 0,0; 0,-2"
+                dur="1.5s"
+                repeatCount="indefinite"/>
+            </path>
+          </g>
+          
+          {/* Money symbols */}
+          <text x="16" y="12" fontSize="6" fontWeight="bold" fill="#fff" textAnchor="middle" opacity="0.8">¥</text>
+        </g>
+      </svg>
+    ),
+    history: (
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none" style={{ overflow: 'visible' }}>
+        <defs>
+          <linearGradient id="historyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#3b82f6" />
+            <stop offset="50%" stopColor="#2563eb" />
+            <stop offset="100%" stopColor="#1d4ed8" />
+          </linearGradient>
+          <filter id="historyGlow">
+            <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        <g style={{ animation: 'float 3s ease-in-out infinite 1s' }}>
+          {/* Clock circle */}
+          <circle cx="16" cy="16" r="11" 
+                  fill="url(#historyGrad)" 
+                  filter="url(#historyGlow)"
+                  opacity="0.9"/>
+          <circle cx="16" cy="16" r="11" 
+                  stroke="#3b82f6" 
+                  strokeWidth="2" 
+                  fill="none"
+                  opacity="0.6">
+            <animate attributeName="r" values="11;12;11" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.6;0.3;0.6" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          
+          {/* Clock hands - rotating */}
+          <g style={{ transformOrigin: 'center', animation: 'rotate360 8s linear infinite' }}>
+            {/* Hour hand */}
+            <line x1="16" y1="16" x2="16" y2="11" 
+                  stroke="#fff" 
+                  strokeWidth="2.5" 
+                  strokeLinecap="round"/>
+            {/* Minute hand */}
+            <line x1="16" y1="16" x2="20" y2="16" 
+                  stroke="#fff" 
+                  strokeWidth="2" 
+                  strokeLinecap="round"
+                  opacity="0.8"/>
+          </g>
+          
+          {/* Center dot */}
+          <circle cx="16" cy="16" r="2" fill="#fff"/>
+          
+          {/* Clock markers */}
+          <circle cx="16" cy="8" r="1" fill="#fff" opacity="0.6"/>
+          <circle cx="24" cy="16" r="1" fill="#fff" opacity="0.6"/>
+          <circle cx="16" cy="24" r="1" fill="#fff" opacity="0.6"/>
+          <circle cx="8" cy="16" r="1" fill="#fff" opacity="0.6"/>
+        </g>
+      </svg>
+    ),
+  };
+  return icons[type];
+};
+
 interface PrimaryIconButtonProps {
   label: string;
-  icon: string;
+  iconType: 'deposit' | 'withdraw' | 'history';
   onClick?: () => void;
 }
 
 const PrimaryIconButton: React.FC<PrimaryIconButtonProps> = ({
   label,
-  icon,
+  iconType,
   onClick,
 }) => (
   <button
     onClick={onClick}
     style={{
-      padding: "12px 8px",
+      padding: "14px 10px",
       borderRadius: 16,
-      background: "rgba(15,23,42,0.9)",
-      border: "1px solid rgba(148,163,184,0.6)",
+      background: "linear-gradient(135deg, rgba(15,23,42,0.95), rgba(30,41,59,0.95))",
+      border: "1px solid rgba(148,163,184,0.4)",
       color: "#e5e7eb",
       cursor: "pointer",
       fontSize: 12,
+      fontWeight: 600,
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
-      gap: 4,
+      gap: 6,
+      transition: "all 0.3s ease",
+      position: "relative",
+      overflow: "hidden",
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.transform = "translateY(-2px)";
+      e.currentTarget.style.borderColor = "rgba(148,163,184,0.7)";
+      e.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.4)";
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.transform = "translateY(0)";
+      e.currentTarget.style.borderColor = "rgba(148,163,184,0.4)";
+      e.currentTarget.style.boxShadow = "none";
     }}
   >
-    <span style={{ fontSize: 18 }}>{icon}</span>
-    <span>{label}</span>
+    <div style={{ 
+      display: "flex", 
+      alignItems: "center", 
+      justifyContent: "center",
+    }}>
+      <ActionIcon type={iconType} />
+    </div>
+    <span style={{ letterSpacing: "0.3px" }}>{label}</span>
   </button>
 );
 
