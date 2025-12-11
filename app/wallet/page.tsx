@@ -4356,15 +4356,29 @@ const StatBox: React.FC<{
         position: "relative",
         zIndex: 1,
       }}>
-        <div style={{ fontSize: 11, opacity: 0.8, fontWeight: 500 }}>{label}</div>
+        <div style={{ 
+          fontSize: 11, 
+          fontWeight: 600,
+          color: "#f8fafc",
+          textShadow: "0 1px 2px rgba(0,0,0,0.3)",
+          letterSpacing: "0.3px",
+        }}>
+          {label}
+        </div>
         {iconType && <StatIcon type={iconType} />}
       </div>
       <div style={{ 
-        fontWeight: 700, 
-        color: color || "#e5e7eb",
-        fontSize: 15,
+        fontWeight: 800, 
+        background: "linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #e2e8f0 100%)",
+        WebkitBackgroundClip: "text",
+        WebkitTextFillColor: "transparent",
+        backgroundClip: "text",
+        fontSize: 16,
         position: "relative",
         zIndex: 1,
+        textShadow: "0 2px 8px rgba(255,255,255,0.3)",
+        letterSpacing: "0.5px",
+        filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.4))",
       }}>
         {value}
       </div>
