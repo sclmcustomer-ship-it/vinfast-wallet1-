@@ -4301,10 +4301,8 @@ const StatBox: React.FC<{
         padding: 12,
         borderRadius: 16,
         background: bgStyle.base,
-        border: `2px solid transparent`,
+        border: iconType ? `1px solid ${bgStyle.border.replace('linear-gradient(135deg, ', '').split(',')[0]}` : "1px solid rgba(51,65,85,0.8)",
         backgroundImage: `${bgStyle.pattern}, ${bgStyle.glow}, ${bgStyle.base}`,
-        backgroundOrigin: 'border-box',
-        backgroundClip: 'padding-box',
         display: "flex",
         flexDirection: "column",
         gap: 8,
@@ -4324,22 +4322,6 @@ const StatBox: React.FC<{
         e.currentTarget.style.boxShadow = iconType ? bgStyle.shadow : "none";
       }}
     >
-      {/* Animated gradient border */}
-      {iconType && (
-        <div style={{
-          position: "absolute",
-          top: -2,
-          left: -2,
-          right: -2,
-          bottom: -2,
-          borderRadius: 16,
-          background: bgStyle.border,
-          zIndex: -1,
-          animation: "rotate360 8s linear infinite",
-          opacity: 0.6,
-        }} />
-      )}
-      
       {/* Animated floating particles */}
       {iconType && (
         <>
