@@ -130,6 +130,25 @@ export default function WalletPage() {
   // Số tiền chờ xử lý (từ transaction_requests)
   const [pendingAmount, setPendingAmount] = useState(0);
   
+  // Brand configuration - có thể thay đổi từ banker
+  const [brandConfig, setBrandConfig] = useState({
+    logo: "https://yadeaat-hcm.com/wp-content/uploads/2023/06/Logo_of_Yadea_3D_Banner.svg-1.png",
+    name: "Yadea",
+    appTitle: "Ví Yadea"
+  });
+
+  // Load brand config from localStorage
+  useEffect(() => {
+    const savedBrand = localStorage.getItem("App_Brand_Config");
+    if (savedBrand) {
+      try {
+        setBrandConfig(JSON.parse(savedBrand));
+      } catch (e) {
+        console.error("Error loading brand config:", e);
+      }
+    }
+  }, []);
+  
   // Dữ liệu người dùng - khởi tạo trống cho tài khoản mới
   const [userData, setUserData] = useState<UserData>({
     id: "",
@@ -369,8 +388,8 @@ export default function WalletPage() {
               flexShrink: 0,
             }}>
               <img 
-                src="https://Yadeaat-hcm.com/wp-content/uploads/2023/06/Logo_of_Yadea_3D_Banner.svg-1.png" 
-                alt="Yadea Logo" 
+                src={brandConfig.logo}
+                alt={`${brandConfig.name} Logo`}
                 style={{ 
                   height: "40px", 
                   margin: "0 auto 8px",
@@ -378,7 +397,7 @@ export default function WalletPage() {
                 }} 
               />
               <h2 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 600 }}>
-                {titleByTab[activeTab]}
+                {titleByTab[activeTab].replace(/Yadea/g, brandConfig.name)}
               </h2>
             </div>
 

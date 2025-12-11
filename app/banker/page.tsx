@@ -1984,6 +1984,66 @@ const SendNotificationModal: React.FC<{
 
 // Settings Tab Component
 const SettingsTab: React.FC = () => {
+  const [brandConfig, setBrandConfig] = useState({
+    logo: "https://yadeaat-hcm.com/wp-content/uploads/2023/06/Logo_of_Yadea_3D_Banner.svg-1.png",
+    name: "Yadea",
+    appTitle: "Ví Yadea"
+  });
+  
+  const [logoUrl, setLogoUrl] = useState(brandConfig.logo);
+  const [brandName, setBrandName] = useState(brandConfig.name);
+  const [appTitle, setAppTitle] = useState(brandConfig.appTitle);
+  
+  // Load brand config from localStorage
+  useEffect(() => {
+    const savedBrand = localStorage.getItem("App_Brand_Config");
+    if (savedBrand) {
+      try {
+        const config = JSON.parse(savedBrand);
+        setBrandConfig(config);
+        setLogoUrl(config.logo);
+        setBrandName(config.name);
+        setAppTitle(config.appTitle);
+      } catch (e) {
+        console.error("Error loading brand config:", e);
+      }
+    }
+  }, []);
+  
+  const handleSaveBrand = () => {
+    if (!logoUrl || !brandName || !appTitle) {
+      alert("⚠️ Vui lòng điền đầy đủ thông tin!");
+      return;
+    }
+    
+    const newConfig = {
+      logo: logoUrl,
+      name: brandName,
+      appTitle: appTitle
+    };
+    
+    localStorage.setItem("App_Brand_Config", JSON.stringify(newConfig));
+    setBrandConfig(newConfig);
+    alert(`✅ Đã lưu cấu hình thương hiệu!\n\n🔄 Vui lòng reload trang ví để thấy thay đổi.`);
+  };
+  
+  const handleResetBrand = () => {
+    if (confirm("⚠️ Bạn có chắc muốn khôi phục cài đặt mặc định?")) {
+      const defaultConfig = {
+        logo: "https://yadeaat-hcm.com/wp-content/uploads/2023/06/Logo_of_Yadea_3D_Banner.svg-1.png",
+        name: "Yadea",
+        appTitle: "Ví Yadea"
+      };
+      
+      localStorage.setItem("App_Brand_Config", JSON.stringify(defaultConfig));
+      setBrandConfig(defaultConfig);
+      setLogoUrl(defaultConfig.logo);
+      setBrandName(defaultConfig.name);
+      setAppTitle(defaultConfig.appTitle);
+      alert("✅ Đã khôi phục cài đặt mặc định!");
+    }
+  };
+
   return (
     <div
       style={{
@@ -1993,12 +2053,210 @@ const SettingsTab: React.FC = () => {
         boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
       }}
     >
-      <h3 style={{ margin: "0 0 16px 0", fontSize: 18, color: "#1e293b" }}>
-        Cài đặt hệ thống
+      <h3 style={{ margin: "0 0 20px 0", fontSize: 20, color: "#1e293b", fontWeight: 700 }}>
+        ⚙️ Cài đặt hệ thống
       </h3>
-      <p style={{ color: "#64748b" }}>
-        Các tính năng cài đặt sẽ được phát triển thêm...
-      </p>
+      
+      {/* Brand Configuration Section */}
+      <div style={{
+        background: "#f8fafc",
+        borderRadius: 10,
+        padding: 20,
+        marginBottom: 20,
+        border: "1px solid #e2e8f0"
+      }}>
+        <h4 style={{ margin: "0 0 16px 0", fontSize: 16, color: "#334155", fontWeight: 600 }}>
+          🎨 Cấu hình thương hiệu
+        </h4>
+        
+        <div style={{ display: "grid", gap: 16 }}>
+          {/* Logo Preview */}
+          <div style={{
+            background: "white",
+            borderRadius: 8,
+            padding: 16,
+            border: "2px dashed #cbd5e1",
+            textAlign: "center"
+          }}>
+            <div style={{ fontSize: 12, color: "#64748b", marginBottom: 12 }}>
+              Preview Logo hiện tại:
+            </div>
+            <img 
+              src={logoUrl} 
+              alt="Brand Logo" 
+              style={{ 
+                height: 50, 
+                maxWidth: "100%",
+                objectFit: "contain"
+              }}
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = "https://via.placeholder.com/200x50?text=Invalid+URL";
+              }}
+            />
+          </div>
+          
+          {/* Logo URL Input */}
+          <div>
+            <label style={{ 
+              fontSize: 13, 
+              fontWeight: 600, 
+              color: "#475569",
+              display: "block",
+              marginBottom: 8
+            }}>
+              🔗 URL Logo:
+            </label>
+            <input
+              type="text"
+              value={logoUrl}
+              onChange={(e) => setLogoUrl(e.target.value)}
+              placeholder="https://example.com/logo.png"
+              style={{
+                width: "100%",
+                padding: "10px 12px",
+                borderRadius: 6,
+                border: "1px solid #cbd5e1",
+                fontSize: 13,
+                fontFamily: "monospace",
+                background: "white"
+              }}
+            />
+            <div style={{ fontSize: 11, color: "#64748b", marginTop: 4 }}>
+              💡 Nhập URL ảnh logo (PNG, SVG, JPG)
+            </div>
+          </div>
+          
+          {/* Brand Name Input */}
+          <div>
+            <label style={{ 
+              fontSize: 13, 
+              fontWeight: 600, 
+              color: "#475569",
+              display: "block",
+              marginBottom: 8
+            }}>
+              🏷️ Tên thương hiệu:
+            </label>
+            <input
+              type="text"
+              value={brandName}
+              onChange={(e) => setBrandName(e.target.value)}
+              placeholder="VD: Yadea, VinFast, Audi..."
+              style={{
+                width: "100%",
+                padding: "10px 12px",
+                borderRadius: 6,
+                border: "1px solid #cbd5e1",
+                fontSize: 14,
+                background: "white"
+              }}
+            />
+            <div style={{ fontSize: 11, color: "#64748b", marginTop: 4 }}>
+              💡 Tên sẽ thay thế "Yadea" trong toàn bộ app
+            </div>
+          </div>
+          
+          {/* App Title Input */}
+          <div>
+            <label style={{ 
+              fontSize: 13, 
+              fontWeight: 600, 
+              color: "#475569",
+              display: "block",
+              marginBottom: 8
+            }}>
+              📱 Tiêu đề App:
+            </label>
+            <input
+              type="text"
+              value={appTitle}
+              onChange={(e) => setAppTitle(e.target.value)}
+              placeholder="VD: Ví Yadea, Ví VinFast..."
+              style={{
+                width: "100%",
+                padding: "10px 12px",
+                borderRadius: 6,
+                border: "1px solid #cbd5e1",
+                fontSize: 14,
+                background: "white"
+              }}
+            />
+            <div style={{ fontSize: 11, color: "#64748b", marginTop: 4 }}>
+              💡 Tiêu đề hiển thị trên header
+            </div>
+          </div>
+          
+          {/* Action Buttons */}
+          <div style={{ display: "flex", gap: 10, marginTop: 8 }}>
+            <button
+              onClick={handleSaveBrand}
+              style={{
+                flex: 1,
+                padding: "12px 20px",
+                borderRadius: 8,
+                border: "none",
+                background: "linear-gradient(135deg, #3b82f6, #2563eb)",
+                color: "white",
+                fontSize: 14,
+                fontWeight: 600,
+                cursor: "pointer",
+                boxShadow: "0 4px 12px rgba(59,130,246,0.3)"
+              }}
+            >
+              💾 Lưu thay đổi
+            </button>
+            
+            <button
+              onClick={handleResetBrand}
+              style={{
+                padding: "12px 20px",
+                borderRadius: 8,
+                border: "1px solid #cbd5e1",
+                background: "white",
+                color: "#64748b",
+                fontSize: 14,
+                fontWeight: 600,
+                cursor: "pointer"
+              }}
+            >
+              🔄 Reset
+            </button>
+          </div>
+        </div>
+        
+        {/* Info Box */}
+        <div style={{
+          marginTop: 16,
+          padding: 12,
+          background: "rgba(59,130,246,0.1)",
+          border: "1px solid rgba(59,130,246,0.3)",
+          borderRadius: 8,
+          fontSize: 12,
+          color: "#1e40af"
+        }}>
+          <strong>ℹ️ Lưu ý:</strong><br/>
+          • Thay đổi sẽ áp dụng ngay lập tức cho tất cả user<br/>
+          • Logo nên có kích thước 200x50px để hiển thị tốt nhất<br/>
+          • Sau khi lưu, user cần reload trang để thấy thay đổi
+        </div>
+      </div>
+      
+      {/* System Info */}
+      <div style={{
+        background: "#f8fafc",
+        borderRadius: 10,
+        padding: 16,
+        border: "1px solid #e2e8f0"
+      }}>
+        <h4 style={{ margin: "0 0 12px 0", fontSize: 14, color: "#334155", fontWeight: 600 }}>
+          📊 Thông tin hệ thống
+        </h4>
+        <div style={{ fontSize: 13, color: "#64748b", lineHeight: 1.8 }}>
+          • Version: 2.0.0<br/>
+          • Build: Production<br/>
+          • Last Update: {new Date().toLocaleDateString('vi-VN')}
+        </div>
+      </div>
     </div>
   );
 };
