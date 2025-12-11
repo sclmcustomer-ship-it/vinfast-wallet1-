@@ -7,57 +7,6 @@ import { supabase } from "@/lib/supabase";
 if (typeof document !== 'undefined') {
   const style = document.createElement('style');
   style.textContent = `
-    @keyframes slideInLeft {
-      from { transform: translateX(-100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-    @keyframes slideInRight {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-    @keyframes slideOutLeft {
-      from { transform: translateX(0); opacity: 1; }
-      to { transform: translateX(-100%); opacity: 0; }
-    }
-    @keyframes slideOutRight {
-      from { transform: translateX(0); opacity: 1; }
-      to { transform: translateX(100%); opacity: 0; }
-    }
-    @keyframes ripple {
-      to { width: 100px; height: 100px; opacity: 0; }
-    }
-    @keyframes slideIn {
-      from { width: 0; opacity: 0; }
-      to { width: 60%; opacity: 1; }
-    }
-    @keyframes breathe {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
-    }
-    @keyframes floatParticle {
-      0%, 100% { transform: translateY(0) scale(1); opacity: 0; }
-      50% { transform: translateY(-20px) scale(1.2); opacity: 0.8; }
-    }
-    @keyframes gradientMove {
-      0%, 100% { transform: translate(0, 0); }
-      25% { transform: translate(20%, 10%); }
-      50% { transform: translate(-20%, 5%); }
-      75% { transform: translate(10%, -10%); }
-    }
-    @keyframes shine {
-      0% { left: -100%; }
-      50% { left: 100%; }
-      100% { left: 100%; }
-    }
-    @keyframes gradientBorder {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    @keyframes statShine {
-      0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
-      50% { transform: translate(0%, 0%) scale(1.2); opacity: 1; }
-    }
     @keyframes coinSpin {
       0%, 100% { transform: rotateY(0deg) scale(1); }
       25% { transform: rotateY(90deg) scale(0.9); }
@@ -68,6 +17,16 @@ if (typeof document !== 'undefined') {
       0%, 45% { transform: rotate(0deg); }
       50%, 95% { transform: rotate(180deg); }
       100% { transform: rotate(360deg); }
+    }
+    @keyframes statShine {
+      0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+      50% { transform: translate(0%, 0%) scale(1.2); opacity: 1; }
+    }
+    @keyframes gradientMove {
+      0%, 100% { transform: translate(0, 0); }
+      25% { transform: translate(20%, 10%); }
+      50% { transform: translate(-20%, 5%); }
+      75% { transform: translate(10%, -10%); }
     }
   `;
   document.head.appendChild(style);
@@ -121,7 +80,7 @@ interface UserData {
   lastLogin: string;
 }
 
-function WalletPage() {
+export default function WalletPage() {
   const [activeTab, setActiveTab] = useState<TabKey>("wallet");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authMode, setAuthMode] = useState<AuthMode>("login");
@@ -314,50 +273,26 @@ function WalletPage() {
     return () => clearInterval(interval);
   }, [isAuthenticated, userData.id, notifications]);
 
-  const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
-  const [isTransitioning, setIsTransitioning] = useState(false);
-
-  const handleTabChange = (newTab: TabKey) => {
-    if (newTab === activeTab) return;
-    
-    const tabs: TabKey[] = ['vip', 'wallet', 'personal'];
-    const currentIndex = tabs.indexOf(activeTab);
-    const newIndex = tabs.indexOf(newTab);
-    
-    setSlideDirection(newIndex > currentIndex ? 'right' : 'left');
-    setIsTransitioning(true);
-    
-    setTimeout(() => {
-      setActiveTab(newTab);
-      setTimeout(() => setIsTransitioning(false), 50);
-    }, 150);
-  };
-
   const renderContent = () => {
-    return (
-      <div style={{
-        animation: isTransitioning 
-          ? `slideOut${slideDirection === 'left' ? 'Right' : 'Left'} 0.15s ease-out forwards`
-          : `slideIn${slideDirection === 'left' ? 'Right' : 'Left'} 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards`,
-        opacity: isTransitioning ? 0 : 1,
-      }}>
-        {activeTab === "personal" && <PersonalSection userData={userData} />}
-        {activeTab === "vip" && <VipSection userData={userData} />}
-        {activeTab === "wallet" && (
-          <WalletSection 
-            userData={userData} 
-            setUserData={setUserData}
-            notifications={notifications}
-            setNotifications={setNotifications}
-            showNotifications={showNotifications}
-            setShowNotifications={setShowNotifications}
-            unreadCount={unreadCount}
-            pendingAmount={pendingAmount}
-            setIsAuthenticated={setIsAuthenticated}
-          />
-        )}
-      </div>
-    );
+    switch (activeTab) {
+      case "personal":
+        return <PersonalSection userData={userData} />;
+      case "vip":
+        return <VipSection userData={userData} />;
+      case "wallet":
+      default:
+        return <WalletSection 
+          userData={userData} 
+          setUserData={setUserData}
+          notifications={notifications}
+          setNotifications={setNotifications}
+          showNotifications={showNotifications}
+          setShowNotifications={setShowNotifications}
+          unreadCount={unreadCount}
+          pendingAmount={pendingAmount}
+          setIsAuthenticated={setIsAuthenticated}
+        />;
+    }
   };
 
   const titleByTab: Record<TabKey, string> = {
@@ -378,22 +313,15 @@ function WalletPage() {
         color: "#e5e7eb",
         display: "flex",
         justifyContent: "center",
-        alignItems: "center",
         overflow: "hidden",
       }}
     >
       <div style={{ 
         width: "100%", 
-        maxWidth: "430px",
-        height: "932px",
-        maxHeight: "100vh",
+        maxWidth: "100vw",
         display: "flex",
         flexDirection: "column",
-        background: "rgba(15,23,42,0.95)",
-        boxShadow: "0 20px 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.1)",
-        borderRadius: "0px",
-        overflow: "hidden",
-        position: "relative",
+        height: "100vh",
       }}>
         {!isAuthenticated ? (
           <AuthScreen
@@ -408,20 +336,40 @@ function WalletPage() {
           />
         ) : (
           <>
+            {/* Header with logo and title */}
+            <div style={{ 
+              textAlign: "center", 
+              padding: "16px 20px",
+              background: "rgba(15,23,42,0.8)",
+              borderBottom: "1px solid rgba(148,163,184,0.2)",
+              flexShrink: 0,
+            }}>
+              <img 
+                src="https://Yadeaat-hcm.com/wp-content/uploads/2023/06/Logo_of_Yadea_3D_Banner.svg-1.png" 
+                alt="Yadea Logo" 
+                style={{ 
+                  height: "40px", 
+                  margin: "0 auto 8px",
+                  display: "block"
+                }} 
+              />
+              <h2 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 600 }}>
+                {titleByTab[activeTab]}
+              </h2>
+            </div>
+
             {/* Nội dung chính thay đổi theo tab - có thể scroll */}
             <div style={{
               flex: 1,
               overflowY: "auto",
               overflowX: "hidden",
               padding: "20px",
-              paddingTop: "20px",
-              paddingBottom: "80px",
               WebkitOverflowScrolling: "touch",
             }}>
               {renderContent()}
             </div>
 
-            {/* Thanh điều hướng dưới: 3 phím tắt FIXED - Premium Glassmorphism style */}
+            {/* Thanh điều hướng dưới: 3 phím tắt FIXED - Không co giãn */}
             <div
               style={{
                 width: "100%",
@@ -429,48 +377,31 @@ function WalletPage() {
                 gridTemplateColumns: "1fr 1fr 1fr",
                 gap: 0,
                 padding: "8px 0",
-                background: "linear-gradient(180deg, rgba(15,23,42,0.85) 0%, rgba(30,41,59,0.95) 100%)",
-                backdropFilter: "blur(20px) saturate(180%)",
-                WebkitBackdropFilter: "blur(20px) saturate(180%)",
-                borderTop: "1px solid rgba(148,163,184,0.2)",
+                background: "rgba(15,23,42,0.98)",
+                borderTop: "1px solid rgba(148,163,184,0.3)",
                 flexShrink: 0,
-                boxShadow: "0 -8px 32px rgba(0,0,0,0.4), 0 -2px 16px rgba(59,130,246,0.1), inset 0 1px 0 rgba(255,255,255,0.05)",
-                position: "absolute",
+                position: "sticky",
                 bottom: 0,
-                left: 0,
-                right: 0,
-                zIndex: 100,
-                overflow: "hidden",
+                boxShadow: "0 -4px 12px rgba(0,0,0,0.3)",
               }}
             >
-              {/* Animated gradient background overlay */}
-              <div style={{
-                position: "absolute",
-                top: "-50%",
-                left: "-50%",
-                right: "-50%",
-                bottom: "-50%",
-                background: "radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%)",
-                animation: "gradientMove 8s ease-in-out infinite",
-                pointerEvents: "none",
-              }} />
               <NavButton
                 label="VIP"
-                icon="vip"
+                icon="💎"
                 active={activeTab === "vip"}
-                onClick={() => handleTabChange("vip")}
+                onClick={() => setActiveTab("vip")}
               />
               <NavButton
                 label="Ví"
-                icon="wallet"
+                icon="💰"
                 active={activeTab === "wallet"}
-                onClick={() => handleTabChange("wallet")}
+                onClick={() => setActiveTab("wallet")}
               />
               <NavButton
                 label="Cá nhân"
-                icon="profile"
+                icon="👤"
                 active={activeTab === "personal"}
-                onClick={() => handleTabChange("personal")}
+                onClick={() => setActiveTab("personal")}
               />
             </div>
           </>
@@ -702,13 +633,12 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
     >
       <div style={{ textAlign: "center", marginBottom: 16 }}>
         <img 
-          src="https://www.yadea.com.vn/wp-content/uploads/2023/09/logo-yadea.svg" 
+          src="https://Yadeaat-hcm.com/wp-content/uploads/2023/06/Logo_of_Yadea_3D_Banner.svg-1.png" 
           alt="Yadea Logo" 
           style={{ 
             height: "60px", 
             margin: "0 auto 12px",
-            display: "block",
-            filter: "brightness(0) invert(1)"
+            display: "block"
           }} 
         />
         <div
@@ -719,7 +649,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
             marginBottom: 4,
           }}
         >
-          Xe Đạp điện trợ lực Yadea
+          Xe Đạp điện trợ lực
         </div>
         <div style={{ fontSize: 12, opacity: 0.8 }}>
           Đăng nhập để sử dụng ví Yadea & trung tâm VIP
@@ -1044,94 +974,10 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
 /*** COMPONENT: Nút nav 3 mục dưới cùng */
 interface NavButtonProps {
   label: string;
-  icon: 'vip' | 'wallet' | 'profile';
+  icon: string;
   active?: boolean;
   onClick?: () => void;
 }
-
-// Custom SVG Icons Component
-const NavIcon: React.FC<{ type: 'vip' | 'wallet' | 'profile'; active?: boolean }> = ({ type, active }) => {
-  const iconColor = active ? '#ffffff' : '#64748b';
-  const glowColor = active ? 'rgba(255,255,255,0.6)' : 'transparent';
-  
-  const icons = {
-    vip: (
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style={{
-        filter: active ? 'drop-shadow(0 0 8px rgba(255,255,255,0.6))' : 'none',
-        transition: 'all 0.3s ease',
-      }}>
-        <defs>
-          <linearGradient id="vipGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={active ? "#fbbf24" : iconColor} />
-            <stop offset="50%" stopColor={active ? "#f59e0b" : iconColor} />
-            <stop offset="100%" stopColor={active ? "#dc2626" : iconColor} />
-          </linearGradient>
-        </defs>
-        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" 
-          fill="url(#vipGrad)" 
-          stroke={active ? "#fbbf24" : "none"} 
-          strokeWidth={active ? "0.5" : "0"}
-        />
-        {active && (
-          <circle cx="12" cy="12" r="10" fill="none" stroke="#fbbf24" strokeWidth="0.5" opacity="0.3">
-            <animate attributeName="r" from="8" to="12" dur="1.5s" repeatCount="indefinite" />
-            <animate attributeName="opacity" from="0.6" to="0" dur="1.5s" repeatCount="indefinite" />
-          </circle>
-        )}
-      </svg>
-    ),
-    wallet: (
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style={{
-        filter: active ? 'drop-shadow(0 0 8px rgba(255,255,255,0.6))' : 'none',
-        transition: 'all 0.3s ease',
-      }}>
-        <defs>
-          <linearGradient id="walletGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={active ? "#10b981" : iconColor} />
-            <stop offset="50%" stopColor={active ? "#059669" : iconColor} />
-            <stop offset="100%" stopColor={active ? "#047857" : iconColor} />
-          </linearGradient>
-        </defs>
-        <rect x="3" y="6" width="18" height="13" rx="2" fill="url(#walletGrad)" stroke={active ? "#10b981" : "none"} strokeWidth={active ? "0.5" : "0"} />
-        <path d="M3 10h18" stroke={active ? "#dcfce7" : "#94a3b8"} strokeWidth="1.5" strokeLinecap="round" />
-        <circle cx="16" cy="14" r="1.5" fill={active ? "#dcfce7" : "#cbd5e1"} />
-        {active && (
-          <>
-            <circle cx="12" cy="12" r="10" fill="none" stroke="#10b981" strokeWidth="0.5" opacity="0.3">
-              <animate attributeName="r" from="8" to="12" dur="1.5s" repeatCount="indefinite" />
-              <animate attributeName="opacity" from="0.6" to="0" dur="1.5s" repeatCount="indefinite" />
-            </circle>
-            <path d="M8 14h2M8 16h3" stroke="#dcfce7" strokeWidth="0.8" strokeLinecap="round" opacity="0.6" />
-          </>
-        )}
-      </svg>
-    ),
-    profile: (
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style={{
-        filter: active ? 'drop-shadow(0 0 8px rgba(255,255,255,0.6))' : 'none',
-        transition: 'all 0.3s ease',
-      }}>
-        <defs>
-          <linearGradient id="profileGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={active ? "#3b82f6" : iconColor} />
-            <stop offset="50%" stopColor={active ? "#8b5cf6" : iconColor} />
-            <stop offset="100%" stopColor={active ? "#ec4899" : iconColor} />
-          </linearGradient>
-        </defs>
-        <circle cx="12" cy="8" r="4" fill="url(#profileGrad)" stroke={active ? "#3b82f6" : "none"} strokeWidth={active ? "0.5" : "0"} />
-        <path d="M4 20c0-4 3.6-6 8-6s8 2 8 6" fill="url(#profileGrad)" stroke={active ? "#3b82f6" : "none"} strokeWidth={active ? "0.5" : "0"} />
-        {active && (
-          <circle cx="12" cy="12" r="10" fill="none" stroke="#3b82f6" strokeWidth="0.5" opacity="0.3">
-            <animate attributeName="r" from="8" to="12" dur="1.5s" repeatCount="indefinite" />
-            <animate attributeName="opacity" from="0.6" to="0" dur="1.5s" repeatCount="indefinite" />
-          </circle>
-        )}
-      </svg>
-    ),
-  };
-  
-  return icons[type];
-};
 
 const NavButton: React.FC<NavButtonProps> = ({
   label,
@@ -1139,158 +985,48 @@ const NavButton: React.FC<NavButtonProps> = ({
   active,
   onClick,
 }) => {
-  const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
-  const [isPressed, setIsPressed] = useState(false);
-
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const id = Date.now();
-    
-    setRipples([...ripples, { x, y, id }]);
-    setTimeout(() => {
-      setRipples(prev => prev.filter(r => r.id !== id));
-    }, 600);
-    
-    // Haptic feedback simulation
-    setIsPressed(true);
-    setTimeout(() => setIsPressed(false), 100);
-    
-    onClick?.();
-  };
-
   return (
     <button
-      onClick={handleClick}
+      onClick={onClick}
       style={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        gap: 6,
-        padding: "8px 12px",
+        gap: 4,
+        padding: "10px 8px",
         border: "none",
         cursor: "pointer",
-        fontSize: "10px",
+        fontSize: "11px",
         fontWeight: 600,
         background: active
-          ? "linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%)"
+          ? "linear-gradient(135deg,#1d4ed8,#38bdf8)"
           : "transparent",
-        color: active ? "#ffffff" : "#64748b",
-        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        color: active ? "#ffffff" : "#94a3b8",
+        transition: "all 0.2s ease",
         minHeight: 64,
         position: "relative",
-        overflow: "hidden",
-        borderRadius: active ? "16px 16px 0 0" : "0",
-        transform: active ? "translateY(-4px)" : "translateY(0)",
-        boxShadow: active 
-          ? "0 -4px 20px rgba(59, 130, 246, 0.4), 0 0 30px rgba(139, 92, 246, 0.3)"
-          : "none",
       }}
       onMouseEnter={(e) => {
         if (!active) {
-          e.currentTarget.style.color = "#94a3b8";
-          e.currentTarget.style.transform = "translateY(-2px)";
+          e.currentTarget.style.color = "#e2e8f0";
         }
       }}
       onMouseLeave={(e) => {
         if (!active) {
-          e.currentTarget.style.color = "#64748b";
-          e.currentTarget.style.transform = "translateY(0)";
+          e.currentTarget.style.color = "#94a3b8";
         }
       }}
     >
-      {/* Glow effect khi active với breathing animation */}
-      {active && (
-        <>
-          <div style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: "linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 50%)",
-            pointerEvents: "none",
-            animation: "breathe 3s ease-in-out infinite",
-          }} />
-          
-          {/* Floating particles effect */}
-          {[...Array(3)].map((_, i) => (
-            <div
-              key={i}
-              style={{
-                position: "absolute",
-                width: 4,
-                height: 4,
-                borderRadius: "50%",
-                background: "rgba(255,255,255,0.6)",
-                bottom: 10,
-                left: `${25 + i * 25}%`,
-                animation: `floatParticle ${2 + i * 0.5}s ease-in-out infinite`,
-                animationDelay: `${i * 0.3}s`,
-                pointerEvents: "none",
-              }}
-            />
-          ))}
-        </>
-      )}
-      
-      {/* Ripple effects */}
-      {ripples.map(ripple => (
-        <span
-          key={ripple.id}
-          style={{
-            position: "absolute",
-            left: ripple.x,
-            top: ripple.y,
-            width: 10,
-            height: 10,
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.6)",
-            transform: "translate(-50%, -50%)",
-            animation: "ripple 0.6s ease-out",
-            pointerEvents: "none",
-          }}
-        />
-      ))}
-      
-      {/* Custom SVG Icon với scale animation */}
-      <div style={{ 
+      <span style={{ 
+        fontSize: 24, 
         lineHeight: 1,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-        transform: active ? "scale(1.15) translateY(-2px)" : isPressed ? "scale(0.9)" : "scale(1)",
-      }}>
-        <NavIcon type={icon} active={active} />
-      </div>
-      
-      {/* Label với fade animation */}
-      <span style={{
-        opacity: active ? 1 : 0.7,
-        transition: "all 0.3s ease",
-        letterSpacing: active ? "0.5px" : "0",
-        textShadow: active ? "0 0 10px rgba(255,255,255,0.3)" : "none",
-      }}>
-        {label}
-      </span>
-      
-      {/* Active indicator line */}
-      {active && (
-        <div style={{
-          position: "absolute",
-          top: 0,
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: "60%",
-          height: 3,
-          background: "linear-gradient(90deg, transparent, #fff, transparent)",
-          borderRadius: "0 0 3px 3px",
-          animation: "slideIn 0.3s ease-out",
-        }} />
-      )}
+        display: "block",
+      }}>{icon}</span>
+      <span style={{ 
+        lineHeight: 1,
+        letterSpacing: "0.3px",
+      }}>{label}</span>
     </button>
   );
 };
@@ -1300,7 +1036,7 @@ interface PersonalSectionProps {
   userData: UserData;
 }
 
-function PersonalSection({ userData }: PersonalSectionProps) {
+const PersonalSection: React.FC<PersonalSectionProps> = ({ userData }) => {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [isManagingDevices, setIsManagingDevices] = useState(false);
@@ -1843,7 +1579,7 @@ interface VipSectionProps {
   userData: UserData;
 }
 
-function VipSection({ userData }: VipSectionProps) {
+const VipSection: React.FC<VipSectionProps> = ({ userData }) => {
   const currentVipLevel = userData.vipLevel; // Lấy từ userData
   const vipLevels = [
     { level: 0, name: "VIP LVL 0", image: "/images/logo-vip0.jpg", pointsRequired: 0 },
@@ -2063,268 +1799,6 @@ function VipSection({ userData }: VipSectionProps) {
   );
 };
 
-// Premium Card Component with Animated Border
-const PremiumCard: React.FC<{ 
-  children: React.ReactNode; 
-  gradient?: string;
-  borderAnimation?: boolean;
-}> = ({ children, gradient, borderAnimation = false }) => {
-  return (
-    <div style={{
-      position: "relative",
-      borderRadius: 20,
-      padding: 2,
-      background: borderAnimation 
-        ? "linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899, #3b82f6)"
-        : "rgba(51,65,85,0.3)",
-      backgroundSize: borderAnimation ? "400% 400%" : "100% 100%",
-      animation: borderAnimation ? "gradientBorder 3s ease infinite" : "none",
-    }}>
-      <div style={{
-        borderRadius: 18,
-        padding: 16,
-        background: gradient || "linear-gradient(135deg, rgba(15,23,42,0.95) 0%, rgba(30,41,59,0.95) 100%)",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-      }}>
-        {children}
-      </div>
-    </div>
-  );
-};
-
-// Premium Icon Component cho Stats
-const StatIcon: React.FC<{ type: 'balance' | 'deposit' | 'locked' | 'pending' }> = ({ type }) => {
-  const icons = {
-    balance: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <defs>
-          <linearGradient id="balanceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#10b981" />
-            <stop offset="100%" stopColor="#059669" />
-          </linearGradient>
-          <filter id="balanceGlow">
-            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-        </defs>
-        <rect x="4" y="8" width="24" height="16" rx="3" fill="url(#balanceGrad)" filter="url(#balanceGlow)" opacity="0.3"/>
-        <rect x="4" y="8" width="24" height="16" rx="3" stroke="url(#balanceGrad)" strokeWidth="2" fill="none"/>
-        <circle cx="16" cy="16" r="4" fill="url(#balanceGrad)"/>
-        <circle cx="10" cy="16" r="1.5" fill="#10b981" opacity="0.6"/>
-        <circle cx="22" cy="16" r="1.5" fill="#10b981" opacity="0.6"/>
-        <path d="M8 8L8 6C8 4.89543 8.89543 4 10 4L22 4C23.1046 4 24 4.89543 24 6L24 8" stroke="url(#balanceGrad)" strokeWidth="1.5" strokeLinecap="round"/>
-      </svg>
-    ),
-    deposit: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <defs>
-          <linearGradient id="depositGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#fbbf24" />
-            <stop offset="50%" stopColor="#f59e0b" />
-            <stop offset="100%" stopColor="#d97706" />
-          </linearGradient>
-          <filter id="depositGlow">
-            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-        </defs>
-        <circle cx="16" cy="16" r="12" fill="url(#depositGrad)" filter="url(#depositGlow)" opacity="0.2"/>
-        <circle cx="16" cy="16" r="11" stroke="url(#depositGrad)" strokeWidth="2" fill="none"/>
-        <g style={{animation: 'coinSpin 2s ease-in-out infinite'}}>
-          <circle cx="16" cy="16" r="8" fill="url(#depositGrad)"/>
-          <text x="16" y="20" textAnchor="middle" fontSize="12" fontWeight="bold" fill="#fff">¥</text>
-        </g>
-        <path d="M12 8L16 4L20 8" stroke="#fbbf24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.6">
-          <animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite"/>
-        </path>
-      </svg>
-    ),
-    locked: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <defs>
-          <linearGradient id="lockGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#ef4444" />
-            <stop offset="100%" stopColor="#dc2626" />
-          </linearGradient>
-          <filter id="lockGlow">
-            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-        </defs>
-        <rect x="8" y="14" width="16" height="12" rx="2" fill="url(#lockGrad)" filter="url(#lockGlow)" opacity="0.3"/>
-        <rect x="8" y="14" width="16" height="12" rx="2" stroke="url(#lockGrad)" strokeWidth="2" fill="none"/>
-        <path d="M12 14V10C12 7.79086 13.7909 6 16 6C18.2091 6 20 7.79086 20 10V14" stroke="url(#lockGrad)" strokeWidth="2" strokeLinecap="round"/>
-        <circle cx="16" cy="20" r="2" fill="#fff"/>
-        <rect x="15" y="20" width="2" height="3" rx="1" fill="#fff"/>
-        <g opacity="0.6">
-          <circle cx="12" cy="10" r="1" fill="#ef4444">
-            <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="20" cy="10" r="1" fill="#ef4444">
-            <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
-          </circle>
-        </g>
-      </svg>
-    ),
-    pending: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <defs>
-          <linearGradient id="pendingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#3b82f6" />
-            <stop offset="50%" stopColor="#2563eb" />
-            <stop offset="100%" stopColor="#1d4ed8" />
-          </linearGradient>
-          <filter id="pendingGlow">
-            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-        </defs>
-        <g style={{animation: 'hourglassFlip 3s ease-in-out infinite'}}>
-          <path d="M10 4h12M10 28h12M12 4v3c0 2 2 3 4 4 2 1 4 2 4 4v6c0 2-2 3-4 4-2 1-4 2-4 4v3M10 4h12v0c0 0-1 1-2 2l-3 3c-1 1-1 2 0 3l3 3c1 1 2 2 2 2v0H10v0c0 0 1-1 2-2l3-3c1-1 1-2 0-3l-3-3c-1-1-2-2-2-2v0z" 
-                stroke="url(#pendingGrad)" strokeWidth="2" fill="none" strokeLinecap="round"/>
-          <path d="M12 8c0 0 2 2 4 3s4 1 4 1" stroke="url(#pendingGrad)" strokeWidth="2" strokeLinecap="round" opacity="0.5">
-            <animate attributeName="d" 
-              values="M12 8c0 0 2 2 4 3s4 1 4 1;M12 12c0 0 2 1 4 2s4 0 4 0;M12 16c0 0 2 0 4 0s4 0 4 0" 
-              dur="3s" repeatCount="indefinite"/>
-          </path>
-        </g>
-        <circle cx="16" cy="16" r="14" stroke="url(#pendingGrad)" strokeWidth="1" fill="none" opacity="0.3" filter="url(#pendingGlow)"/>
-      </svg>
-    ),
-  };
-  return icons[type];
-};
-
-// Stat Box với Icon và Background đẹp
-const StatBox: React.FC<{ 
-  label: string; 
-  value: string; 
-  color?: string;
-  iconType?: 'balance' | 'deposit' | 'locked' | 'pending';
-  gradient?: string;
-}> = ({ label, value, color, iconType, gradient }) => {
-  const backgrounds = {
-    balance: "linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(5,150,105,0.05) 100%)",
-    deposit: "linear-gradient(135deg, rgba(251,191,36,0.1) 0%, rgba(217,119,6,0.05) 100%)",
-    locked: "linear-gradient(135deg, rgba(239,68,68,0.1) 0%, rgba(220,38,38,0.05) 100%)",
-    pending: "linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(29,78,216,0.05) 100%)",
-  };
-
-  return (
-    <div
-      style={{
-        padding: 14,
-        borderRadius: 16,
-        background: iconType ? backgrounds[iconType] : "rgba(15,23,42,0.6)",
-        border: "1px solid rgba(51,65,85,0.8)",
-        display: "flex",
-        flexDirection: "column",
-        gap: 8,
-        position: "relative",
-        overflow: "hidden",
-        transition: "all 0.3s ease",
-        backdropFilter: "blur(10px)",
-        WebkitBackdropFilter: "blur(10px)",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translateY(-3px) scale(1.02)";
-        e.currentTarget.style.boxShadow = "0 12px 30px rgba(0,0,0,0.4)";
-        e.currentTarget.style.borderColor = "rgba(148,163,184,0.8)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = "translateY(0) scale(1)";
-        e.currentTarget.style.boxShadow = "none";
-        e.currentTarget.style.borderColor = "rgba(51,65,85,0.8)";
-      }}
-    >
-      {/* Animated background gradient */}
-      <div style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: gradient || (iconType ? backgrounds[iconType] : "none"),
-        opacity: 0.5,
-        animation: "gradientMove 8s ease infinite",
-        backgroundSize: "200% 200%",
-        pointerEvents: "none",
-      }} />
-      
-      {/* Shine effect */}
-      <div style={{
-        position: "absolute",
-        top: "-50%",
-        left: "-50%",
-        width: "200%",
-        height: "200%",
-        background: "radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%)",
-        animation: "statShine 4s ease-in-out infinite",
-        pointerEvents: "none",
-      }} />
-      
-      <div style={{ 
-        display: "flex", 
-        alignItems: "center", 
-        justifyContent: "space-between",
-        position: "relative",
-        zIndex: 1,
-      }}>
-        <div style={{ fontSize: 11, opacity: 0.8, fontWeight: 500 }}>{label}</div>
-        {iconType && <StatIcon type={iconType} />}
-      </div>
-      <div style={{ 
-        fontWeight: 700, 
-        color: color || "#e5e7eb",
-        fontSize: 16,
-        position: "relative",
-      zIndex: 1,
-    }}>
-      {value}
-    </div>
-  </div>
-);
-
-// QuickRow Component
-const QuickRow: React.FC<{ label: string; action: string; onClick?: () => void }> = ({ label, action, onClick }) => (
-  <div
-    style={{
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-    }}
-  >
-    <span>{label}</span>
-    <button
-      onClick={onClick}
-      style={{
-        padding: "4px 10px",
-        borderRadius: 999,
-        border: "1px solid rgba(148,163,184,0.6)",
-        background: "transparent",
-        color: "#e5e7eb",
-        fontSize: 11,
-        cursor: "pointer",
-      }}
-    >
-      {action}
-    </button>
-  </div>
-);
-
 /*** TAB 3: Ví (ví điện tử) */
 interface WalletSectionProps {
   userData: UserData;
@@ -2338,7 +1812,7 @@ interface WalletSectionProps {
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function WalletSection({ 
+const WalletSection: React.FC<WalletSectionProps> = ({ 
   userData, 
   setUserData, 
   notifications, 
@@ -2348,7 +1822,7 @@ function WalletSection({
   unreadCount,
   pendingAmount,
   setIsAuthenticated
-}: WalletSectionProps) {
+}) => {
   const [mode, setMode] = useState<WalletMode>("overview");
   const [depositAmount, setDepositAmount] = useState<string>("");
   const [withdrawAmount, setWithdrawAmount] = useState<string>("");
@@ -3188,13 +2662,15 @@ function WalletSection({
         </div>
       )}
 
-      {/* Wallet card với animated border */}
-      <PremiumCard 
-        gradient="linear-gradient(135deg, #0f172a 0%, #1e3a8a 40%, #1e40af 70%, #3b82f6 100%)"
-        borderAnimation={true}
-      >
+      {/* Wallet card */}
       <div
         style={{
+          borderRadius: 20,
+          padding: 16,
+          background:
+            "linear-gradient(135deg, #0f172a 0%, #1d4ed8 40%, #38bdf8 100%)",
+          border: "1px solid rgba(148,163,184,0.7)",
+          boxShadow: "0 18px 45px rgba(15,23,42,0.9)",
           width: "100%",
           boxSizing: "border-box",
         }}
@@ -3327,11 +2803,17 @@ function WalletSection({
           />
         </div>
       </div>
-      </PremiumCard>
 
       {/* Liên kết ngân hàng */}
-      <PremiumCard>
-        <div style={{ fontSize: 12 }}>
+      <div
+        style={{
+          borderRadius: 18,
+          padding: 14,
+          background: "rgba(15,23,42,0.95)",
+          border: "1px solid rgba(51,65,85,0.9)",
+          fontSize: 12,
+        }}
+      >
         <div
           style={{
             display: "flex",
@@ -3367,8 +2849,7 @@ function WalletSection({
           Thẻ ngân hàng dùng để rút tiền và hoàn tiền sẽ được ưu tiên theo thẻ
           mặc định.
         </div>
-        </div>
-      </PremiumCard>
+      </div>
 
       {/* Buttons row */}
       <div
@@ -3381,17 +2862,17 @@ function WalletSection({
       >
         <PrimaryIconButton
           label="Nạp tiền"
-          icon="deposit"
+          icon="➕"
           onClick={() => setMode("deposit")}
         />
         <PrimaryIconButton
           label="Rút tiền"
-          icon="withdraw"
+          icon="⬇️"
           onClick={() => setMode("withdraw")}
         />
         <PrimaryIconButton
           label="Lịch sử"
-          icon="history"
+          icon="📜"
           onClick={() => setMode("history")}
         />
       </div>
@@ -3523,207 +3004,211 @@ function WalletSection({
 
 /*** Sub components dùng lại */
 
-interface PrimaryIconButtonProps {
-  label: string;
-  icon: 'deposit' | 'withdraw' | 'history';
-  onClick?: () => void;
-}
-
-// Premium Action Icons
-const ActionIcon: React.FC<{ type: 'deposit' | 'withdraw' | 'history' }> = ({ type }) => {
+// Premium Icon Component cho Stats
+const StatIcon: React.FC<{ type: 'balance' | 'deposit' | 'locked' | 'pending' }> = ({ type }) => {
   const icons = {
+    balance: (
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+        <defs>
+          <linearGradient id="balanceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#10b981" />
+            <stop offset="100%" stopColor="#059669" />
+          </linearGradient>
+        </defs>
+        <rect x="4" y="8" width="24" height="16" rx="3" fill="url(#balanceGrad)" opacity="0.3"/>
+        <rect x="4" y="8" width="24" height="16" rx="3" stroke="url(#balanceGrad)" strokeWidth="2" fill="none"/>
+        <circle cx="16" cy="16" r="4" fill="url(#balanceGrad)"/>
+      </svg>
+    ),
     deposit: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
         <defs>
           <linearGradient id="depositGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#10b981" />
-            <stop offset="50%" stopColor="#059669" />
-            <stop offset="100%" stopColor="#047857" />
+            <stop offset="0%" stopColor="#fbbf24" />
+            <stop offset="100%" stopColor="#d97706" />
           </linearGradient>
-          <filter id="depositGlow">
-            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
         </defs>
-        {/* Money bag/wallet */}
-        <circle cx="12" cy="14" r="7" fill="url(#depositGrad)" opacity="0.2" />
-        <path d="M12 3v18M12 3l-4 4M12 3l4 4" stroke="url(#depositGrad)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" filter="url(#depositGlow)" />
-        {/* Plus sign in circle */}
-        <circle cx="12" cy="18" r="3" stroke="url(#depositGrad)" strokeWidth="1.5" fill="rgba(16,185,129,0.2)" />
-        <path d="M12 16.5v3M10.5 18h3" stroke="#10b981" strokeWidth="1.5" strokeLinecap="round" />
+        <circle cx="16" cy="16" r="12" fill="url(#depositGrad)" opacity="0.2"/>
+        <circle cx="16" cy="16" r="11" stroke="url(#depositGrad)" strokeWidth="2" fill="none"/>
+        <g style={{animation: 'coinSpin 2s ease-in-out infinite'}}>
+          <circle cx="16" cy="16" r="8" fill="url(#depositGrad)"/>
+          <text x="16" y="20" textAnchor="middle" fontSize="12" fontWeight="bold" fill="#fff">¥</text>
+        </g>
       </svg>
     ),
-    withdraw: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+    locked: (
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
         <defs>
-          <linearGradient id="withdrawGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#f59e0b" />
-            <stop offset="50%" stopColor="#d97706" />
-            <stop offset="100%" stopColor="#b45309" />
+          <linearGradient id="lockGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#ef4444" />
+            <stop offset="100%" stopColor="#dc2626" />
           </linearGradient>
-          <filter id="withdrawGlow">
-            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
         </defs>
-        {/* Money/ATM card */}
-        <circle cx="12" cy="10" r="7" fill="url(#withdrawGrad)" opacity="0.2" />
-        <path d="M12 3v18M12 21l-4-4M12 21l4-4" stroke="url(#withdrawGrad)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" filter="url(#withdrawGlow)" />
-        {/* Cash symbol */}
-        <circle cx="12" cy="7" r="2.5" stroke="url(#withdrawGrad)" strokeWidth="1.5" fill="rgba(245,158,11,0.2)" />
-        <path d="M14 7h-4" stroke="#f59e0b" strokeWidth="1.2" strokeLinecap="round" />
+        <rect x="8" y="14" width="16" height="12" rx="2" fill="url(#lockGrad)" opacity="0.3"/>
+        <rect x="8" y="14" width="16" height="12" rx="2" stroke="url(#lockGrad)" strokeWidth="2" fill="none"/>
+        <path d="M12 14V10C12 7.79086 13.7909 6 16 6C18.2091 6 20 7.79086 20 10V14" stroke="url(#lockGrad)" strokeWidth="2"/>
+        <circle cx="16" cy="20" r="2" fill="#fff"/>
       </svg>
     ),
-    history: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+    pending: (
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
         <defs>
-          <linearGradient id="historyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#6366f1" />
-            <stop offset="50%" stopColor="#4f46e5" />
-            <stop offset="100%" stopColor="#4338ca" />
+          <linearGradient id="pendingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#3b82f6" />
+            <stop offset="100%" stopColor="#1d4ed8" />
           </linearGradient>
         </defs>
-        <circle cx="12" cy="12" r="9" stroke="url(#historyGrad)" strokeWidth="2" fill="rgba(99,102,241,0.1)" />
-        <path d="M12 6v6l4 4" stroke="url(#historyGrad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M4 12a8 8 0 0 1 8-8" stroke="#6366f1" strokeWidth="1.5" strokeLinecap="round" opacity="0.5">
-          <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="3s" repeatCount="indefinite" />
-        </path>
+        <g style={{animation: 'hourglassFlip 3s ease-in-out infinite'}}>
+          <path d="M10 4h12M10 28h12M12 4v3c0 2 2 3 4 4 2 1 4 2 4 4v6c0 2-2 3-4 4-2 1-4 2-4 4v3" 
+                stroke="url(#pendingGrad)" strokeWidth="2" fill="none"/>
+        </g>
+        <circle cx="16" cy="16" r="14" stroke="url(#pendingGrad)" strokeWidth="1" fill="none" opacity="0.3"/>
       </svg>
     ),
   };
-  
   return icons[type];
 };
+
+const StatBox: React.FC<{ 
+  label: string; 
+  value: string; 
+  color?: string;
+  iconType?: 'balance' | 'deposit' | 'locked' | 'pending';
+}> = ({ label, value, color, iconType }) => {
+  const backgrounds = {
+    balance: "linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(5,150,105,0.05) 100%)",
+    deposit: "linear-gradient(135deg, rgba(251,191,36,0.1) 0%, rgba(217,119,6,0.05) 100%)",
+    locked: "linear-gradient(135deg, rgba(239,68,68,0.1) 0%, rgba(220,38,38,0.05) 100%)",
+    pending: "linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(29,78,216,0.05) 100%)",
+  };
+
+  return (
+    <div
+      style={{
+        padding: 12,
+        borderRadius: 14,
+        background: iconType ? backgrounds[iconType] : "rgba(15,23,42,0.6)",
+        border: "1px solid rgba(51,65,85,0.8)",
+        display: "flex",
+        flexDirection: "column",
+        gap: 8,
+        position: "relative",
+        overflow: "hidden",
+        transition: "all 0.3s ease",
+        backdropFilter: "blur(10px)",
+        WebkitBackdropFilter: "blur(10px)",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translateY(-3px) scale(1.02)";
+        e.currentTarget.style.boxShadow = "0 12px 30px rgba(0,0,0,0.4)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "translateY(0) scale(1)";
+        e.currentTarget.style.boxShadow = "none";
+      }}
+    >
+      {/* Animated background */}
+      <div style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: iconType ? backgrounds[iconType] : "none",
+        opacity: 0.5,
+        animation: "gradientMove 8s ease infinite",
+        pointerEvents: "none",
+      }} />
+      
+      {/* Shine effect */}
+      <div style={{
+        position: "absolute",
+        top: "-50%",
+        left: "-50%",
+        width: "200%",
+        height: "200%",
+        background: "radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%)",
+        animation: "statShine 4s ease-in-out infinite",
+        pointerEvents: "none",
+      }} />
+      
+      <div style={{ 
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "space-between",
+        position: "relative",
+        zIndex: 1,
+      }}>
+        <div style={{ fontSize: 11, opacity: 0.8, fontWeight: 500 }}>{label}</div>
+        {iconType && <StatIcon type={iconType} />}
+      </div>
+      <div style={{ 
+        fontWeight: 700, 
+        color: color || "#e5e7eb",
+        fontSize: 15,
+        position: "relative",
+        zIndex: 1,
+      }}>
+        {value}
+      </div>
+    </div>
+  );
+};
+
+interface PrimaryIconButtonProps {
+  label: string;
+  icon: string;
+  onClick?: () => void;
+}
 
 const PrimaryIconButton: React.FC<PrimaryIconButtonProps> = ({
   label,
   icon,
   onClick,
-}) => {
-  const [isPressed, setIsPressed] = useState(false);
-  const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
+}) => (
+  <button
+    onClick={onClick}
+    style={{
+      padding: "12px 8px",
+      borderRadius: 16,
+      background: "rgba(15,23,42,0.9)",
+      border: "1px solid rgba(148,163,184,0.6)",
+      color: "#e5e7eb",
+      cursor: "pointer",
+      fontSize: 12,
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      gap: 4,
+    }}
+  >
+    <span style={{ fontSize: 18 }}>{icon}</span>
+    <span>{label}</span>
+  </button>
+);
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const id = Date.now();
-    
-    setRipples([...ripples, { x, y, id }]);
-    setTimeout(() => {
-      setRipples(prev => prev.filter(r => r.id !== id));
-    }, 600);
-    
-    setIsPressed(true);
-    setTimeout(() => setIsPressed(false), 150);
-    
-    onClick?.();
-  };
-
-  const getGradient = () => {
-    switch(icon) {
-      case 'deposit': return 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-      case 'withdraw': return 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
-      case 'history': return 'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)';
-    }
-  };
-
-  const getShadow = () => {
-    switch(icon) {
-      case 'deposit': return '0 4px 12px rgba(16,185,129,0.3), 0 2px 6px rgba(16,185,129,0.2)';
-      case 'withdraw': return '0 4px 12px rgba(245,158,11,0.3), 0 2px 6px rgba(245,158,11,0.2)';
-      case 'history': return '0 4px 12px rgba(99,102,241,0.3), 0 2px 6px rgba(99,102,241,0.2)';
-    }
-  };
-
-  return (
+const QuickRow: React.FC<{ label: string; action: string; onClick?: () => void }> = ({ label, action, onClick }) => (
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+    }}
+  >
+    <span>{label}</span>
     <button
-      onClick={handleClick}
+      onClick={onClick}
       style={{
-        padding: "16px 12px",
-        borderRadius: 20,
-        background: getGradient(),
-        border: "none",
-        color: "#ffffff",
+        padding: "4px 10px",
+        borderRadius: 999,
+        border: "1px solid rgba(148,163,184,0.6)",
+        background: "transparent",
+        color: "#e5e7eb",
+        fontSize: 11,
         cursor: "pointer",
-        fontSize: 13,
-        fontWeight: 600,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 8,
-        position: "relative",
-        overflow: "hidden",
-        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-        transform: isPressed ? "scale(0.95)" : "scale(1)",
-        boxShadow: isPressed ? "0 2px 6px rgba(0,0,0,0.2)" : getShadow(),
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translateY(-2px) scale(1.02)";
-        e.currentTarget.style.boxShadow = getShadow() + ", 0 8px 20px rgba(0,0,0,0.15)";
-      }}
-      onMouseLeave={(e) => {
-        if (!isPressed) {
-          e.currentTarget.style.transform = "scale(1)";
-          e.currentTarget.style.boxShadow = getShadow();
-        }
       }}
     >
-      {/* Shine overlay */}
-      <div style={{
-        position: "absolute",
-        top: 0,
-        left: "-100%",
-        width: "100%",
-        height: "100%",
-        background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)",
-        animation: "shine 3s ease-in-out infinite",
-        pointerEvents: "none",
-      }} />
-      
-      {/* Ripple effects */}
-      {ripples.map(ripple => (
-        <span
-          key={ripple.id}
-          style={{
-            position: "absolute",
-            left: ripple.x,
-            top: ripple.y,
-            width: 10,
-            height: 10,
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.6)",
-            transform: "translate(-50%, -50%)",
-            animation: "ripple 0.6s ease-out",
-            pointerEvents: "none",
-          }}
-        />
-      ))}
-      
-      {/* Icon with animation */}
-      <div style={{
-        transition: "transform 0.3s ease",
-        transform: isPressed ? "scale(0.85)" : "scale(1)",
-      }}>
-        <ActionIcon type={icon} />
-      </div>
-      
-      {/* Label */}
-      <span style={{
-        textShadow: "0 1px 3px rgba(0,0,0,0.3)",
-        letterSpacing: "0.3px",
-      }}>
-        {label}
-      </span>
+      {action}
     </button>
-  );
-};
-}
-
-export default WalletPage;
+  </div>
+);
