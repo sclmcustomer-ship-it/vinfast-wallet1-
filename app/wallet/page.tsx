@@ -121,7 +121,7 @@ interface UserData {
   lastLogin: string;
 }
 
-export default function WalletPage() {
+function WalletPage() {
   const [activeTab, setActiveTab] = useState<TabKey>("wallet");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authMode, setAuthMode] = useState<AuthMode>("login");
@@ -3725,3 +3725,5 @@ const PrimaryIconButton: React.FC<PrimaryIconButtonProps> = ({
   );
 };
 }
+
+export default WalletPage;
